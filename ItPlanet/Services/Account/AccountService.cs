@@ -4,7 +4,7 @@ using ItPlanet.Models;
 
 namespace ItPlanet.Services.Account;
 
-public class AccountService
+public class AccountService : IAccountService
 {
     private readonly IRepository<AccountModel, int> _repository;
 
