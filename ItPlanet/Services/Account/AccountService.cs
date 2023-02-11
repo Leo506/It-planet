@@ -1,4 +1,5 @@
 ﻿using ItPlanet.Database;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +21,12 @@ public class AccountService : IAccountService
         return account ?? throw new AccountNotFoundException(id);
     }
 
-    public async Task<IEnumerable<AccountModel>> SearchAsync(string? firstName, string? lastName, string? email, int from, int size)
+    public async Task<IEnumerable<AccountModel>> SearchAsync(SearchAccountDto searchAccountDto)
     {
-        firstName ??= string.Empty;
-        lastName ??= string.Empty;
-        email ??= string.Empty;
         var searchResult = await _repository.GetByPredicate(x =>
-            x.FirstName.ToLower().Contains(firstName.ToLower()) && 
-            x.LastName.ToLower().Contains(lastName.ToLower()) && 
-            x.Email.ToLower().Contains(email.ToLower()));
-        return searchResult.Skip(from).Take(size);
+            x.FirstName.ToLower().Contains(searchAccountDto.FirstName.ToLower()) && 
+            x.LastName.ToLower().Contains(searchAccountDto.LastName.ToLower()) && 
+            x.Email.ToLower().Contains(searchAccountDto.Email.ToLower()));
+        return searchResult.Skip(searchAccountDto.From).Take(searchAccountDto.Size);
     }
 }

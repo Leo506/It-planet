@@ -1,4 +1,5 @@
-﻿using ItPlanet.Exceptions;
+﻿using ItPlanet.Dto;
+using ItPlanet.Exceptions;
 using ItPlanet.Services.Account;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,12 +39,11 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchAccounts(string? firstName = default!, string? lastName = default!,
-        string? email = default!, int from = 0, int size = 10)
+    public async Task<IActionResult> SearchAccounts([FromQuery] SearchAccountDto searchAccountDto)
     {
         _logger.LogInformation($"Get {nameof(SearchAccounts)} request");
 
-        var accounts = await _accountService.SearchAsync(firstName, lastName, email, from, size);
+        var accounts = await _accountService.SearchAsync(searchAccountDto);
 
         return Ok(accounts);
     }
