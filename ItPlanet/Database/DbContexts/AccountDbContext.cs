@@ -1,9 +1,9 @@
 ﻿using ItPlanet.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ItPlanet.DbContexts;
+namespace ItPlanet.Database.DbContexts;
 
-public sealed class AccountDbContext : DbContext
+public sealed class AccountDbContext : DbContext, IRepository<AccountModel, int>
 {
     public DbSet<AccountModel> Accounts { get; set; }
 
@@ -11,4 +11,6 @@ public sealed class AccountDbContext : DbContext
     {
         Database.EnsureCreated();
     }
+
+    public Task<AccountModel?> GetByIdAsync(int key) => Accounts.FirstOrDefaultAsync(x => x.Id == key);
 }

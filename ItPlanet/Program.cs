@@ -1,4 +1,5 @@
-using ItPlanet.DbContexts;
+using ItPlanet.Database;
+using ItPlanet.Database.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
