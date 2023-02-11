@@ -35,6 +35,16 @@ public class AccountsController : ControllerBase
             _logger.LogWarning(e, "Account was not found");
             return NotFound();
         }
-        
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchAccounts(string? firstName = default!, string? lastName = default!,
+        string? email = default!, int from = 0, int size = 10)
+    {
+        _logger.LogInformation($"Get {nameof(SearchAccounts)} request");
+
+        var accounts = await _accountService.SearchAsync(firstName, lastName, email, from, size);
+
+        return Ok(accounts);
     }
 }

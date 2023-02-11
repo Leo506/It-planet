@@ -13,4 +13,8 @@ public sealed class AccountDbContext : DbContext, IRepository<AccountModel, int>
     }
 
     public Task<AccountModel?> GetByIdAsync(int key) => Accounts.FirstOrDefaultAsync(x => x.Id == key);
+    public async Task<IEnumerable<AccountModel>> GetByPredicate(Func<AccountModel, bool> predicate)
+    {
+        return Accounts.Where(predicate).ToList();
+    }
 }
