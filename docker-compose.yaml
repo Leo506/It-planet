@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=Test
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    networks:
+      - app-tier
+
+  webapi:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=Release
+    depends_on:
+      - database
+    networks:
+      - app-tier
+
+  tests: 
+    image: mrexpen/planet_olymp_phase1
+    pull_policy: always
+    ports:
+      - "8090:8080"
+    depends_on:
+      - webapi
+    environment:
+      SERVER_URL: http://webapi:80
+      STAGE: 0
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge
