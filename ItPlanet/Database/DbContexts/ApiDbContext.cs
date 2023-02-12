@@ -28,6 +28,13 @@ public partial class ApiDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.Property(e => e.Password)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("'password'::character varying");
+        });
+
         modelBuilder.Entity<Animal>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Animal_pk");
@@ -48,7 +55,11 @@ public partial class ApiDbContext : DbContext
                     l => l.HasOne<Animal>().WithMany()
                         .HasForeignKey("AnimalId")
                         .HasConstraintName("AnimalToTypes_Animal_null_fk"),
-                    j => { j.HasKey("AnimalId", "TypeId").HasName("AnimalToTypes_pk"); });
+                    j =>
+                    {
+                        j.HasKey("AnimalId", "TypeId").HasName("AnimalToTypes_pk");
+                        j.HasIndex(new[] { "TypeId" }, "IX_AnimalToTypes_TypeId");
+                    });
         });
 
         modelBuilder.Entity<AnimalType>(entity =>
@@ -70,6 +81,10 @@ public partial class ApiDbContext : DbContext
         modelBuilder.Entity<VisitedPoint>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("VisitedPoints_pk");
+
+            entity.HasIndex(e => e.AnimalId, "IX_VisitedPoints_AnimalId");
+
+            entity.HasIndex(e => e.LocationPointId, "IX_VisitedPoints_LocationPointId");
 
             entity.Property(e => e.DateTimeOfVisitLocationPoint).HasColumnType("timestamp without time zone");
 
