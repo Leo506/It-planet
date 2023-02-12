@@ -8,7 +8,10 @@ public class AccountDto
 
     [Required] [MinLength(1)] public string LastName { get; set; } = default!;
 
-    [Required] [MinLength(1)] public string Email { get; set; } = default!;
+    [Required]
+    [MinLength(1)]
+    [EmailAddress]
+    public string Email { get; set; } = default!;
 
     [Required] [MinLength(1)] public string Password { get; set; } = default!;
 }

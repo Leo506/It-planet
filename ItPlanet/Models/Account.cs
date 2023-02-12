@@ -1,4 +1,6 @@
-﻿namespace ItPlanet.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ItPlanet.Models;
 
 public class Account
 {
@@ -10,5 +12,5 @@ public class Account
 
     public string Email { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    [JsonIgnore] public string Password { get; set; } = null!;
 }

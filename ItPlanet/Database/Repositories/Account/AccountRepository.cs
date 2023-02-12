@@ -26,4 +26,16 @@ public class AccountRepository : IAccountRepository
                 x.Email.ToLower().Contains(search.Email.ToLower()))
             .Skip(search.From).Take(search.Size);
     }
+
+    public async Task<Models.Account> CreateAsync(Models.Account account)
+    {
+        var result = await _dbContext.Accounts.AddAsync(account);
+        await _dbContext.SaveChangesAsync();
+        return result.Entity;
+    }
+
+    public Task<bool> HasAccountWithEmail(string email)
+    {
+        return _dbContext.Accounts.AnyAsync(x => x.Email == email);
+    }
 }

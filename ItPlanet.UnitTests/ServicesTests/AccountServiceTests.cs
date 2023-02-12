@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Database.Repositories.Account;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Models;
 using ItPlanet.Services.Account;
@@ -13,12 +14,12 @@ public class AccountServiceTests
 {
     [Theory]
     [AutoMoqData]
-    public void GetAccountAsync_NoAccount_ThrowAccountNotFoundException(
+    public async Task GetAccountAsync_NoAccount_ThrowAccountNotFoundException(
         [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
         repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
 
-        Assert.ThrowsAsync<AccountNotFoundException>(async () => await sut.GetAccountAsync(default!));
+        await Assert.ThrowsAsync<AccountNotFoundException>(async () => await sut.GetAccountAsync(default!));
     }
 
     [Theory]
@@ -32,5 +33,18 @@ public class AccountServiceTests
         var account = await sut.GetAccountAsync(default);
 
         account.Should().BeSameAs(expected);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task RegisterAccountAsync_ThereIsAccountWithSameEmail_ThrowDuplicateEmailException(
+        [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    {
+        repositoryMock.Setup(x => x.HasAccountWithEmail(It.IsAny<string>())).ReturnsAsync(true);
+
+        var dto = new Fixture().Create<AccountDto>();
+
+        var action = async () => await sut.RegisterAccountAsync(dto);
+        await action.Should().ThrowExactlyAsync<DuplicateEmailException>();
     }
 }

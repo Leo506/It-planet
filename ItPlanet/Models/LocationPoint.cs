@@ -10,6 +10,5 @@ public class LocationPoint
 
     public double Longitude { get; set; }
 
-    [JsonIgnore]
-    public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
+    [JsonIgnore] public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
 }

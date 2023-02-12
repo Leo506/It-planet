@@ -23,4 +23,21 @@ public class AccountService : IAccountService
     {
         return _accountRepository.FindAsync(searchAccountDto);
     }
+
+    public async Task<Models.Account> RegisterAccountAsync(AccountDto accountDto)
+    {
+        if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
+            throw new DuplicateEmailException();
+
+        // TODO use AutoMapper
+        var account = new Models.Account
+        {
+            FirstName = accountDto.FirstName,
+            LastName = accountDto.LastName,
+            Email = accountDto.Email,
+            Password = accountDto.Password
+        };
+
+        return await _accountRepository.CreateAsync(account);
+    }
 }
