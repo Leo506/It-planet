@@ -14,6 +14,9 @@ public class AnimalRepository : IAnimalRepository
 
     public Task<Models.Animal?> GetByIdAsync(long id)
     {
-        return _dbContext.Animals.FirstOrDefaultAsync(x => x.Id == id);
+        return _dbContext.Animals
+            .Include(x => x.VisitedPoints)
+            .Include(x => x.Types)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 }

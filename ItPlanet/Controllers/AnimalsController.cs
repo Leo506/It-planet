@@ -19,7 +19,7 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetAnimal([Range(0, long.MaxValue)] long? id)
+    public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] long? id)
     {
         _logger.LogInformation($"Get {nameof(GetAnimal)} request");
 

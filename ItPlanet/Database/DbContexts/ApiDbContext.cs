@@ -7,11 +7,13 @@ public partial class ApiDbContext : DbContext
 {
     public ApiDbContext()
     {
+        Database.EnsureCreated();
     }
 
     public ApiDbContext(DbContextOptions<ApiDbContext> options)
         : base(options)
     {
+        Database.EnsureCreated();
     }
 
     public virtual DbSet<Account> Accounts { get; set; }
@@ -23,10 +25,6 @@ public partial class ApiDbContext : DbContext
     public virtual DbSet<LocationPoint> LocationPoints { get; set; }
 
     public virtual DbSet<VisitedPoint> VisitedPoints { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("User Id=admin;Password=password;Host=localhost;Port=5432;Database=Test");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,7 +41,7 @@ public partial class ApiDbContext : DbContext
 
             entity.HasMany(d => d.Types).WithMany(p => p.Animals)
                 .UsingEntity<Dictionary<string, object>>(
-                    "AnimalToType",
+                    "AnimalToTypes",
                     r => r.HasOne<AnimalType>().WithMany()
                         .HasForeignKey("TypeId")
                         .HasConstraintName("AnimalToTypes_AnimalTypes_null_fk"),

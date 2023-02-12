@@ -1,6 +1,8 @@
-﻿namespace ItPlanet.Models;
+﻿using System.Text.Json.Serialization;
 
-public class Animal
+namespace ItPlanet.Models;
+
+public partial class Animal
 {
     public long Id { get; set; }
 
@@ -22,7 +24,9 @@ public class Animal
 
     public DateTime? DeathDateTime { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
 
+    [JsonIgnore]
     public virtual ICollection<AnimalType> Types { get; } = new List<AnimalType>();
 }
