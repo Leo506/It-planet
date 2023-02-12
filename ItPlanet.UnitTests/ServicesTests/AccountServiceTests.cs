@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using ItPlanet.Database;
 using ItPlanet.Database.Repositories.Account;
 using ItPlanet.Exceptions;
 using ItPlanet.Models;
@@ -17,7 +16,7 @@ public class AccountServiceTests
     public void GetAccountAsync_NoAccount_ThrowAccountNotFoundException(
         [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
-        repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((AccountModel)default!);
+        repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
 
         Assert.ThrowsAsync<AccountNotFoundException>(async () => await sut.GetAccountAsync(default!));
     }
@@ -27,7 +26,7 @@ public class AccountServiceTests
     public async Task GetAccountAsync_ThereIdAccount_ReturnsAccount(
         [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
-        var expected = new Fixture().Create<AccountModel>();
+        var expected = new Fixture().Create<Account>();
         repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(expected);
 
         var account = await sut.GetAccountAsync(default);

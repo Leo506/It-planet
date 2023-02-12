@@ -1,10 +1,9 @@
 ﻿using ItPlanet.Dto;
-using ItPlanet.Models;
 
 namespace ItPlanet.Services.Account;
 
 public interface IAccountService
 {
-    Task<AccountModel> GetAccountAsync(int id);
-    Task<IEnumerable<AccountModel>> SearchAsync(SearchAccountDto searchAccountDto);
+    Task<Models.Account> GetAccountAsync(int id);
+    Task<IEnumerable<Models.Account>> SearchAsync(SearchAccountDto searchAccountDto);
 }

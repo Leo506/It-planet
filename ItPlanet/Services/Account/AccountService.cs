@@ -1,7 +1,7 @@
 ﻿using ItPlanet.Database.Repositories.Account;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
-using ItPlanet.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ItPlanet.Services.Account;
 
@@ -14,11 +14,14 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
     }
 
-    public async Task<AccountModel> GetAccountAsync(int id)
+    public async Task<Models.Account> GetAccountAsync(int id)
     {
         var account = await _accountRepository.GetByIdAsync(id);
         return account ?? throw new AccountNotFoundException(id);
     }
 
-    public Task<IEnumerable<AccountModel>> SearchAsync(SearchAccountDto searchAccountDto) => _accountRepository.FindAsync(searchAccountDto);
+    public Task<IEnumerable<Models.Account>> SearchAsync(SearchAccountDto searchAccountDto)
+    {
+        return _accountRepository.FindAsync(searchAccountDto);
+    }
 }

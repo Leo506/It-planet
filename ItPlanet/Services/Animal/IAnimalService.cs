@@ -1,8 +1,6 @@
-﻿using ItPlanet.Models;
-
-namespace ItPlanet.Services.Animal;
+﻿namespace ItPlanet.Services.Animal;
 
 public interface IAnimalService
 {
-    Task<AnimalModel> GetAnimalAsync(long id);
+    Task<Models.Animal> GetAnimalAsync(long id);
 }

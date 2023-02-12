@@ -10,9 +10,7 @@ public class SearchAccountDto
 
     public string Email { get; set; } = string.Empty;
 
-    [Range(0, int.MaxValue)]
-    public int From { get; set; } = default;
+    [Range(0, int.MaxValue)] public int From { get; set; } = default;
 
-    [Range(1, int.MaxValue)]
-    public int Size { get; set; } = 10;
+    [Range(1, int.MaxValue)] public int Size { get; set; } = 10;
 }
