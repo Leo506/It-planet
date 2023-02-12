@@ -6,6 +6,8 @@ namespace ItPlanet.Database.DbContexts;
 public sealed class ApiDbContext : DbContext
 {
     public DbSet<AccountModel> Accounts { get; set; }
+    
+    public DbSet<AnimalModel> Animals { get; set; }
 
     public ApiDbContext(DbContextOptions options) : base(options)
     {
