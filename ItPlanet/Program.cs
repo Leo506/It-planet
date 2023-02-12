@@ -1,3 +1,4 @@
+using ItPlanet.Converters;
 using ItPlanet.Database.DbContexts;
 using ItPlanet.Database.Repositories.Account;
 using ItPlanet.Database.Repositories.Animal;
@@ -11,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()));
 var connectionString = builder.Configuration.GetConnectionString("postgres");
 builder.Services
     .AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString))

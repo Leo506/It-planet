@@ -8,6 +8,5 @@ public class AnimalType
 
     public string Type { get; set; } = null!;
 
-    [JsonIgnore]
-    public virtual ICollection<Animal> Animals { get; } = new List<Animal>();
+    [JsonIgnore] public virtual ICollection<Animal> Animals { get; } = new List<Animal>();
 }
