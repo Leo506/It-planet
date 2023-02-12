@@ -1,4 +1,6 @@
-﻿namespace ItPlanet.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ItPlanet.Models;
 
 public class LocationPoint
 {
@@ -8,5 +10,6 @@ public class LocationPoint
 
     public double Longitude { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
 }
