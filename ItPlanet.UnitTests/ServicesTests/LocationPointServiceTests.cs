@@ -1,8 +1,8 @@
 ﻿using AutoFixture.Xunit2;
-using ItPlanet.Database.Repositories.LocationPoint;
 using ItPlanet.Exceptions;
+using ItPlanet.Infrastructure.Repositories.LocationPoint;
+using ItPlanet.Infrastructure.Services.LocationPoint;
 using ItPlanet.Models;
-using ItPlanet.Services.LocationPoint;
 using Moq;
 
 namespace ItPlanet.UnitTests.ServicesTests;

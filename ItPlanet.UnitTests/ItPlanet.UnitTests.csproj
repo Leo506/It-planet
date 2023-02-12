@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ItPlanet\ItPlanet.csproj"/>
+        <ProjectReference Include="..\ItPlanet.Web\ItPlanet.Web.csproj"/>
     </ItemGroup>
 
 </Project>

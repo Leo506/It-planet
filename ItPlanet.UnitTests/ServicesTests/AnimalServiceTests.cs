@@ -1,8 +1,8 @@
 ﻿using AutoFixture.Xunit2;
-using ItPlanet.Database.Repositories.Animal;
 using ItPlanet.Exceptions;
+using ItPlanet.Infrastructure.Repositories.Animal;
+using ItPlanet.Infrastructure.Services.Animal;
 using ItPlanet.Models;
-using ItPlanet.Services.Animal;
 using Moq;
 
 namespace ItPlanet.UnitTests.ServicesTests;
