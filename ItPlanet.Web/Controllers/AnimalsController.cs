@@ -4,12 +4,14 @@ using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Animal;
 using ItPlanet.Infrastructure.Services.AnimalType;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class AnimalsController : ControllerBase
 {
     private readonly IAnimalService _animalService;

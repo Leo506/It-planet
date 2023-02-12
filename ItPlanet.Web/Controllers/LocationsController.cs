@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.LocationPoint;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class LocationsController : ControllerBase
 {
     private readonly ILocationPointService _locationPointService;

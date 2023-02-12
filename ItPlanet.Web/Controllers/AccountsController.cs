@@ -1,12 +1,14 @@
 ﻿using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;

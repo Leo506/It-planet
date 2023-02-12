@@ -6,7 +6,9 @@ using ItPlanet.Infrastructure.Repositories.LocationPoint;
 using ItPlanet.Infrastructure.Services.Account;
 using ItPlanet.Infrastructure.Services.Animal;
 using ItPlanet.Infrastructure.Services.AnimalType;
+using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Infrastructure.Services.LocationPoint;
+using ItPlanet.Web.Auth;
 using ItPlanet.Web.Converters;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +23,7 @@ builder.Services
     .AddTransient<IAnimalService, AnimalService>()
     .AddTransient<IAnimalTypeService, AnimalTypeService>()
     .AddTransient<ILocationPointService, LocationPointService>()
+    .AddTransient<IHeaderAuthenticationService, HeaderAuthenticationService>()
     .AddTransient<IAccountRepository, AccountRepository>()
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
@@ -28,6 +31,8 @@ builder.Services
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication("Header")
+    .AddScheme<HeaderAuthenticationOptions, HeaderAuthenticationHandler>("Header", null);
 
 var app = builder.Build();
 
