@@ -1,6 +1,8 @@
 using ItPlanet.Database.DbContexts;
 using ItPlanet.Database.Repositories.Account;
+using ItPlanet.Database.Repositories.Animal;
 using ItPlanet.Services.Account;
+using ItPlanet.Services.Animal;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,9 @@ var connectionString = builder.Configuration.GetConnectionString("postgres");
 builder.Services
     .AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString))
     .AddTransient<IAccountService, AccountService>()
-    .AddScoped<IAccountRepository, AccountRepository>();
+    .AddTransient<IAnimalService, AnimalService>()
+    .AddTransient<IAccountRepository, AccountRepository>()
+    .AddTransient<IAnimalRepository, AnimalRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
