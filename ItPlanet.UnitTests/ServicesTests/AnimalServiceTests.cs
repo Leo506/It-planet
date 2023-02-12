@@ -11,11 +11,11 @@ public class AnimalServiceTests
 {
     [Theory]
     [AutoMoqData]
-    public void GetAnimalByIdAsync_NoAnimal_ThrowAnimalNotFoundException(
+    public void GetAnimalAsync_NoAnimal_ThrowAnimalNotFoundException(
         [Frozen] Mock<IAnimalRepository> repositoryMock, AnimalService sut)
     {
-        repositoryMock.Setup(x => x.GetById(It.IsAny<long>())).ReturnsAsync((AnimalModel)default!);
+        repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((AnimalModel)default!);
 
-        Assert.ThrowsAsync<AnimalNotFoundException>(() => sut.GetAnimalByIdAsync(default!));
+        Assert.ThrowsAsync<AnimalNotFoundException>(() => sut.GetAnimalAsync(default!));
     }
 }

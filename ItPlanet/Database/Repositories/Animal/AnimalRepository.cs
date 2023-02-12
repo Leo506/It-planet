@@ -13,5 +13,5 @@ public class AnimalRepository : IAnimalRepository
         _dbContext = dbContext;
     }
 
-    public Task<AnimalModel?> GetById(long id) => _dbContext.Animals.FirstOrDefaultAsync(x => x.Id == id);
+    public Task<AnimalModel?> GetByIdAsync(long id) => _dbContext.Animals.FirstOrDefaultAsync(x => x.Id == id);
 }
