@@ -24,7 +24,7 @@ public class AnimalRepository : IAnimalRepository
     public async Task<IEnumerable<Models.Animal>> SearchAsync(SearchAnimalDto search)
     {
         search.StartDateTime ??= DateTime.MinValue;
-        search.EndDateTime ??=DateTime.MaxValue;
+        search.EndDateTime ??= DateTime.MaxValue;
 
         var animals = _dbContext.Animals.Where(x =>
             x.ChippingDateTime >= search.StartDateTime &&

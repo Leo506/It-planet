@@ -19,6 +19,8 @@ public class AnimalService : IAnimalService
         return animal ?? throw new AnimalNotFoundException(id);
     }
 
-    public Task<IEnumerable<Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto) =>
-        _animalRepository.SearchAsync(searchAnimalDto);
+    public Task<IEnumerable<Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto)
+    {
+        return _animalRepository.SearchAsync(searchAnimalDto);
+    }
 }

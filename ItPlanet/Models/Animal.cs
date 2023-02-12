@@ -24,9 +24,7 @@ public partial class Animal
 
     public DateTime? DeathDateTime { get; set; }
 
-    [JsonIgnore]
-    public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
+    [JsonIgnore] public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
 
-    [JsonIgnore]
-    public virtual ICollection<AnimalType> Types { get; } = new List<AnimalType>();
+    [JsonIgnore] public virtual ICollection<AnimalType> Types { get; } = new List<AnimalType>();
 }

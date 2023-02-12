@@ -5,7 +5,7 @@ namespace ItPlanet.Services.AnimalType;
 
 public class AnimalTypeService : IAnimalTypeService
 {
-    private IAnimalTypeRepository _repository;
+    private readonly IAnimalTypeRepository _repository;
 
     public AnimalTypeService(IAnimalTypeRepository repository)
     {

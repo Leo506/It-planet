@@ -1,7 +1,6 @@
 ﻿using ItPlanet.Database.Repositories.Account;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ItPlanet.Services.Account;
 

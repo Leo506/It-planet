@@ -2,6 +2,7 @@
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Services.Animal;
+using ItPlanet.Services.AnimalType;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Controllers;
@@ -11,12 +12,15 @@ namespace ItPlanet.Controllers;
 public class AnimalsController : ControllerBase
 {
     private readonly IAnimalService _animalService;
+    private readonly IAnimalTypeService _animalTypeService;
     private readonly ILogger<AnimalsController> _logger;
 
-    public AnimalsController(IAnimalService animalService, ILogger<AnimalsController> logger)
+    public AnimalsController(IAnimalService animalService, ILogger<AnimalsController> logger,
+        IAnimalTypeService animalTypeService)
     {
         _animalService = animalService;
         _logger = logger;
+        _animalTypeService = animalTypeService;
     }
 
     [HttpGet("{id:long}")]
@@ -47,5 +51,25 @@ public class AnimalsController : ControllerBase
         var animals = await _animalService.SearchAnimalAsync(searchAnimalDto);
 
         return Ok(animals);
+    }
+
+    [HttpGet("types/{id:long}")]
+    public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] long? id)
+    {
+        _logger.LogInformation($"Get {nameof(SearchAnimal)} request");
+
+        if (id is null)
+            return BadRequest();
+
+        try
+        {
+            var type = await _animalTypeService.GetAnimalTypeAsync(id.Value);
+            return Ok(type);
+        }
+        catch (AnimalTypeNotFoundException e)
+        {
+            _logger.LogWarning("Animal type with id {Id} not found", id);
+            return NotFound();
+        }
     }
 }
