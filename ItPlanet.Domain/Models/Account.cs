@@ -13,4 +13,6 @@ public class Account
     public string Email { get; set; } = null!;
 
     [JsonIgnore] public string Password { get; set; } = null!;
+
+    [JsonIgnore] public virtual ICollection<Animal> Animals { get; } = new List<Animal>();
 }

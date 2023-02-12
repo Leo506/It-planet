@@ -1,4 +1,7 @@
-﻿using ItPlanet.Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+using ItPlanet.Domain.Models;
+using ItPlanet.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItPlanet.Infrastructure.DatabaseContext;
@@ -25,7 +28,7 @@ public partial class ApiDbContext : DbContext
     public virtual DbSet<LocationPoint> LocationPoints { get; set; }
 
     public virtual DbSet<VisitedPoint> VisitedPoints { get; set; }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -46,9 +49,14 @@ public partial class ApiDbContext : DbContext
             entity.Property(e => e.Gender).HasMaxLength(20);
             entity.Property(e => e.LifeStatus).HasMaxLength(50);
 
+            entity.HasOne(d => d.Chipper).WithMany(p => p.Animals)
+                .HasForeignKey(d => d.ChipperId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("Animal_Accounts_null_fk");
+
             entity.HasMany(d => d.Types).WithMany(p => p.Animals)
                 .UsingEntity<Dictionary<string, object>>(
-                    "AnimalToTypes",
+                    "AnimalToType",
                     r => r.HasOne<AnimalType>().WithMany()
                         .HasForeignKey("TypeId")
                         .HasConstraintName("AnimalToTypes_AnimalTypes_null_fk"),

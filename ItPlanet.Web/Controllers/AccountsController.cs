@@ -1,7 +1,10 @@
-﻿using ItPlanet.Dto;
+﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Domain.Exceptions;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Account;
 using ItPlanet.Infrastructure.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
@@ -55,5 +58,27 @@ public class AccountsController : PublicControllerBase
         var accounts = await _accountService.SearchAsync(searchAccountDto);
 
         return Ok(accounts);
+    }
+
+    [HttpDelete("{accountId:int}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)] int? accountId)
+    {
+        if (accountId is null)
+            return BadRequest();
+
+        try
+        {
+            await _accountService.RemoveAccountAsync(accountId.Value).ConfigureAwait(false);
+            return Ok();
+        }
+        catch (AccountDeletionException e)
+        {
+            return BadRequest();
+        }
+        catch (AccountNotFoundException e)
+        {
+            return Forbid();
+        }
     }
 }

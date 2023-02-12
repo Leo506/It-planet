@@ -9,4 +9,5 @@ public interface IAccountRepository
     Task<Domain.Models.Account> CreateAsync(Domain.Models.Account account);
     Task<bool> HasAccountWithEmail(string email);
     Task<Domain.Models.Account?> GetByEmailAndPassword(string login, string password);
+    Task RemoveAsync(Domain.Models.Account account);
 }

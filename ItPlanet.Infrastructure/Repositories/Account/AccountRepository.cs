@@ -15,12 +15,16 @@ public class AccountRepository : IAccountRepository
 
     public Task<Domain.Models.Account?> GetByIdAsync(int id)
     {
-        return _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+        return _dbContext.Accounts
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search)
     {
-        return _dbContext.Accounts.Where(x =>
+        return _dbContext.Accounts
+            .Include(x => x.Animals)
+            .Where(x =>
                 x.FirstName.ToLower().Contains(search.FirstName.ToLower()) &&
                 x.LastName.ToLower().Contains(search.LastName.ToLower()) &&
                 x.Email.ToLower().Contains(search.Email.ToLower()))
@@ -42,5 +46,11 @@ public class AccountRepository : IAccountRepository
     public Task<Domain.Models.Account?> GetByEmailAndPassword(string login, string password)
     {
         return _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == login && x.Password == password);
+    }
+
+    public async Task RemoveAsync(Domain.Models.Account account)
+    {
+        _dbContext.Accounts.Remove(account);
+        await _dbContext.SaveChangesAsync();
     }
 }

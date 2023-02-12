@@ -2,7 +2,7 @@
 
 namespace ItPlanet.Domain.Models;
 
-public class AnimalType
+public partial class AnimalType
 {
     public long Id { get; set; }
 
