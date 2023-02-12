@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Services.Animal;
 using Microsoft.AspNetCore.Mvc;
@@ -36,5 +37,15 @@ public class AnimalsController : ControllerBase
             _logger.LogWarning("Animal with {Id} not found", id);
             return NotFound();
         }
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchAnimal([FromQuery] SearchAnimalDto searchAnimalDto)
+    {
+        _logger.LogInformation($"Get {nameof(SearchAnimal)} request");
+
+        var animals = await _animalService.SearchAnimalAsync(searchAnimalDto);
+
+        return Ok(animals);
     }
 }

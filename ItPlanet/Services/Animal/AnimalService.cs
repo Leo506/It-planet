@@ -1,4 +1,5 @@
 ﻿using ItPlanet.Database.Repositories.Animal;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 
 namespace ItPlanet.Services.Animal;
@@ -17,4 +18,7 @@ public class AnimalService : IAnimalService
         var animal = await _animalRepository.GetByIdAsync(id);
         return animal ?? throw new AnimalNotFoundException(id);
     }
+
+    public Task<IEnumerable<Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto) =>
+        _animalRepository.SearchAsync(searchAnimalDto);
 }
