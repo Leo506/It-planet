@@ -12,7 +12,7 @@ public class AnimalTypeService : IAnimalTypeService
         _repository = repository;
     }
 
-    public async Task<Models.AnimalType> GetAnimalTypeAsync(long id)
+    public async Task<Domain.Models.AnimalType> GetAnimalTypeAsync(long id)
     {
         var animal = await _repository.GetTypeAsync(id);
         return animal ?? throw new AnimalTypeNotFoundException(id);

@@ -13,12 +13,12 @@ public class AccountRepository : IAccountRepository
         _dbContext = dbContext;
     }
 
-    public Task<Models.Account?> GetByIdAsync(int id)
+    public Task<Domain.Models.Account?> GetByIdAsync(int id)
     {
         return _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Models.Account>> FindAsync(SearchAccountDto search)
+    public async Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search)
     {
         return _dbContext.Accounts.Where(x =>
                 x.FirstName.ToLower().Contains(search.FirstName.ToLower()) &&
@@ -27,7 +27,7 @@ public class AccountRepository : IAccountRepository
             .Skip(search.From).Take(search.Size);
     }
 
-    public async Task<Models.Account> CreateAsync(Models.Account account)
+    public async Task<Domain.Models.Account> CreateAsync(Domain.Models.Account account)
     {
         var result = await _dbContext.Accounts.AddAsync(account);
         await _dbContext.SaveChangesAsync();

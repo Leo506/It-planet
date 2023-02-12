@@ -13,7 +13,7 @@ public class AnimalRepository : IAnimalRepository
         _dbContext = dbContext;
     }
 
-    public Task<Models.Animal?> GetByIdAsync(long id)
+    public Task<Domain.Models.Animal?> GetByIdAsync(long id)
     {
         return _dbContext.Animals
             .Include(x => x.VisitedPoints)
@@ -21,7 +21,7 @@ public class AnimalRepository : IAnimalRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Models.Animal>> SearchAsync(SearchAnimalDto search)
+    public async Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search)
     {
         search.StartDateTime ??= DateTime.MinValue;
         search.EndDateTime ??= DateTime.MaxValue;

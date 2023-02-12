@@ -1,4 +1,6 @@
-﻿using ItPlanet.Dto;
+﻿using ItPlanet.Domain.Dto;
+using ItPlanet.Domain.Models;
+using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Animal;
 
@@ -13,14 +15,28 @@ public class AnimalService : IAnimalService
         _animalRepository = animalRepository;
     }
 
-    public async Task<Models.Animal> GetAnimalAsync(long id)
+    public async Task<Domain.Models.Animal> GetAnimalAsync(long id)
     {
         var animal = await _animalRepository.GetByIdAsync(id);
         return animal ?? throw new AnimalNotFoundException(id);
     }
 
-    public Task<IEnumerable<Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto)
+    public Task<IEnumerable<Domain.Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto)
     {
         return _animalRepository.SearchAsync(searchAnimalDto);
+    }
+
+    public async Task<IEnumerable<VisitedPoint>> GetAnimalVisitedPoints(long animalId,
+        VisitedLocationDto visitedLocationDto)
+    {
+        var animal = await GetAnimalAsync(animalId);
+        visitedLocationDto.StarDateTime ??= DateTime.MinValue;
+        visitedLocationDto.EndDateTime ??= DateTime.MaxValue;
+
+        var visitedPoints = animal.VisitedPoints;
+        var result = visitedPoints.Where(x => x.DateTimeOfVisitLocationPoint >= visitedLocationDto.StarDateTime &&
+                                              x.DateTimeOfVisitLocationPoint <= visitedLocationDto.EndDateTime);
+
+        return result.Skip(visitedLocationDto.From).Take(visitedLocationDto.Size);
     }
 }

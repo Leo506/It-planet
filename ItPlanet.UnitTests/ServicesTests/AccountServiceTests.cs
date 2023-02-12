@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Services.Account;
-using ItPlanet.Models;
 using Moq;
 
 namespace ItPlanet.UnitTests.ServicesTests;

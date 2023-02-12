@@ -2,5 +2,5 @@
 
 public interface ILocationPointRepository
 {
-    Task<Models.LocationPoint?> GetByIdAsync(long id);
+    Task<Domain.Models.LocationPoint?> GetByIdAsync(long id);
 }

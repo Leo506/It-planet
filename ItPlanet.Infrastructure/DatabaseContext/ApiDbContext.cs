@@ -1,4 +1,4 @@
-﻿using ItPlanet.Models;
+﻿using ItPlanet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItPlanet.Infrastructure.DatabaseContext;

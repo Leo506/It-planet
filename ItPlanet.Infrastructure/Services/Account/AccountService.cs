@@ -13,24 +13,24 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
     }
 
-    public async Task<Models.Account> GetAccountAsync(int id)
+    public async Task<Domain.Models.Account> GetAccountAsync(int id)
     {
         var account = await _accountRepository.GetByIdAsync(id);
         return account ?? throw new AccountNotFoundException(id);
     }
 
-    public Task<IEnumerable<Models.Account>> SearchAsync(SearchAccountDto searchAccountDto)
+    public Task<IEnumerable<Domain.Models.Account>> SearchAsync(SearchAccountDto searchAccountDto)
     {
         return _accountRepository.FindAsync(searchAccountDto);
     }
 
-    public async Task<Models.Account> RegisterAccountAsync(AccountDto accountDto)
+    public async Task<Domain.Models.Account> RegisterAccountAsync(AccountDto accountDto)
     {
         if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
             throw new DuplicateEmailException();
 
         // TODO use AutoMapper
-        var account = new Models.Account
+        var account = new Domain.Models.Account
         {
             FirstName = accountDto.FirstName,
             LastName = accountDto.LastName,

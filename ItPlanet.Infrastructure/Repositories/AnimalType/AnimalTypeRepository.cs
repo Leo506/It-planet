@@ -12,7 +12,7 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         _dbContext = dbContext;
     }
 
-    public Task<Models.AnimalType?> GetTypeAsync(long id)
+    public Task<Domain.Models.AnimalType?> GetTypeAsync(long id)
     {
         return _dbContext.AnimalTypes.FirstOrDefaultAsync(x => x.Id == id);
     }

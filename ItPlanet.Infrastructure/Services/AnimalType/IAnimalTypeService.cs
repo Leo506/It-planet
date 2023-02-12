@@ -2,5 +2,5 @@
 
 public interface IAnimalTypeService
 {
-    Task<Models.AnimalType> GetAnimalTypeAsync(long id);
+    Task<Domain.Models.AnimalType> GetAnimalTypeAsync(long id);
 }

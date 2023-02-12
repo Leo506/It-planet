@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Animal;
@@ -26,7 +27,7 @@ public class AnimalsController : ControllerBase
     [HttpGet("{id:long}")]
     public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] long? id)
     {
-        _logger.LogInformation($"Get {nameof(GetAnimal)} request");
+        LogRequest(nameof(GetAnimal));
 
         if (id is null)
             return BadRequest();
@@ -46,7 +47,7 @@ public class AnimalsController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> SearchAnimal([FromQuery] SearchAnimalDto searchAnimalDto)
     {
-        _logger.LogInformation($"Get {nameof(SearchAnimal)} request");
+        LogRequest(nameof(SearchAnimal));
 
         var animals = await _animalService.SearchAnimalAsync(searchAnimalDto);
 
@@ -56,7 +57,7 @@ public class AnimalsController : ControllerBase
     [HttpGet("types/{id:long}")]
     public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] long? id)
     {
-        _logger.LogInformation($"Get {nameof(SearchAnimal)} request");
+        LogRequest(nameof(GetAnimalType));
 
         if (id is null)
             return BadRequest();
@@ -71,5 +72,31 @@ public class AnimalsController : ControllerBase
             _logger.LogWarning("Animal type with id {Id} not found", id);
             return NotFound();
         }
+    }
+
+    [HttpGet("{animalId:long?}/locations")]
+    public async Task<IActionResult> GetVisitedLocations(long? animalId,
+        [FromQuery] VisitedLocationDto visitedLocationDto)
+    {
+        LogRequest(nameof(GetVisitedLocations));
+
+        if (animalId is null)
+            return BadRequest();
+
+        try
+        {
+            var points = await _animalService.GetAnimalVisitedPoints(animalId.Value, visitedLocationDto);
+            return Ok(points);
+        }
+        catch (AnimalNotFoundException e)
+        {
+            _logger.LogWarning(e, "Failed to find animal");
+            return NotFound();
+        }
+    }
+
+    private void LogRequest(string requestName)
+    {
+        _logger.LogInformation("Get {RequestName} request", requestName);
     }
 }

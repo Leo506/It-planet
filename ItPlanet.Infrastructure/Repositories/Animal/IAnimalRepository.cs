@@ -4,7 +4,7 @@ namespace ItPlanet.Infrastructure.Repositories.Animal;
 
 public interface IAnimalRepository
 {
-    Task<Models.Animal?> GetByIdAsync(long id);
+    Task<Domain.Models.Animal?> GetByIdAsync(long id);
 
-    Task<IEnumerable<Models.Animal>> SearchAsync(SearchAnimalDto search);
+    Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search);
 }

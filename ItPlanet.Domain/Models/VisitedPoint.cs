@@ -1,4 +1,4 @@
-﻿namespace ItPlanet.Models;
+﻿namespace ItPlanet.Domain.Models;
 
 public class VisitedPoint
 {

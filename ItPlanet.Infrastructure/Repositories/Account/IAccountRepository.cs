@@ -4,8 +4,8 @@ namespace ItPlanet.Infrastructure.Repositories.Account;
 
 public interface IAccountRepository
 {
-    Task<Models.Account?> GetByIdAsync(int id);
-    Task<IEnumerable<Models.Account>> FindAsync(SearchAccountDto search);
-    Task<Models.Account> CreateAsync(Models.Account account);
+    Task<Domain.Models.Account?> GetByIdAsync(int id);
+    Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search);
+    Task<Domain.Models.Account> CreateAsync(Domain.Models.Account account);
     Task<bool> HasAccountWithEmail(string email);
 }
