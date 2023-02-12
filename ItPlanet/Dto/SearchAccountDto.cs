@@ -1,4 +1,6 @@
-﻿namespace ItPlanet.Dto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ItPlanet.Dto;
 
 public class SearchAccountDto
 {
@@ -8,7 +10,9 @@ public class SearchAccountDto
 
     public string Email { get; set; } = string.Empty;
 
+    [Range(0, int.MaxValue)]
     public int From { get; set; } = default;
 
+    [Range(1, int.MaxValue)]
     public int Size { get; set; } = 10;
 }
