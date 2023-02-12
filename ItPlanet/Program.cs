@@ -3,9 +3,11 @@ using ItPlanet.Database.DbContexts;
 using ItPlanet.Database.Repositories.Account;
 using ItPlanet.Database.Repositories.Animal;
 using ItPlanet.Database.Repositories.AnimalType;
+using ItPlanet.Database.Repositories.LocationPoint;
 using ItPlanet.Services.Account;
 using ItPlanet.Services.Animal;
 using ItPlanet.Services.AnimalType;
+using ItPlanet.Services.LocationPoint;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,9 +22,11 @@ builder.Services
     .AddTransient<IAccountService, AccountService>()
     .AddTransient<IAnimalService, AnimalService>()
     .AddTransient<IAnimalTypeService, AnimalTypeService>()
+    .AddTransient<ILocationPointService, LocationPointService>()
     .AddTransient<IAccountRepository, AccountRepository>()
     .AddTransient<IAnimalRepository, AnimalRepository>()
-    .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
+    .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
+    .AddTransient<ILocationPointRepository, LocationPointRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
