@@ -16,6 +16,6 @@ public class AnimalServiceTests
     {
         repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((Animal)default!);
 
-        Assert.ThrowsAsync<AnimalNotFoundException>(() => sut.GetAnimalAsync(default!));
+        Assert.ThrowsAsync<AnimalNotFoundException>(async () => await sut.GetAnimalAsync(default!));
     }
 }
