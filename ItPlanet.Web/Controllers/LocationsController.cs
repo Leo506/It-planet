@@ -1,20 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Exceptions;
+using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Infrastructure.Services.LocationPoint;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
-public class LocationsController : ControllerBase
+public class LocationsController : PublicControllerBase
 {
     private readonly ILocationPointService _locationPointService;
     private readonly ILogger<LocationsController> _logger;
 
-    public LocationsController(ILocationPointService locationPointService, ILogger<LocationsController> logger)
+    public LocationsController(ILocationPointService locationPointService, ILogger<LocationsController> logger,
+        IHeaderAuthenticationService headerAuthenticationService) : base(headerAuthenticationService)
     {
         _locationPointService = locationPointService;
         _logger = logger;
@@ -24,6 +24,9 @@ public class LocationsController : ControllerBase
     public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)] long? id)
     {
         _logger.LogInformation($"Get {nameof(GetLocationPoint)} request");
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
 
         if (id is null)
             return BadRequest();

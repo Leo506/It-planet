@@ -39,5 +39,8 @@ public class AccountRepository : IAccountRepository
         return _dbContext.Accounts.AnyAsync(x => x.Email == email);
     }
 
-    public Task<Domain.Models.Account?> GetByEmailAndPassword(string login, string password) => _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == login && x.Password == password);
+    public Task<Domain.Models.Account?> GetByEmailAndPassword(string login, string password)
+    {
+        return _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == login && x.Password == password);
+    }
 }

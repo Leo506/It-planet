@@ -1,20 +1,20 @@
 ﻿using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Account;
-using Microsoft.AspNetCore.Authorization;
+using ItPlanet.Infrastructure.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
-public class AccountsController : ControllerBase
+public class AccountsController : PublicControllerBase
 {
     private readonly IAccountService _accountService;
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountService accountService, ILogger<AccountsController> logger)
+    public AccountsController(IAccountService accountService, ILogger<AccountsController> logger,
+        IHeaderAuthenticationService headerAuthenticationService) : base(headerAuthenticationService)
     {
         _accountService = accountService;
         _logger = logger;
@@ -24,6 +24,10 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> GetAccount(int? accountId)
     {
         _logger.LogInformation($"Get {nameof(GetAccount)} request");
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
+
         if (accountId is null or <= 0)
             return BadRequest();
 
@@ -44,6 +48,9 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> SearchAccounts([FromQuery] SearchAccountDto searchAccountDto)
     {
         _logger.LogInformation($"Get {nameof(SearchAccounts)} request");
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
 
         var accounts = await _accountService.SearchAsync(searchAccountDto);
 

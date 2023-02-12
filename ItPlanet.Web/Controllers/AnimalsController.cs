@@ -4,22 +4,22 @@ using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Animal;
 using ItPlanet.Infrastructure.Services.AnimalType;
-using Microsoft.AspNetCore.Authorization;
+using ItPlanet.Infrastructure.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
-public class AnimalsController : ControllerBase
+public class AnimalsController : PublicControllerBase
 {
     private readonly IAnimalService _animalService;
     private readonly IAnimalTypeService _animalTypeService;
     private readonly ILogger<AnimalsController> _logger;
 
     public AnimalsController(IAnimalService animalService, ILogger<AnimalsController> logger,
-        IAnimalTypeService animalTypeService)
+        IAnimalTypeService animalTypeService, IHeaderAuthenticationService headerAuthenticationService) : base(
+        headerAuthenticationService)
     {
         _animalService = animalService;
         _logger = logger;
@@ -30,6 +30,9 @@ public class AnimalsController : ControllerBase
     public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] long? id)
     {
         LogRequest(nameof(GetAnimal));
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
 
         if (id is null)
             return BadRequest();
@@ -51,6 +54,9 @@ public class AnimalsController : ControllerBase
     {
         LogRequest(nameof(SearchAnimal));
 
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
+
         var animals = await _animalService.SearchAnimalAsync(searchAnimalDto);
 
         return Ok(animals);
@@ -60,6 +66,9 @@ public class AnimalsController : ControllerBase
     public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] long? id)
     {
         LogRequest(nameof(GetAnimalType));
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
 
         if (id is null)
             return BadRequest();
@@ -81,6 +90,9 @@ public class AnimalsController : ControllerBase
         [FromQuery] VisitedLocationDto visitedLocationDto)
     {
         LogRequest(nameof(GetVisitedLocations));
+
+        if (await AllowedToHandleRequest() is false)
+            return Unauthorized();
 
         if (animalId is null)
             return BadRequest();
