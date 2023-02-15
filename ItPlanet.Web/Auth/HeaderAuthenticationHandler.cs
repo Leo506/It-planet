@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Encodings.Web;
 using ItPlanet.Infrastructure.Services.Auth;
+using ItPlanet.Web.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
@@ -20,16 +21,7 @@ public class HeaderAuthenticationHandler : AuthenticationHandler<HeaderAuthentic
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (Request.Headers.Authorization.Any() is false)
-            return AuthenticateResult.Fail("Unauthorized");
-
-        var headerValue = Request.Headers.Authorization.ToString()["Basic".Length..];
-        var decodedBytes = Convert.FromBase64String(headerValue);
-        var decodedString = Encoding.UTF8.GetString(decodedBytes);
-
-        var value = decodedString.Split(":");
-        var login = value[0];
-        var password = value[1];
+        var (login, password) = Request.ExtractUserData();
 
         if (await _authenticationService.TryLogin(login, password))
         {
