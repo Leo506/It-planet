@@ -13,14 +13,6 @@ public class AnimalRepository : IAnimalRepository
         _dbContext = dbContext;
     }
 
-    public Task<Domain.Models.Animal?> GetByIdAsync(long id)
-    {
-        return _dbContext.Animals
-            .Include(x => x.VisitedPoints)
-            .Include(x => x.Types)
-            .FirstOrDefaultAsync(x => x.Id == id);
-    }
-
     public async Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search)
     {
         search.StartDateTime ??= DateTime.MinValue;
@@ -42,8 +34,53 @@ public class AnimalRepository : IAnimalRepository
         if (search.Gender is not null)
             animals = animals.Where(x => x.Gender == search.Gender);
 
-        animals = animals.Include(x => x.Types).Include(x => x.VisitedPoints);
+        animals = animals
+            .Include(x => x.Types)
+            .Include(x => x.VisitedPoints)
+            .Include(x => x.Chipper);
 
-        return await animals.Skip(search.From).Take(search.Size).ToListAsync();
+        return await animals.Skip(search.From).Take(search.Size).ToListAsync().ConfigureAwait(false);
+    }
+
+    public Task<Domain.Models.Animal?> GetAsync(long id) =>
+        _dbContext.Animals
+            .Include(x => x.VisitedPoints)
+            .Include(x => x.Types)
+            .Include(x => x.Chipper)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+    public Task<List<Domain.Models.Animal>> GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Domain.Models.Animal> CreateAsync(Domain.Models.Animal model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateRangeAsync(IEnumerable<Domain.Models.Animal> models)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Domain.Models.Animal> UpdateAsync(Domain.Models.Animal model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateRangeAsync(IEnumerable<Domain.Models.Animal> models)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Domain.Models.Animal model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteRangeAsync(IEnumerable<Domain.Models.Animal> models)
+    {
+        throw new NotImplementedException();
     }
 }

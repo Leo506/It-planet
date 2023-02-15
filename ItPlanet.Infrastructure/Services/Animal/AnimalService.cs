@@ -17,7 +17,7 @@ public class AnimalService : IAnimalService
 
     public async Task<Domain.Models.Animal> GetAnimalAsync(long id)
     {
-        var animal = await _animalRepository.GetByIdAsync(id);
+        var animal = await _animalRepository.GetAsync(id);
         return animal ?? throw new AnimalNotFoundException(id);
     }
 
