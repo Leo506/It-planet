@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text;
 using System.Text.Encodings.Web;
 using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Web.Extensions;

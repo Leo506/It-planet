@@ -38,10 +38,12 @@ public class AccountRepository : IAccountRepository
             .FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
     }
 
-    public Task<Domain.Models.Account?> GetByEmail(string email) =>
-        _dbContext.Accounts
+    public Task<Domain.Models.Account?> GetByEmail(string email)
+    {
+        return _dbContext.Accounts
             .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Email == email);
+    }
 
     public Task<Domain.Models.Account?> GetAsync(int id)
     {

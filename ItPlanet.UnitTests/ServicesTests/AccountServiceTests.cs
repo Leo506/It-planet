@@ -51,7 +51,8 @@ public class AccountServiceTests
 
     [Theory]
     [AutoMoqData]
-    public async Task UpdateAccountAsync_NoAccountWithProvidedId_ThrowsAccountNotFoundException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    public async Task UpdateAccountAsync_NoAccountWithProvidedId_ThrowsAccountNotFoundException(
+        [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
         repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
 
@@ -63,9 +64,9 @@ public class AccountServiceTests
 
     [Theory]
     [AutoMoqData]
-    public async Task UpdateAccountAsync_NewEmailIsAlreadyUsed_ThrowsDuplicateEmailException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    public async Task UpdateAccountAsync_NewEmailIsAlreadyUsed_ThrowsDuplicateEmailException(
+        [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
-
         var fixture = new Fixture();
 
         repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync(fixture.Create<Account>());
@@ -78,7 +79,8 @@ public class AccountServiceTests
 
     [Theory]
     [AutoMoqData]
-    public async Task EnsureEmailBelongsToAccount_EmailDoesNotBelongToAccount_ThrowsChangingNotOwnAccountException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    public async Task EnsureEmailBelongsToAccount_EmailDoesNotBelongToAccount_ThrowsChangingNotOwnAccountException(
+        [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
         const string email = "test@mail.com";
         const int firstAccountId = 1;

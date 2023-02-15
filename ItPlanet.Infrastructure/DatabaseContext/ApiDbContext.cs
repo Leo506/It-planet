@@ -35,7 +35,7 @@ public partial class ApiDbContext : DbContext
                 .HasDefaultValueSql("'password'::character varying");
             entity.HasIndex(e => e.Email).IsUnique();
         });
-        
+
 
         modelBuilder.Entity<Animal>(entity =>
         {

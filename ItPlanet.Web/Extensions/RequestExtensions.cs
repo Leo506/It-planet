@@ -8,7 +8,7 @@ public static class RequestExtensions
     {
         if (request.Headers.Authorization.Any() is false)
             return ("", "");
-        
+
         var headerValue = request.Headers.Authorization.ToString()["Basic".Length..];
         var decodedBytes = Convert.FromBase64String(headerValue);
         var decodedString = Encoding.UTF8.GetString(decodedBytes);

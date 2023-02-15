@@ -60,7 +60,7 @@ public class AccountService : IAccountService
             throw new DuplicateEmailException();
 
         // TODO Add AutoMapper
-        var account = new Domain.Models.Account()
+        var account = new Domain.Models.Account
         {
             Id = accountId,
             FirstName = accountDto.FirstName,
