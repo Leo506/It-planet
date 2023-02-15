@@ -14,7 +14,7 @@ public class LocationPointService : ILocationPointService
 
     public async Task<Domain.Models.LocationPoint> GetLocationPointAsync(long id)
     {
-        var point = await _repository.GetByIdAsync(id);
+        var point = await _repository.GetAsync(id).ConfigureAwait(false);
         return point ?? throw new LocationPointNotFoundException(id);
     }
 }

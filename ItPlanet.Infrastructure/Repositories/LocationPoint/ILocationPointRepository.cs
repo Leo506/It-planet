@@ -1,6 +1,5 @@
 ﻿namespace ItPlanet.Infrastructure.Repositories.LocationPoint;
 
-public interface ILocationPointRepository
+public interface ILocationPointRepository : IRepository<Domain.Models.LocationPoint, long>
 {
-    Task<Domain.Models.LocationPoint?> GetByIdAsync(long id);
 }
