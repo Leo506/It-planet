@@ -49,4 +49,40 @@ public class AccountService : IAccountService
             throw new AccountDeletionException();
         await _accountRepository.DeleteAsync(account).ConfigureAwait(false);
     }
+
+    public async Task<Domain.Models.Account> UpdateAccountAsync(int accountId, AccountDto accountDto)
+    {
+        await EnsureAccountExist(accountId).ConfigureAwait(false);
+
+        var accountWithProvidedEmail = await _accountRepository.GetByEmail(accountDto.Email).ConfigureAwait(false);
+
+        if (accountWithProvidedEmail is not null && accountId != accountWithProvidedEmail.Id)
+            throw new DuplicateEmailException();
+
+        // TODO Add AutoMapper
+        var account = new Domain.Models.Account()
+        {
+            Id = accountId,
+            FirstName = accountDto.FirstName,
+            LastName = accountDto.LastName,
+            Email = accountDto.Email,
+            Password = accountDto.Password
+        };
+
+        return await _accountRepository.UpdateAsync(account).ConfigureAwait(false);
+    }
+
+    public async Task EnsureEmailBelongsToAccount(int accountId, string email)
+    {
+        var accountByEmail = await _accountRepository.GetByEmail(email).ConfigureAwait(false);
+        if (accountByEmail is null)
+            return;
+        if (accountId != accountByEmail.Id)
+            throw new ChangingNotOwnAccountException();
+    }
+
+    private async Task EnsureAccountExist(int accountId)
+    {
+        await GetAccountAsync(accountId).ConfigureAwait(false);
+    }
 }

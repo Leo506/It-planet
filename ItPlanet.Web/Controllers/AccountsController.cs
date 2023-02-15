@@ -4,6 +4,7 @@ using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Account;
 using ItPlanet.Infrastructure.Services.Auth;
+using ItPlanet.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,6 +80,34 @@ public class AccountsController : PublicControllerBase
         catch (AccountNotFoundException e)
         {
             return Forbid();
+        }
+    }
+
+    [HttpPut("{accountId:int}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateAccount(int? accountId, [FromBody] AccountDto accountDto)
+    {
+        if (accountId is null)
+            return BadRequest();
+
+        try
+        {
+            var (email, _) = Request.ExtractUserData();
+            await _accountService.EnsureEmailBelongsToAccount(accountId.Value, email);
+            var updatedAccount = await _accountService.UpdateAccountAsync(accountId.Value, accountDto);
+            return Ok(updatedAccount);
+        }
+        catch (AccountNotFoundException e)
+        {
+            return Forbid();
+        }
+        catch (ChangingNotOwnAccountException e)
+        {
+            return Forbid();
+        }
+        catch (DuplicateEmailException e)
+        {
+            return Conflict();
         }
     }
 }

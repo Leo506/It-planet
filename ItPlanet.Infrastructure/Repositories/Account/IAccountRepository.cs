@@ -7,4 +7,5 @@ public interface IAccountRepository : IRepository<Domain.Models.Account, int>
     Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search);
     Task<bool> HasAccountWithEmail(string email);
     Task<Domain.Models.Account?> GetByEmailAndPassword(string email, string password);
+    Task<Domain.Models.Account?> GetByEmail(string email);
 }

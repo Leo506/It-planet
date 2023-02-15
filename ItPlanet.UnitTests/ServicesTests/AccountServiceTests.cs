@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
@@ -46,5 +47,47 @@ public class AccountServiceTests
 
         var action = async () => await sut.RegisterAccountAsync(dto);
         await action.Should().ThrowExactlyAsync<DuplicateEmailException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task UpdateAccountAsync_NoAccountWithProvidedId_ThrowsAccountNotFoundException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    {
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
+
+        var dto = new Fixture().Create<AccountDto>();
+
+        var action = async () => await sut.UpdateAccountAsync(default!, dto);
+        await action.Should().ThrowExactlyAsync<AccountNotFoundException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task UpdateAccountAsync_NewEmailIsAlreadyUsed_ThrowsDuplicateEmailException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    {
+
+        var fixture = new Fixture();
+
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync(fixture.Create<Account>());
+        repositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(fixture.Create<Account>());
+
+        var dto = fixture.Create<AccountDto>();
+        var action = async () => await sut.UpdateAccountAsync(default!, dto);
+        await action.Should().ThrowExactlyAsync<DuplicateEmailException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task EnsureEmailBelongsToAccount_EmailDoesNotBelongToAccount_ThrowsChangingNotOwnAccountException([Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
+    {
+        const string email = "test@mail.com";
+        const int firstAccountId = 1;
+        const int secondAccountId = 2;
+
+        repositoryMock.Setup(x => x.GetByEmail(email))
+            .ReturnsAsync(new Fixture().Build<Account>().With(x => x.Id, firstAccountId).Create());
+
+        var action = async () => await sut.EnsureEmailBelongsToAccount(secondAccountId, email);
+        await action.Should().ThrowExactlyAsync<ChangingNotOwnAccountException>();
     }
 }

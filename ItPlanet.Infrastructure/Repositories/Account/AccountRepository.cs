@@ -27,7 +27,6 @@ public class AccountRepository : IAccountRepository
     public async Task<bool> HasAccountWithEmail(string email)
     {
         var account = await _dbContext.Accounts
-            .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
         return account is not null;
     }
@@ -38,6 +37,11 @@ public class AccountRepository : IAccountRepository
             .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
     }
+
+    public Task<Domain.Models.Account?> GetByEmail(string email) =>
+        _dbContext.Accounts
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Email == email);
 
     public Task<Domain.Models.Account?> GetAsync(int id)
     {
@@ -65,9 +69,17 @@ public class AccountRepository : IAccountRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.Account> UpdateAsync(Domain.Models.Account model)
+    public async Task<Domain.Models.Account> UpdateAsync(Domain.Models.Account model)
     {
-        throw new NotImplementedException();
+        var account = await GetAsync(model.Id).ConfigureAwait(false);
+        account!.FirstName = model.FirstName;
+        account!.LastName = model.LastName;
+        account!.Email = model.Email;
+        account!.Password = model.Password;
+
+        await _dbContext.SaveChangesAsync();
+
+        return account;
     }
 
     public Task UpdateRangeAsync(IEnumerable<Domain.Models.Account> models)

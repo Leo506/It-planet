@@ -16,6 +16,8 @@ public class PublicControllerBase : ControllerBase
     protected async Task<bool> AllowedToHandleRequest()
     {
         var (login, password) = Request.ExtractUserData();
+        if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(password))
+            return true;
         return await _authenticationService.TryLogin(login, password);
     }
 }
