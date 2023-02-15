@@ -2,7 +2,4 @@
 
 public class AccountDeletionException : Exception
 {
-    public AccountDeletionException()
-    {
-    }
 }

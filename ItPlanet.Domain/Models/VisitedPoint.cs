@@ -1,6 +1,6 @@
 ﻿namespace ItPlanet.Domain.Models;
 
-public partial class VisitedPoint
+public class VisitedPoint
 {
     public long Id { get; set; }
 

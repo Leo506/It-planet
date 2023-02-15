@@ -2,7 +2,7 @@
 
 namespace ItPlanet.Domain.Models;
 
-public partial class LocationPoint
+public class LocationPoint
 {
     public long Id { get; set; }
 

@@ -42,12 +42,14 @@ public class AnimalRepository : IAnimalRepository
         return await animals.Skip(search.From).Take(search.Size).ToListAsync().ConfigureAwait(false);
     }
 
-    public Task<Domain.Models.Animal?> GetAsync(long id) =>
-        _dbContext.Animals
+    public Task<Domain.Models.Animal?> GetAsync(long id)
+    {
+        return _dbContext.Animals
             .Include(x => x.VisitedPoints)
             .Include(x => x.Types)
             .Include(x => x.Chipper)
             .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
     public Task<List<Domain.Models.Animal>> GetAllAsync()
     {

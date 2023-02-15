@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ItPlanet.Domain.Models;
-using ItPlanet.Infrastructure;
+﻿using ItPlanet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItPlanet.Infrastructure.DatabaseContext;
@@ -28,7 +25,7 @@ public partial class ApiDbContext : DbContext
     public virtual DbSet<LocationPoint> LocationPoints { get; set; }
 
     public virtual DbSet<VisitedPoint> VisitedPoints { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>

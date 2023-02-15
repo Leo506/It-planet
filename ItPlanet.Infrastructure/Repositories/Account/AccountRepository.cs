@@ -32,20 +32,26 @@ public class AccountRepository : IAccountRepository
         return account is not null;
     }
 
-    public Task<Domain.Models.Account?> GetByEmailAndPassword(string email, string password) =>
-        _dbContext.Accounts
+    public Task<Domain.Models.Account?> GetByEmailAndPassword(string email, string password)
+    {
+        return _dbContext.Accounts
             .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+    }
 
-    public Task<Domain.Models.Account?> GetAsync(int id) =>
-        _dbContext.Accounts
+    public Task<Domain.Models.Account?> GetAsync(int id)
+    {
+        return _dbContext.Accounts
             .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
-    public Task<List<Domain.Models.Account>> GetAllAsync() =>
-        _dbContext.Accounts
+    public Task<List<Domain.Models.Account>> GetAllAsync()
+    {
+        return _dbContext.Accounts
             .Include(x => x.Animals)
             .ToListAsync();
+    }
 
     public async Task<Domain.Models.Account> CreateAsync(Domain.Models.Account model)
     {

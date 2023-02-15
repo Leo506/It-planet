@@ -12,8 +12,10 @@ public class LocationPointRepository : ILocationPointRepository
         _dbContext = dbContext;
     }
 
-    public Task<Domain.Models.LocationPoint?> GetAsync(long id) =>
-        _dbContext.LocationPoints.FirstOrDefaultAsync(x => x.Id == id);
+    public Task<Domain.Models.LocationPoint?> GetAsync(long id)
+    {
+        return _dbContext.LocationPoints.FirstOrDefaultAsync(x => x.Id == id);
+    }
 
     public Task<List<Domain.Models.LocationPoint>> GetAllAsync()
     {
