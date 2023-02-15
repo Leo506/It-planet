@@ -17,7 +17,7 @@ public class AccountServiceTests
     public async Task GetAccountAsync_NoAccount_ThrowAccountNotFoundException(
         [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
-        repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Account)default!);
 
         await Assert.ThrowsAsync<AccountNotFoundException>(async () => await sut.GetAccountAsync(default!));
     }
@@ -28,7 +28,7 @@ public class AccountServiceTests
         [Frozen] Mock<IAccountRepository> repositoryMock, AccountService sut)
     {
         var expected = new Fixture().Create<Account>();
-        repositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(expected);
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync(expected);
 
         var account = await sut.GetAccountAsync(default);
 

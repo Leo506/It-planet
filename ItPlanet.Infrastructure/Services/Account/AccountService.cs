@@ -16,7 +16,7 @@ public class AccountService : IAccountService
 
     public async Task<Domain.Models.Account> GetAccountAsync(int id)
     {
-        var account = await _accountRepository.GetByIdAsync(id);
+        var account = await _accountRepository.GetAsync(id);
         return account ?? throw new AccountNotFoundException(id);
     }
 
@@ -47,6 +47,6 @@ public class AccountService : IAccountService
         var account = await GetAccountAsync(id).ConfigureAwait(false);
         if (account.Animals.Any())
             throw new AccountDeletionException();
-        await _accountRepository.RemoveAsync(account).ConfigureAwait(false);
+        await _accountRepository.DeleteAsync(account).ConfigureAwait(false);
     }
 }

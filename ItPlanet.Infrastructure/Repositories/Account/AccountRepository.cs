@@ -13,13 +13,6 @@ public class AccountRepository : IAccountRepository
         _dbContext = dbContext;
     }
 
-    public Task<Domain.Models.Account?> GetByIdAsync(int id)
-    {
-        return _dbContext.Accounts
-            .Include(x => x.Animals)
-            .FirstOrDefaultAsync(x => x.Id == id);
-    }
-
     public async Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search)
     {
         return _dbContext.Accounts
@@ -31,26 +24,59 @@ public class AccountRepository : IAccountRepository
             .Skip(search.From).Take(search.Size);
     }
 
-    public async Task<Domain.Models.Account> CreateAsync(Domain.Models.Account account)
+    public async Task<bool> HasAccountWithEmail(string email)
     {
-        var result = await _dbContext.Accounts.AddAsync(account);
-        await _dbContext.SaveChangesAsync();
+        var account = await _dbContext.Accounts
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+        return account is not null;
+    }
+
+    public Task<Domain.Models.Account?> GetByEmailAndPassword(string email, string password) =>
+        _dbContext.Accounts
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+
+    public Task<Domain.Models.Account?> GetAsync(int id) =>
+        _dbContext.Accounts
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+    public Task<List<Domain.Models.Account>> GetAllAsync() =>
+        _dbContext.Accounts
+            .Include(x => x.Animals)
+            .ToListAsync();
+
+    public async Task<Domain.Models.Account> CreateAsync(Domain.Models.Account model)
+    {
+        var result = await _dbContext.Accounts.AddAsync(model).ConfigureAwait(false);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         return result.Entity;
     }
 
-    public Task<bool> HasAccountWithEmail(string email)
+    public Task CreateRangeAsync(IEnumerable<Domain.Models.Account> models)
     {
-        return _dbContext.Accounts.AnyAsync(x => x.Email == email);
+        throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.Account?> GetByEmailAndPassword(string login, string password)
+    public Task<Domain.Models.Account> UpdateAsync(Domain.Models.Account model)
     {
-        return _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == login && x.Password == password);
+        throw new NotImplementedException();
     }
 
-    public async Task RemoveAsync(Domain.Models.Account account)
+    public Task UpdateRangeAsync(IEnumerable<Domain.Models.Account> models)
     {
-        _dbContext.Accounts.Remove(account);
-        await _dbContext.SaveChangesAsync();
+        throw new NotImplementedException();
+    }
+
+    public async Task DeleteAsync(Domain.Models.Account model)
+    {
+        _dbContext.Accounts.Remove(model);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public Task DeleteRangeAsync(IEnumerable<Domain.Models.Account> models)
+    {
+        throw new NotImplementedException();
     }
 }
