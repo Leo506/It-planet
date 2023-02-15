@@ -14,7 +14,7 @@ public class AnimalTypeService : IAnimalTypeService
 
     public async Task<Domain.Models.AnimalType> GetAnimalTypeAsync(long id)
     {
-        var animal = await _repository.GetTypeAsync(id);
+        var animal = await _repository.GetAsync(id).ConfigureAwait(false);
         return animal ?? throw new AnimalTypeNotFoundException(id);
     }
 }

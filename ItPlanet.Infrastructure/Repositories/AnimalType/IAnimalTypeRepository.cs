@@ -1,6 +1,5 @@
 ﻿namespace ItPlanet.Infrastructure.Repositories.AnimalType;
 
-public interface IAnimalTypeRepository
+public interface IAnimalTypeRepository : IRepository<Domain.Models.AnimalType, long>
 {
-    Task<Domain.Models.AnimalType?> GetTypeAsync(long id);
 }
