@@ -12,7 +12,7 @@ using Moq;
 
 namespace ItPlanet.UnitTests.ControllersTests;
 
-public class AccountControllerTests
+public partial class AccountControllerTests
 {
     [Theory]
     [AutoMoqData]
@@ -74,7 +74,7 @@ public class AccountControllerTests
         var response = await sut.GetAccount(-1);
         response.Should().BeOfType<BadRequestResult>();
     }
-    
+
     [Theory]
     [AutoMoqData]
     public async Task GetAccount_AccountIdIsZero_Returns400([Frozen] Mock<HttpContext> httpContext,
