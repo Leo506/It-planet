@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Domain.Dto;
+using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Infrastructure.Services.LocationPoint;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
@@ -21,7 +24,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)][Required] long id)
+    public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)] [Required] long id)
     {
         _logger.LogInformation($"Get {nameof(GetLocationPoint)} request");
 
@@ -37,6 +40,21 @@ public class LocationsController : PublicControllerBase
         {
             _logger.LogWarning("Location point with id {Id} not found", id);
             return NotFound();
+        }
+    }
+
+    [HttpPost("")]
+    [Authorize]
+    public async Task<IActionResult> CreateLocationPoint([FromBody] LocationPointDto dto)
+    {
+        try
+        {
+            var point = await _locationPointService.CreatePointAsync(dto).ConfigureAwait(false);
+            return CreatedAtAction(nameof(CreateLocationPoint), point);
+        }
+        catch (DuplicateLocationPointException e)
+        {
+            return Conflict();
         }
     }
 }

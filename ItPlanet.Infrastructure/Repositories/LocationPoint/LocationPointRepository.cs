@@ -22,9 +22,11 @@ public class LocationPointRepository : ILocationPointRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.LocationPoint> CreateAsync(Domain.Models.LocationPoint model)
+    public async Task<Domain.Models.LocationPoint> CreateAsync(Domain.Models.LocationPoint model)
     {
-        throw new NotImplementedException();
+        var result = await _dbContext.LocationPoints.AddAsync(model).ConfigureAwait(false);
+        await _dbContext.SaveChangesAsync();
+        return result.Entity;
     }
 
     public Task CreateRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)
@@ -50,5 +52,12 @@ public class LocationPointRepository : ILocationPointRepository
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)
     {
         throw new NotImplementedException();
+    }
+
+    public Task<Domain.Models.LocationPoint?> GetPointByCoordinateAsync(double pointLatitude, double pointLongitude)
+    {
+        const double precision = 0.00001;
+        return _dbContext.LocationPoints.FirstOrDefaultAsync(x =>
+            Math.Abs(x.Latitude - pointLatitude) <= precision && Math.Abs(x.Longitude - pointLongitude) <= precision);
     }
 }

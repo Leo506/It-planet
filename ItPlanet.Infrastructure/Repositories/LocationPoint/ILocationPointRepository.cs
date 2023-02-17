@@ -2,4 +2,5 @@
 
 public interface ILocationPointRepository : IRepository<Domain.Models.LocationPoint, long>
 {
+    Task<Domain.Models.LocationPoint?> GetPointByCoordinateAsync(double pointLatitude, double pointLongitude);
 }
