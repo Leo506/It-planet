@@ -45,7 +45,7 @@ public partial class AccountControllerTests
             HttpContext = httpContext.Object
         };
 
-        var dto = new Fixture().Build<SearchAccountDto>().With(x => x.From, 0).Create();
+        var dto = new Fixture().Create<SearchAccountDto>();
 
         var response = await sut.SearchAccounts(dto);
 
