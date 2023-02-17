@@ -44,9 +44,10 @@ public class LocationPointRepository : ILocationPointRepository
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Domain.Models.LocationPoint model)
+    public async Task DeleteAsync(Domain.Models.LocationPoint model)
     {
-        throw new NotImplementedException();
+        _dbContext.LocationPoints.Remove(model);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)

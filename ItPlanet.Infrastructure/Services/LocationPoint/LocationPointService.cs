@@ -34,4 +34,10 @@ public class LocationPointService : ILocationPointService
 
         return await _repository.CreateAsync(point).ConfigureAwait(false);
     }
+
+    public async Task DeletePointAsync(long pointId)
+    {
+        var point = await GetLocationPointAsync(pointId);
+        await _repository.DeleteAsync(point).ConfigureAwait(false);
+    }
 }

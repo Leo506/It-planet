@@ -57,4 +57,19 @@ public class LocationsController : PublicControllerBase
             return Conflict();
         }
     }
+
+    [HttpDelete("{pointId:long}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteLocationPoint([Range(1, long.MaxValue)] [Required] long pointId)
+    {
+        try
+        {
+            await _locationPointService.DeletePointAsync(pointId);
+            return Ok();
+        }
+        catch (LocationPointNotFoundException e)
+        {
+            return NotFound();
+        }
+    }
 }
