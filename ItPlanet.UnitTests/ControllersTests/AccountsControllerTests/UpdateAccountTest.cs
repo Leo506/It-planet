@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace ItPlanet.UnitTests.ControllersTests;
+namespace ItPlanet.UnitTests.ControllersTests.AccountsControllerTests;
 
 public partial class AccountControllerTests
 {

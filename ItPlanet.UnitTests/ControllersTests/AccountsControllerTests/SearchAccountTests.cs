@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Moq;
 
-namespace ItPlanet.UnitTests.ControllersTests;
+namespace ItPlanet.UnitTests.ControllersTests.AccountsControllerTests;
 
 public partial class AccountControllerTests
 {
