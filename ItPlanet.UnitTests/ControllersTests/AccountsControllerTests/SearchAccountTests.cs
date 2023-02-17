@@ -3,6 +3,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Dto;
 using ItPlanet.Infrastructure.Services.Auth;
+using ItPlanet.UnitTests.ControllersTests.Helpers;
 using ItPlanet.Web.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ public partial class AccountControllerTests
         authService.Setup(x => x.TryLogin(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
         httpContext.Setup(x => x.Request.Headers.Authorization)
-            .Returns(new StringValues(GetAuthorizationHeaderValue()));
+            .Returns(new StringValues(AuthHeaderHelper.GetAuthorizationHeaderValue()));
 
         sut.ControllerContext = new ControllerContext
         {

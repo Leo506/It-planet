@@ -1,9 +1,9 @@
-﻿using System.Text;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Account;
 using ItPlanet.Infrastructure.Services.Auth;
+using ItPlanet.UnitTests.ControllersTests.Helpers;
 using ItPlanet.Web.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +36,7 @@ public partial class AccountControllerTests
         authServiceMock.Setup(x => x.TryLogin(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         httpContext.Setup(x => x.Request.Headers.Authorization)
-            .Returns(new StringValues(GetAuthorizationHeaderValue()));
+            .Returns(new StringValues(AuthHeaderHelper.GetAuthorizationHeaderValue()));
 
         sut.ControllerContext = new ControllerContext
         {
@@ -97,7 +97,7 @@ public partial class AccountControllerTests
         authService.Setup(x => x.TryLogin(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
         httpContext.Setup(x => x.Request.Headers.Authorization)
-            .Returns(new StringValues(GetAuthorizationHeaderValue()));
+            .Returns(new StringValues(AuthHeaderHelper.GetAuthorizationHeaderValue()));
 
         sut.ControllerContext = new ControllerContext
         {
@@ -122,12 +122,5 @@ public partial class AccountControllerTests
 
         var response = await sut.GetAccount(1);
         response.Should().BeOfType<NotFoundResult>();
-    }
-
-    private string GetAuthorizationHeaderValue(string email = "test@test.com", string password = "password")
-    {
-        var encodedHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{email}:{password}"));
-        var headerValue = $"Basic {encodedHeaderValue}";
-        return headerValue;
     }
 }

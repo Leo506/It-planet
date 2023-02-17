@@ -21,19 +21,16 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)] long? id)
+    public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)][Required] long id)
     {
         _logger.LogInformation($"Get {nameof(GetLocationPoint)} request");
 
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
-        if (id is null)
-            return BadRequest();
-
         try
         {
-            var point = await _locationPointService.GetLocationPointAsync(id.Value);
+            var point = await _locationPointService.GetLocationPointAsync(id);
             return Ok(point);
         }
         catch (LocationPointNotFoundException e)
