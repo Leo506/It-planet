@@ -34,9 +34,15 @@ public class LocationPointRepository : ILocationPointRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.LocationPoint> UpdateAsync(Domain.Models.LocationPoint model)
+    public async Task<Domain.Models.LocationPoint> UpdateAsync(Domain.Models.LocationPoint model)
     {
-        throw new NotImplementedException();
+        var point = await GetAsync(model.Id);
+        point!.Latitude = model.Latitude;
+        point.Longitude = model.Longitude;
+
+        await _dbContext.SaveChangesAsync();
+
+        return point;
     }
 
     public Task UpdateRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)

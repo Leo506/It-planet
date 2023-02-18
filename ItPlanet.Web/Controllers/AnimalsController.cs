@@ -31,7 +31,7 @@ public class AnimalsController : PublicControllerBase
     {
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
-        
+
         try
         {
             var animal = await _animalService.GetAnimalAsync(id);

@@ -70,4 +70,25 @@ public class LocationsController : PublicControllerBase
             return NotFound();
         }
     }
+
+    [HttpPut("{pointId:long}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateLocationPoint([Range(1, long.MaxValue)] [Required] long pointId,
+        LocationPointDto pointDto)
+    {
+        try
+        {
+            var result = await _locationPointService.UpdatePointAsync(pointId, pointDto);
+
+            return Ok(result);
+        }
+        catch (LocationPointNotFoundException e)
+        {
+            return NotFound();
+        }
+        catch (DuplicateLocationPointException e)
+        {
+            return Conflict();
+        }
+    }
 }

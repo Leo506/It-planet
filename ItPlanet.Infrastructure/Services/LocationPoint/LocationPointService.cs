@@ -40,4 +40,21 @@ public class LocationPointService : ILocationPointService
         var point = await GetLocationPointAsync(pointId);
         await _repository.DeleteAsync(point).ConfigureAwait(false);
     }
+
+    public async Task<Domain.Models.LocationPoint> UpdatePointAsync(long pointId, LocationPointDto pointDto)
+    {
+        await GetLocationPointAsync(pointId);
+
+        if (await _repository.GetPointByCoordinateAsync(pointDto.Latitude, pointDto.Longitude) is not null)
+            throw new DuplicateLocationPointException();
+
+        // TODO refactoring update login
+        var pointModel = new Domain.Models.LocationPoint
+        {
+            Id = pointId,
+            Latitude = pointDto.Latitude,
+            Longitude = pointDto.Longitude
+        };
+        return await _repository.UpdateAsync(pointModel);
+    }
 }

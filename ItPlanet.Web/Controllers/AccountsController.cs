@@ -25,7 +25,7 @@ public class AccountsController : PublicControllerBase
     }
 
     [HttpGet("{accountId:int}")]
-    public async Task<IActionResult> GetAccount([Required][Range(1, int.MaxValue)] int accountId)
+    public async Task<IActionResult> GetAccount([Required] [Range(1, int.MaxValue)] int accountId)
     {
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
@@ -56,7 +56,7 @@ public class AccountsController : PublicControllerBase
 
     [HttpDelete("{accountId:int}")]
     [Authorize]
-    public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)][Required] int accountId)
+    public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)] [Required] int accountId)
     {
         try
         {
