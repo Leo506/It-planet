@@ -27,8 +27,6 @@ public class AccountsController : PublicControllerBase
     [HttpGet("{accountId:int}")]
     public async Task<IActionResult> GetAccount([Required][Range(1, int.MaxValue)] int accountId)
     {
-        _logger.LogInformation($"Get {nameof(GetAccount)} request");
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
@@ -48,8 +46,6 @@ public class AccountsController : PublicControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> SearchAccounts([FromQuery] SearchAccountDto searchAccountDto)
     {
-        _logger.LogInformation($"Get {nameof(SearchAccounts)} request");
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 

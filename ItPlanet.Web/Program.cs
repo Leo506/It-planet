@@ -10,6 +10,7 @@ using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Infrastructure.Services.LocationPoint;
 using ItPlanet.Web.Auth;
 using ItPlanet.Web.Converters;
+using ItPlanet.Web.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRequestLogging();
 
 app.UseAuthorization();
 

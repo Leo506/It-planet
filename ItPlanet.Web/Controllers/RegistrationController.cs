@@ -24,8 +24,6 @@ public class RegistrationController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> RegisterAccount([FromBody] AccountDto accountDto)
     {
-        _logger.LogInformation($"Get {nameof(RegisterAccount)} request");
-
         try
         {
             var account = await _accountService.RegisterAccountAsync(accountDto);

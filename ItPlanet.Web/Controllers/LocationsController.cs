@@ -26,8 +26,6 @@ public class LocationsController : PublicControllerBase
     [HttpGet("{id:long}")]
     public async Task<IActionResult> GetLocationPoint([Range(1, long.MaxValue)] [Required] long id)
     {
-        _logger.LogInformation($"Get {nameof(GetLocationPoint)} request");
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 

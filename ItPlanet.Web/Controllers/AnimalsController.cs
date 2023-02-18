@@ -29,8 +29,6 @@ public class AnimalsController : PublicControllerBase
     [HttpGet("{id:long}")]
     public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] [Required] long id)
     {
-        LogRequest(nameof(GetAnimal));
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
         
@@ -49,8 +47,6 @@ public class AnimalsController : PublicControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> SearchAnimal([FromQuery] SearchAnimalDto searchAnimalDto)
     {
-        LogRequest(nameof(SearchAnimal));
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
@@ -62,8 +58,6 @@ public class AnimalsController : PublicControllerBase
     [HttpGet("types/{id:long}")]
     public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] [Required] long id)
     {
-        LogRequest(nameof(GetAnimalType));
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
@@ -83,8 +77,6 @@ public class AnimalsController : PublicControllerBase
     public async Task<IActionResult> GetVisitedLocations([Required] long animalId,
         [FromQuery] VisitedLocationDto visitedLocationDto)
     {
-        LogRequest(nameof(GetVisitedLocations));
-
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
@@ -98,10 +90,5 @@ public class AnimalsController : PublicControllerBase
             _logger.LogWarning(e, "Failed to find animal");
             return NotFound();
         }
-    }
-
-    private void LogRequest(string requestName)
-    {
-        _logger.LogInformation("Get {RequestName} request", requestName);
     }
 }
