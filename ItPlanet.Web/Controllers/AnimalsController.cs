@@ -27,19 +27,16 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] long? id)
+    public async Task<IActionResult> GetAnimal([Range(1, long.MaxValue)] [Required] long id)
     {
         LogRequest(nameof(GetAnimal));
 
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
-
-        if (id is null)
-            return BadRequest();
-
+        
         try
         {
-            var animal = await _animalService.GetAnimalAsync(id.Value);
+            var animal = await _animalService.GetAnimalAsync(id);
             return Ok(animal);
         }
         catch (AnimalNotFoundException e)
@@ -63,19 +60,16 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpGet("types/{id:long}")]
-    public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] long? id)
+    public async Task<IActionResult> GetAnimalType([Range(1, long.MaxValue)] [Required] long id)
     {
         LogRequest(nameof(GetAnimalType));
 
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
-        if (id is null)
-            return BadRequest();
-
         try
         {
-            var type = await _animalTypeService.GetAnimalTypeAsync(id.Value);
+            var type = await _animalTypeService.GetAnimalTypeAsync(id);
             return Ok(type);
         }
         catch (AnimalTypeNotFoundException e)
@@ -86,7 +80,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpGet("{animalId:long?}/locations")]
-    public async Task<IActionResult> GetVisitedLocations(long? animalId,
+    public async Task<IActionResult> GetVisitedLocations([Required] long animalId,
         [FromQuery] VisitedLocationDto visitedLocationDto)
     {
         LogRequest(nameof(GetVisitedLocations));
@@ -94,12 +88,9 @@ public class AnimalsController : PublicControllerBase
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
-        if (animalId is null)
-            return BadRequest();
-
         try
         {
-            var points = await _animalService.GetAnimalVisitedPoints(animalId.Value, visitedLocationDto);
+            var points = await _animalService.GetAnimalVisitedPoints(animalId, visitedLocationDto);
             return Ok(points);
         }
         catch (AnimalNotFoundException e)

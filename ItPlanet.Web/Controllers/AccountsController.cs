@@ -25,19 +25,16 @@ public class AccountsController : PublicControllerBase
     }
 
     [HttpGet("{accountId:int}")]
-    public async Task<IActionResult> GetAccount(int? accountId)
+    public async Task<IActionResult> GetAccount([Required][Range(1, int.MaxValue)] int accountId)
     {
         _logger.LogInformation($"Get {nameof(GetAccount)} request");
 
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
-        if (accountId is null or <= 0)
-            return BadRequest();
-
         try
         {
-            var account = await _accountService.GetAccountAsync(accountId.Value);
+            var account = await _accountService.GetAccountAsync(accountId);
             _logger.LogInformation("Account with id {AccountId} successfully found", accountId);
             return Ok(account);
         }
@@ -63,14 +60,11 @@ public class AccountsController : PublicControllerBase
 
     [HttpDelete("{accountId:int}")]
     [Authorize]
-    public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)] int? accountId)
+    public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)][Required] int accountId)
     {
-        if (accountId is null)
-            return BadRequest();
-
         try
         {
-            await _accountService.RemoveAccountAsync(accountId.Value).ConfigureAwait(false);
+            await _accountService.RemoveAccountAsync(accountId).ConfigureAwait(false);
             return Ok();
         }
         catch (AccountDeletionException e)
@@ -85,16 +79,13 @@ public class AccountsController : PublicControllerBase
 
     [HttpPut("{accountId:int}")]
     [Authorize]
-    public async Task<IActionResult> UpdateAccount(int? accountId, [FromBody] AccountDto accountDto)
+    public async Task<IActionResult> UpdateAccount([Required] int accountId, [FromBody] AccountDto accountDto)
     {
-        if (accountId is null)
-            return BadRequest();
-
         try
         {
             var (email, _) = Request.ExtractUserData();
-            await _accountService.EnsureEmailBelongsToAccount(accountId.Value, email);
-            var updatedAccount = await _accountService.UpdateAccountAsync(accountId.Value, accountDto);
+            await _accountService.EnsureEmailBelongsToAccount(accountId, email);
+            var updatedAccount = await _accountService.UpdateAccountAsync(accountId, accountDto);
             return Ok(updatedAccount);
         }
         catch (AccountNotFoundException e)

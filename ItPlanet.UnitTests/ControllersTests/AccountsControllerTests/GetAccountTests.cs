@@ -49,48 +49,6 @@ public partial class AccountControllerTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetAccount_AccountIdIsNull_Returns400([Frozen] Mock<HttpContext> httpContext,
-        [Greedy] AccountsController sut)
-    {
-        sut.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext.Object
-        };
-
-        var response = await sut.GetAccount(null);
-        response.Should().BeOfType<BadRequestResult>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task GetAccount_AccountIdIsLessThanZero_Returns400([Frozen] Mock<HttpContext> httpContext,
-        [Greedy] AccountsController sut)
-    {
-        sut.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext.Object
-        };
-
-        var response = await sut.GetAccount(-1);
-        response.Should().BeOfType<BadRequestResult>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task GetAccount_AccountIdIsZero_Returns400([Frozen] Mock<HttpContext> httpContext,
-        [Greedy] AccountsController sut)
-    {
-        sut.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext.Object
-        };
-
-        var response = await sut.GetAccount(0);
-        response.Should().BeOfType<BadRequestResult>();
-    }
-
-    [Theory]
-    [AutoMoqData]
     public async Task GetAccount_IncorrectAuthData_Returns401([Frozen] Mock<IHeaderAuthenticationService> authService,
         [Frozen] Mock<HttpContext> httpContext, [Greedy] AccountsController sut)
     {
