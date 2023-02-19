@@ -22,9 +22,11 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.AnimalType> CreateAsync(Domain.Models.AnimalType model)
+    public async Task<Domain.Models.AnimalType> CreateAsync(Domain.Models.AnimalType model)
     {
-        throw new NotImplementedException();
+        var result = await _dbContext.AnimalTypes.AddAsync(model);
+        await _dbContext.SaveChangesAsync();
+        return result.Entity;
     }
 
     public Task CreateRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
@@ -50,5 +52,10 @@ public class AnimalTypeRepository : IAnimalTypeRepository
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
     {
         throw new NotImplementedException();
+    }
+
+    public Task<Domain.Models.AnimalType?> GetByType(string type)
+    {
+        return _dbContext.AnimalTypes.FirstOrDefaultAsync(x => x.Type == type);
     }
 }

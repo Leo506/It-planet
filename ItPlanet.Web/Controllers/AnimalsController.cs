@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Domain.Dto;
+using ItPlanet.Domain.Exceptions;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Services.Animal;
 using ItPlanet.Infrastructure.Services.AnimalType;
 using ItPlanet.Infrastructure.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;
@@ -89,6 +91,24 @@ public class AnimalsController : PublicControllerBase
         {
             _logger.LogWarning(e, "Failed to find animal");
             return NotFound();
+        }
+    }
+
+    [HttpPost("types")]
+    [Authorize]
+    public async Task<IActionResult> CreateAnimalType(AnimalTypeDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Type))
+            return BadRequest();
+
+        try
+        {
+            var newType = await _animalTypeService.CreateTypeAsync(dto);
+            return CreatedAtAction(nameof(CreateAnimalType), newType);
+        }
+        catch (DuplicateAnimalTypeException e)
+        {
+            return Conflict();
         }
     }
 }
