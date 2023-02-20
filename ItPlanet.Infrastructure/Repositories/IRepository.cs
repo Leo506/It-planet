@@ -17,4 +17,6 @@ public interface IRepository<TModel, in TId>
     Task DeleteAsync(TModel model);
 
     Task DeleteRangeAsync(IEnumerable<TModel> models);
+
+    Task<bool> ExistAsync(TId id);
 }

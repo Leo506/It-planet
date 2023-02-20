@@ -99,4 +99,9 @@ public class AccountRepository : IAccountRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> ExistAsync(int id)
+    {
+        return _dbContext.Accounts.AnyAsync(x => x.Id == id);
+    }
 }

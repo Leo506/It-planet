@@ -59,6 +59,11 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         throw new NotImplementedException();
     }
 
+    public Task<bool> ExistAsync(long id)
+    {
+        return _dbContext.AnimalTypes.AnyAsync(x => x.Id == id);
+    }
+
     public Task<Domain.Models.AnimalType?> GetByType(string type)
     {
         return _dbContext.AnimalTypes.FirstOrDefaultAsync(x => x.Type == type);

@@ -61,6 +61,11 @@ public class LocationPointRepository : ILocationPointRepository
         throw new NotImplementedException();
     }
 
+    public Task<bool> ExistAsync(long id)
+    {
+        return _dbContext.LocationPoints.AnyAsync(x => x.Id == id);
+    }
+
     public Task<Domain.Models.LocationPoint?> GetPointByCoordinateAsync(double pointLatitude, double pointLongitude)
     {
         const double precision = 0.00001;

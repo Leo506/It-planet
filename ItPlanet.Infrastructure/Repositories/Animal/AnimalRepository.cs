@@ -85,4 +85,9 @@ public class AnimalRepository : IAnimalRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> ExistAsync(long id)
+    {
+        return _dbContext.Animals.AnyAsync(x => x.Id == id);
+    }
 }
