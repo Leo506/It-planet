@@ -10,7 +10,7 @@ using Moq;
 
 namespace ItPlanet.UnitTests.ControllersTests.AnimalsControllerTests;
 
-public class AnimalsControllerTests
+public partial class AnimalsControllerTests
 {
     [Theory]
     [AutoMoqData]
@@ -21,17 +21,6 @@ public class AnimalsControllerTests
         var response = await sut.CreateAnimalType(dto);
 
         response.Should().BeOfType<CreatedAtActionResult>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task CreateAnimalType_TypeIsWhiteSpace_Returns400([Greedy] AnimalsController sut)
-    {
-        var dto = new AnimalTypeDto { Type = "" };
-
-        var response = await sut.CreateAnimalType(dto);
-
-        response.Should().BeOfType<BadRequestResult>();
     }
 
     [Theory]

@@ -98,9 +98,6 @@ public class AnimalsController : PublicControllerBase
     [Authorize]
     public async Task<IActionResult> CreateAnimalType(AnimalTypeDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Type))
-            return BadRequest();
-
         try
         {
             var newType = await _animalTypeService.CreateTypeAsync(dto);
