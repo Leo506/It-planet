@@ -2,8 +2,8 @@
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.Auth;
-using ItPlanet.Infrastructure.Services.LocationPoint;
+using ItPlanet.Web.Services.Auth;
+using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

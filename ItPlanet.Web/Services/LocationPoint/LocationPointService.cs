@@ -3,7 +3,7 @@ using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
 
-namespace ItPlanet.Infrastructure.Services.LocationPoint;
+namespace ItPlanet.Web.Services.LocationPoint;
 
 public class LocationPointService : ILocationPointService
 {

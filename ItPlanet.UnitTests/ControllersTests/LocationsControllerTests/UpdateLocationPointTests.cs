@@ -4,8 +4,8 @@ using FluentAssertions;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.LocationPoint;
 using ItPlanet.Web.Controllers;
+using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

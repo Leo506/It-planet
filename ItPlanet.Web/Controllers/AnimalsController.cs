@@ -3,9 +3,9 @@ using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.Animal;
-using ItPlanet.Infrastructure.Services.AnimalType;
-using ItPlanet.Infrastructure.Services.Auth;
+using ItPlanet.Web.Services.Animal;
+using ItPlanet.Web.Services.AnimalType;
+using ItPlanet.Web.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

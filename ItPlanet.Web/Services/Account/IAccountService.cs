@@ -1,6 +1,6 @@
 ﻿using ItPlanet.Dto;
 
-namespace ItPlanet.Infrastructure.Services.Account;
+namespace ItPlanet.Web.Services.Account;
 
 public interface IAccountService
 {

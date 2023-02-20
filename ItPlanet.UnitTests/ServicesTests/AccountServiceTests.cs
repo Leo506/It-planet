@@ -6,7 +6,7 @@ using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
-using ItPlanet.Infrastructure.Services.Account;
+using ItPlanet.Web.Services.Account;
 using Moq;
 
 namespace ItPlanet.UnitTests.ServicesTests;

@@ -1,6 +1,6 @@
 ﻿using ItPlanet.Infrastructure.Repositories.Account;
 
-namespace ItPlanet.Infrastructure.Services.Auth;
+namespace ItPlanet.Web.Services.Auth;
 
 public class HeaderAuthenticationService : IHeaderAuthenticationService
 {

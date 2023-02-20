@@ -1,6 +1,6 @@
 ﻿using ItPlanet.Domain.Dto;
 
-namespace ItPlanet.Infrastructure.Services.LocationPoint;
+namespace ItPlanet.Web.Services.LocationPoint;
 
 public interface ILocationPointService
 {

@@ -1,6 +1,6 @@
 ﻿using ItPlanet.Dto;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.Account;
+using ItPlanet.Web.Services.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 ﻿using ItPlanet.Domain.Dto;
 
-namespace ItPlanet.Infrastructure.Services.AnimalType;
+namespace ItPlanet.Web.Services.AnimalType;
 
 public interface IAnimalTypeService
 {

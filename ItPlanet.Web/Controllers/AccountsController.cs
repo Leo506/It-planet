@@ -2,9 +2,9 @@
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.Account;
-using ItPlanet.Infrastructure.Services.Auth;
 using ItPlanet.Web.Extensions;
+using ItPlanet.Web.Services.Account;
+using ItPlanet.Web.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

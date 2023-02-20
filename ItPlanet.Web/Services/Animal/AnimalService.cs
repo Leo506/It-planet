@@ -4,7 +4,7 @@ using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Animal;
 
-namespace ItPlanet.Infrastructure.Services.Animal;
+namespace ItPlanet.Web.Services.Animal;
 
 public class AnimalService : IAnimalService
 {

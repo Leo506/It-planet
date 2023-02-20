@@ -1,8 +1,8 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.LocationPoint;
 using ItPlanet.Web.Controllers;
+using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

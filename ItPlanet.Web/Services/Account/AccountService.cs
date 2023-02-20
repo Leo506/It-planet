@@ -3,7 +3,7 @@ using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
 
-namespace ItPlanet.Infrastructure.Services.Account;
+namespace ItPlanet.Web.Services.Account;
 
 public class AccountService : IAccountService
 {

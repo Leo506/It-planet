@@ -3,7 +3,7 @@ using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 
-namespace ItPlanet.Infrastructure.Services.AnimalType;
+namespace ItPlanet.Web.Services.AnimalType;
 
 public class AnimalTypeService : IAnimalTypeService
 {

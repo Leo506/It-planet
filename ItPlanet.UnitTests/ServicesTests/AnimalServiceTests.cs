@@ -2,7 +2,7 @@
 using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Animal;
-using ItPlanet.Infrastructure.Services.Animal;
+using ItPlanet.Web.Services.Animal;
 using Moq;
 
 namespace ItPlanet.UnitTests.ServicesTests;

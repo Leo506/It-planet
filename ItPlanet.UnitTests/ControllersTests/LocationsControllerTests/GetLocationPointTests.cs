@@ -1,10 +1,10 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Exceptions;
-using ItPlanet.Infrastructure.Services.Auth;
-using ItPlanet.Infrastructure.Services.LocationPoint;
 using ItPlanet.UnitTests.ControllersTests.Helpers;
 using ItPlanet.Web.Controllers;
+using ItPlanet.Web.Services.Auth;
+using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;

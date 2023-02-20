@@ -2,7 +2,7 @@
 using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 
-namespace ItPlanet.Infrastructure.Services.Animal;
+namespace ItPlanet.Web.Services.Animal;
 
 public interface IAnimalService
 {

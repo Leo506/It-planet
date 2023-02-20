@@ -1,5 +1,5 @@
-﻿using ItPlanet.Infrastructure.Services.Auth;
-using ItPlanet.Web.Extensions;
+﻿using ItPlanet.Web.Extensions;
+using ItPlanet.Web.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItPlanet.Web.Controllers;

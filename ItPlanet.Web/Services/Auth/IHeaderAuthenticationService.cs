@@ -1,4 +1,4 @@
-﻿namespace ItPlanet.Infrastructure.Services.Auth;
+﻿namespace ItPlanet.Web.Services.Auth;
 
 public interface IHeaderAuthenticationService
 {
