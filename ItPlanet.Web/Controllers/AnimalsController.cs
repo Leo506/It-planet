@@ -108,4 +108,24 @@ public class AnimalsController : PublicControllerBase
             return Conflict();
         }
     }
+
+    [HttpPut("types/{typeId:long}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateAnimalType([Range(1, long.MaxValue)] [Required] long typeId,
+        AnimalTypeDto typeDto)
+    {
+        try
+        {
+            var updatedType = await _animalTypeService.UpdateType(typeId, typeDto);
+            return Ok(updatedType);
+        }
+        catch (AnimalTypeNotFoundException e)
+        {
+            return NotFound();
+        }
+        catch (DuplicateAnimalTypeException e)
+        {
+            return Conflict();
+        }
+    }
 }

@@ -34,9 +34,14 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.AnimalType> UpdateAsync(Domain.Models.AnimalType model)
+    public async Task<Domain.Models.AnimalType> UpdateAsync(Domain.Models.AnimalType model)
     {
-        throw new NotImplementedException();
+        var typeModel = await GetAsync(model.Id);
+        typeModel!.Type = model.Type;
+
+        await _dbContext.SaveChangesAsync();
+
+        return typeModel;
     }
 
     public Task UpdateRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
