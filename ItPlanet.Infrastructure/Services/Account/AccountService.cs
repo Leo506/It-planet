@@ -52,7 +52,8 @@ public class AccountService : IAccountService
 
     public async Task<Domain.Models.Account> UpdateAccountAsync(int accountId, AccountDto accountDto)
     {
-        await EnsureAccountExist(accountId).ConfigureAwait(false);
+        if (await _accountRepository.ExistAsync(accountId).ConfigureAwait(false) is false)
+            throw new AccountNotFoundException(accountId);
 
         var accountWithProvidedEmail = await _accountRepository.GetByEmail(accountDto.Email).ConfigureAwait(false);
 
@@ -81,8 +82,4 @@ public class AccountService : IAccountService
             throw new ChangingNotOwnAccountException();
     }
 
-    private async Task EnsureAccountExist(int accountId)
-    {
-        await GetAccountAsync(accountId).ConfigureAwait(false);
-    }
 }

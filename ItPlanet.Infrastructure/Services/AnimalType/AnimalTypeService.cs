@@ -35,7 +35,8 @@ public class AnimalTypeService : IAnimalTypeService
 
     public async Task<Domain.Models.AnimalType> UpdateType(long typeId, AnimalTypeDto animalTypeDto)
     {
-        await GetAnimalTypeAsync(typeId);
+        if (await _repository.ExistAsync(typeId).ConfigureAwait(false) is false)
+            throw new AnimalTypeNotFoundException(typeId);
 
         if (await _repository.GetByType(animalTypeDto.Type) is not null)
             throw new DuplicateAnimalTypeException();

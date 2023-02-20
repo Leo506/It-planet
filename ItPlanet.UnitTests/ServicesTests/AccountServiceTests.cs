@@ -69,6 +69,7 @@ public class AccountServiceTests
     {
         var fixture = new Fixture();
 
+        repositoryMock.Setup(x => x.ExistAsync(It.IsAny<int>())).ReturnsAsync(true);
         repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync(fixture.Create<Account>());
         repositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(fixture.Create<Account>());
 
