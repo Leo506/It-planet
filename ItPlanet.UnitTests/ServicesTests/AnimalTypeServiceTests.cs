@@ -40,7 +40,7 @@ public class AnimalTypeServiceTests
         [Frozen] Mock<IAnimalTypeRepository> repositoryMock, AnimalTypeService sut)
     {
         repositoryMock.Setup(x => x.ExistAsync(It.IsAny<long>())).ReturnsAsync(true);
-        
+
         repositoryMock.Setup(x => x.GetByType(It.IsAny<string>())).ReturnsAsync(new AnimalType());
 
         var action = async () => await sut.UpdateType(1, new AnimalTypeDto());

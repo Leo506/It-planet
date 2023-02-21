@@ -49,4 +49,9 @@ public class AnimalTypeService : IAnimalTypeService
 
         return await _repository.UpdateAsync(typeModel);
     }
+
+    public Task DeleteTypeAsync(long typeId)
+    {
+        throw new NotImplementedException();
+    }
 }
