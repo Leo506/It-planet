@@ -14,7 +14,9 @@ public class AnimalTypeRepository : IAnimalTypeRepository
 
     public Task<Domain.Models.AnimalType?> GetAsync(long id)
     {
-        return _dbContext.AnimalTypes.FirstOrDefaultAsync(x => x.Id == id);
+        return _dbContext.AnimalTypes
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<List<Domain.Models.AnimalType>> GetAllAsync()
@@ -49,9 +51,10 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Domain.Models.AnimalType model)
+    public async Task DeleteAsync(Domain.Models.AnimalType model)
     {
-        throw new NotImplementedException();
+        _dbContext.AnimalTypes.Remove(model);
+        await _dbContext.SaveChangesAsync();
     }
 
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.AnimalType> models)

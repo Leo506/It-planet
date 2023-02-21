@@ -50,8 +50,16 @@ public class AnimalTypeService : IAnimalTypeService
         return await _repository.UpdateAsync(typeModel);
     }
 
-    public Task DeleteTypeAsync(long typeId)
+    public async Task DeleteTypeAsync(long typeId)
     {
-        throw new NotImplementedException();
+        var type = await _repository.GetAsync(typeId);
+
+        if (type is null)
+            throw new AnimalTypeNotFoundException(typeId);
+        
+        if (type.Animals.Any())
+            throw new AnimalTypeDeletionException();
+
+        await _repository.DeleteAsync(type);
     }
 }

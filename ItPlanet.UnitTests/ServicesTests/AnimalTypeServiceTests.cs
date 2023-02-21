@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
@@ -46,5 +47,44 @@ public class AnimalTypeServiceTests
         var action = async () => await sut.UpdateType(1, new AnimalTypeDto());
 
         await action.Should().ThrowExactlyAsync<DuplicateAnimalTypeException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task DeleteTypeAsync_ThereIsAnimalWithType_ThrowsAnimalTypeDeletionException([Frozen] Mock<IAnimalTypeRepository> repositoryMock, AnimalTypeService sut)
+    {
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(new AnimalType()
+        {
+            Animals = { new Animal() }
+        });
+
+        var action = async () => await sut.DeleteTypeAsync(default);
+
+        await action.Should().ThrowExactlyAsync<AnimalTypeDeletionException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task DeleteTypeAsync_NotTypeWithId_ThrowsAnimalTypeNotFoundException(
+        [Frozen] Mock<IAnimalTypeRepository> repositoryMock, AnimalTypeService sut)
+    {
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync((AnimalType)default!);
+
+        var action = async () => await sut.DeleteTypeAsync(1);
+
+        await action.Should().ThrowExactlyAsync<AnimalTypeNotFoundException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task DeleteTypeAsync_DeleteType([Frozen] Mock<IAnimalTypeRepository> repositoryMock,
+        AnimalTypeService sut)
+    {
+        var type = new Fixture().Create<AnimalType>();
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(type);
+
+        await sut.DeleteTypeAsync(default);
+        
+        repositoryMock.Verify(x => x.DeleteAsync(type));
     }
 }
