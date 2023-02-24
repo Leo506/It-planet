@@ -39,4 +39,9 @@ public class AnimalService : IAnimalService
 
         return result.Skip(visitedLocationDto.From).Take(visitedLocationDto.Size);
     }
+
+    public Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto)
+    {
+        throw new NotImplementedException();
+    }
 }

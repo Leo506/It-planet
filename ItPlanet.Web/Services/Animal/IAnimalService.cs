@@ -9,4 +9,5 @@ public interface IAnimalService
     Task<Domain.Models.Animal> GetAnimalAsync(long id);
     Task<IEnumerable<Domain.Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto);
     Task<IEnumerable<VisitedPoint>> GetAnimalVisitedPoints(long animalId, VisitedLocationDto visitedLocationDto);
+    Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto);
 }

@@ -154,7 +154,19 @@ public class AnimalsController : PublicControllerBase
     {
         if (animalDto.IsValid() is false)
             return BadRequest();
-        
-        return CreatedAtAction(nameof(CreateAnimal), default!);
+        try
+        {
+            var animal = await _animalService.CreateAnimalAsync(animalDto);
+            return CreatedAtAction(nameof(CreateAnimal), animal);
+        }
+        catch (Exception e) when (e is AnimalTypeNotFoundException or AccountNotFoundException
+                                      or LocationPointNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (DuplicateAnimalTypeException e)
+        {
+            return Conflict();
+        }
     }
 }
