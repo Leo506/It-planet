@@ -78,9 +78,10 @@ public class AnimalRepository : IAnimalRepository
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Domain.Models.Animal model)
+    public async Task DeleteAsync(Domain.Models.Animal model)
     {
-        throw new NotImplementedException();
+        _dbContext.Animals.Remove(model);
+        await _dbContext.SaveChangesAsync();
     }
 
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.Animal> models)

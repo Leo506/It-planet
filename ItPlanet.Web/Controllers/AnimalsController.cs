@@ -190,4 +190,23 @@ public class AnimalsController : PublicControllerBase
             return NotFound();
         }
     }
+
+    [HttpDelete("{animalId:long}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteAnimal([Required] [Range(1, long.MaxValue)] long animalId)
+    {
+        try
+        {
+            await _animalService.DeleteAnimalAsync(animalId);
+            return Ok();
+        }
+        catch (UnableDeleteAnimalException e)
+        {
+            return BadRequest();
+        }
+        catch (AnimalNotFoundException e)
+        {
+            return NotFound();
+        }
+    }
 }

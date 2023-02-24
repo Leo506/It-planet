@@ -97,12 +97,12 @@ public partial class ApiDbContext : DbContext
 
             entity.HasOne(d => d.Animal).WithMany(p => p.VisitedPoints)
                 .HasForeignKey(d => d.AnimalId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("VisitedPoints_Animal_null_fk");
 
             entity.HasOne(d => d.LocationPoint).WithMany(p => p.VisitedPoints)
                 .HasForeignKey(d => d.LocationPointId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("VisitedPoints_LocationPoints_null_fk");
         });
 

@@ -136,4 +136,20 @@ public class AnimalServiceTests
 
         await action.Should().ThrowExactlyAsync<LocationPointNotFoundException>();
     }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task DeleteAnimalAsync_ThereAreVisitedPointsExceptChippingPoint_ThrowUnableDeleteAnimalException(
+        [Frozen] Mock<IAnimalRepository> animalRepository, AnimalService sut)
+    {
+        var animalWithVisitedPoints = new Animal();
+        animalWithVisitedPoints.VisitedPoints.Add(new VisitedPoint());
+        animalWithVisitedPoints.VisitedPoints.Add(new VisitedPoint());
+
+        animalRepository.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(animalWithVisitedPoints);
+
+        var action = async () => await sut.DeleteAnimalAsync(default);
+
+        await action.Should().ThrowExactlyAsync<UnableDeleteAnimalException>();
+    }
 }

@@ -84,7 +84,11 @@ public class AnimalService : IAnimalService
 
         foreach (var typeId in animalDto.AnimalTypes) animal.Types.Add((await _animalTypeRepository.GetAsync(typeId))!);
 
-        return await _animalRepository.CreateAsync(animal);
+        var newAnimal = await _animalRepository.CreateAsync(animal);
+
+        await AddVisitedPointAsync(newAnimal.Id, animalDto.ChippingLocationId);
+        
+        return await GetAnimalAsync(newAnimal.Id);
     }
 
     public async Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId)
@@ -94,7 +98,7 @@ public class AnimalService : IAnimalService
         if (animal.LifeStatus is LifeStatusConstants.Dead)
             throw new UnableAddPointException();
 
-        if (animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
+        if (animal.VisitedPoints.Any() && animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
             throw new UnableAddPointException();
 
         if (await _locationPointRepository.ExistAsync(pointId) is false)
@@ -108,5 +112,15 @@ public class AnimalService : IAnimalService
         };
 
         return await _visitedPointsRepository.CreateAsync(visitedPoint);
+    }
+
+    public async Task DeleteAnimalAsync(long animalId)
+    {
+        var animal = await GetAnimalAsync(animalId);
+
+        if (animal.VisitedPoints.Count >= 2)
+            throw new UnableDeleteAnimalException();
+
+        await _animalRepository.DeleteAsync(animal);
     }
 }

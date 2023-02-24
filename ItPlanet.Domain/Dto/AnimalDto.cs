@@ -5,11 +5,11 @@ namespace ItPlanet.Domain.Dto;
 
 public class AnimalDto
 {
-    [Required] [Range(1f, float.MaxValue)] public float Weight { get; set; }
+    [Required] [Range(float.Epsilon, float.MaxValue)] public float Weight { get; set; }
 
-    [Required] [Range(1f, float.MaxValue)] public float Length { get; set; }
+    [Required] [Range(float.Epsilon, float.MaxValue)] public float Length { get; set; }
 
-    [Required] [Range(1f, float.MaxValue)] public float Height { get; set; }
+    [Required] [Range(float.Epsilon, float.MaxValue)] public float Height { get; set; }
 
     [Required] public string Gender { get; set; } = default!;
 

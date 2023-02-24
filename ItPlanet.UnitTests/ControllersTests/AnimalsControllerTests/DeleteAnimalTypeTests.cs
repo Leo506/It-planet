@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Domain.Dto;
+using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Controllers;
 using ItPlanet.Web.Services.AnimalType;
