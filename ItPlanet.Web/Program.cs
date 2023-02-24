@@ -3,6 +3,7 @@ using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
+using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 using ItPlanet.Web.Auth;
 using ItPlanet.Web.Converters;
 using ItPlanet.Web.Extensions;
@@ -28,7 +29,8 @@ builder.Services
     .AddTransient<IAccountRepository, AccountRepository>()
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
-    .AddTransient<ILocationPointRepository, LocationPointRepository>();
+    .AddTransient<ILocationPointRepository, LocationPointRepository>()
+    .AddTransient<IVisitedPointsRepository, VisitedPointRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

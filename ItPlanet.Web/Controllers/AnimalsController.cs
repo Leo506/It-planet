@@ -185,7 +185,7 @@ public class AnimalsController : PublicControllerBase
         {
             return BadRequest();
         }
-        catch (Exception e) when(e is AnimalNotFoundException or LocationPointNotFoundException)
+        catch (Exception e) when (e is AnimalNotFoundException or LocationPointNotFoundException)
         {
             return NotFound();
         }

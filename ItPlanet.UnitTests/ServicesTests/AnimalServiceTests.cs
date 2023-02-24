@@ -3,6 +3,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
@@ -89,5 +90,50 @@ public class AnimalServiceTests
         var action = async () => await sut.CreateAnimalAsync(dto);
 
         await action.Should().ThrowExactlyAsync<DuplicateAnimalTypeException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task AddVisitedPointAsync_AnimalIsDead_ThrowsUnableAddPointException(
+        [Frozen] Mock<IAnimalRepository> repository, AnimalService sut)
+    {
+        var deadAnimal = new Fixture().Build<Animal>().With(x => x.LifeStatus, LifeStatusConstants.Dead).Create();
+        repository.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(deadAnimal);
+
+        var action = async () => await sut.AddVisitedPointAsync(1, 1);
+
+        await action.Should().ThrowExactlyAsync<UnableAddPointException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task AddVisitedPointAsync_AnimalIsAlreadyOnPoint_ThrowsUnableAddPointException(
+        [Frozen] Mock<IAnimalRepository> repository, AnimalService sut)
+    {
+        const long lastVisitedPointId = 1;
+
+        var animal = new Animal();
+        animal.VisitedPoints.Add(new VisitedPoint
+        {
+            Id = lastVisitedPointId
+        });
+
+        repository.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(animal);
+
+        var action = async () => await sut.AddVisitedPointAsync(1, lastVisitedPointId);
+
+        await action.Should().ThrowExactlyAsync<UnableAddPointException>();
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task AddVisitedPointAsync_PointIdNotExists_ThrowsLocationPointNotFoundException(
+        [Frozen] Mock<ILocationPointRepository> repository, AnimalService sut)
+    {
+        repository.Setup(x => x.ExistAsync(It.IsAny<long>())).ReturnsAsync(false);
+
+        var action = async () => await sut.AddVisitedPointAsync(default, default);
+
+        await action.Should().ThrowExactlyAsync<LocationPointNotFoundException>();
     }
 }

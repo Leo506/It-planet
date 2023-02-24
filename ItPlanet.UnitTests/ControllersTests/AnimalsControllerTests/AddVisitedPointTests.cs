@@ -35,7 +35,8 @@ public partial class AnimalsControllerTests
 
     [Theory]
     [AutoMoqData]
-    public async Task AddVisitedPoint_AnimalServiceThrowsAnimalNotFoundException_Returns404([Frozen] Mock<IAnimalService> animalService, [Greedy] AnimalsController sut)
+    public async Task AddVisitedPoint_AnimalServiceThrowsAnimalNotFoundException_Returns404(
+        [Frozen] Mock<IAnimalService> animalService, [Greedy] AnimalsController sut)
     {
         animalService.Setup(x => x.AddVisitedPointAsync(It.IsAny<long>(), It.IsAny<long>()))
             .ThrowsAsync(new AnimalNotFoundException(default));

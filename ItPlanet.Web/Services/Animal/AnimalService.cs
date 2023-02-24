@@ -7,6 +7,7 @@ using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
+using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 
 namespace ItPlanet.Web.Services.Animal;
 
@@ -16,14 +17,17 @@ public class AnimalService : IAnimalService
     private readonly IAnimalRepository _animalRepository;
     private readonly IAnimalTypeRepository _animalTypeRepository;
     private readonly ILocationPointRepository _locationPointRepository;
+    private readonly IVisitedPointsRepository _visitedPointsRepository;
 
     public AnimalService(IAnimalRepository animalRepository, IAnimalTypeRepository animalTypeRepository,
-        IAccountRepository accountRepository, ILocationPointRepository locationPointRepository)
+        IAccountRepository accountRepository, ILocationPointRepository locationPointRepository,
+        IVisitedPointsRepository visitedPointsRepository)
     {
         _animalRepository = animalRepository;
         _animalTypeRepository = animalTypeRepository;
         _accountRepository = accountRepository;
         _locationPointRepository = locationPointRepository;
+        _visitedPointsRepository = visitedPointsRepository;
     }
 
     public async Task<Domain.Models.Animal> GetAnimalAsync(long id)
@@ -83,8 +87,26 @@ public class AnimalService : IAnimalService
         return await _animalRepository.CreateAsync(animal);
     }
 
-    public Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId)
+    public async Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId)
     {
-        throw new NotImplementedException();
+        var animal = await GetAnimalAsync(animalId);
+
+        if (animal.LifeStatus is LifeStatusConstants.Dead)
+            throw new UnableAddPointException();
+
+        if (animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
+            throw new UnableAddPointException();
+
+        if (await _locationPointRepository.ExistAsync(pointId) is false)
+            throw new LocationPointNotFoundException(pointId);
+
+        var visitedPoint = new VisitedPoint
+        {
+            AnimalId = animalId,
+            LocationPointId = pointId,
+            DateTimeOfVisitLocationPoint = DateTime.Now
+        };
+
+        return await _visitedPointsRepository.CreateAsync(visitedPoint);
     }
 }
