@@ -82,4 +82,9 @@ public class AnimalService : IAnimalService
 
         return await _animalRepository.CreateAsync(animal);
     }
+
+    public Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId)
+    {
+        throw new NotImplementedException();
+    }
 }

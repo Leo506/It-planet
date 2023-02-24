@@ -169,4 +169,25 @@ public class AnimalsController : PublicControllerBase
             return Conflict();
         }
     }
+
+    [HttpPost("{animalId:long}/locations/{pointId:long}")]
+    [Authorize]
+    public async Task<IActionResult> AddVisitedPoint([Required] [Range(1, long.MaxValue)] long animalId,
+        [Required] [Range(1, long.MaxValue)] long pointId)
+    {
+        try
+        {
+            var visitedPoint = await _animalService.AddVisitedPointAsync(animalId, pointId).ConfigureAwait(false);
+
+            return CreatedAtAction(nameof(AddVisitedPoint), visitedPoint);
+        }
+        catch (UnableAddPointException e)
+        {
+            return BadRequest();
+        }
+        catch (Exception e) when(e is AnimalNotFoundException or LocationPointNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }
