@@ -11,7 +11,7 @@ public class AnimalDtoValidationTests
     [InlineData(-1)]
     public void IsValid_InvalidAnimalTypeId_ReturnsFalse(long animalTypeId)
     {
-        var sut = new AnimalDto()
+        var sut = new AnimalDto
         {
             Gender = GenderConstants.Male,
             AnimalTypes = new[] { animalTypeId }
@@ -25,7 +25,7 @@ public class AnimalDtoValidationTests
     [Fact]
     public void IsValid_InvalidGenderProperty_ReturnsFalse()
     {
-        var sut = new AnimalDto()
+        var sut = new AnimalDto
         {
             Gender = "Invalid gender"
         };

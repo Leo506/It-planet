@@ -56,9 +56,11 @@ public class AnimalRepository : IAnimalRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.Animal> CreateAsync(Domain.Models.Animal model)
+    public async Task<Domain.Models.Animal> CreateAsync(Domain.Models.Animal model)
     {
-        throw new NotImplementedException();
+        var animal = await _dbContext.Animals.AddAsync(model).ConfigureAwait(false);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        return animal.Entity;
     }
 
     public Task CreateRangeAsync(IEnumerable<Domain.Models.Animal> models)

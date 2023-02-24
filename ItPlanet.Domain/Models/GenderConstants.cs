@@ -8,5 +8,5 @@ public class GenderConstants
 
     public const string Other = "OTHER";
 
-    public static readonly IReadOnlyList<string> AvailableGenders = new List<string>() { Male, Female, Other };
+    public static readonly IReadOnlyList<string> AvailableGenders = new List<string> { Male, Female, Other };
 }

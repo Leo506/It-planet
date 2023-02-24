@@ -51,9 +51,10 @@ public class AnimalTypeServiceTests
 
     [Theory]
     [AutoMoqData]
-    public async Task DeleteTypeAsync_ThereIsAnimalWithType_ThrowsAnimalTypeDeletionException([Frozen] Mock<IAnimalTypeRepository> repositoryMock, AnimalTypeService sut)
+    public async Task DeleteTypeAsync_ThereIsAnimalWithType_ThrowsAnimalTypeDeletionException(
+        [Frozen] Mock<IAnimalTypeRepository> repositoryMock, AnimalTypeService sut)
     {
-        repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(new AnimalType()
+        repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(new AnimalType
         {
             Animals = { new Animal() }
         });
@@ -84,7 +85,7 @@ public class AnimalTypeServiceTests
         repositoryMock.Setup(x => x.GetAsync(It.IsAny<long>())).ReturnsAsync(type);
 
         await sut.DeleteTypeAsync(default);
-        
+
         repositoryMock.Verify(x => x.DeleteAsync(type));
     }
 }

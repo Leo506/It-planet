@@ -1,6 +1,4 @@
 ﻿using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Domain.Dto;
@@ -16,13 +14,12 @@ namespace ItPlanet.UnitTests.ControllersTests.AnimalsControllerTests;
 
 public partial class AnimalsControllerTests
 {
-    
     [Theory]
     [AutoMoqData]
     public async Task CreateAnimal_Success_Returns201([Greedy] AnimalsController sut)
     {
         var dto = new Fixture().Build<AnimalDto>().With(x => x.Gender, GenderConstants.Male).Create();
-        
+
         var response = await sut.CreateAnimal(dto).ConfigureAwait(false);
 
         response.Should().BeOfType<CreatedAtActionResult>();
@@ -46,14 +43,14 @@ public partial class AnimalsControllerTests
     {
         animalService.Setup(x => x.CreateAnimalAsync(It.IsAny<AnimalDto>()))
             .ThrowsAsync(new AnimalTypeNotFoundException(default));
-        
+
         var dto = new Fixture().Build<AnimalDto>().With(x => x.Gender, GenderConstants.Male).Create();
 
         var response = await sut.CreateAnimal(dto).ConfigureAwait(false);
 
         response.Should().BeOfType<NotFoundResult>();
     }
-    
+
     [Theory]
     [AutoMoqData]
     public async Task CreateAnimal_ChipperIdNotFound_Returns404([Frozen] Mock<IAnimalService> animalService,
@@ -61,14 +58,14 @@ public partial class AnimalsControllerTests
     {
         animalService.Setup(x => x.CreateAnimalAsync(It.IsAny<AnimalDto>()))
             .ThrowsAsync(new AccountNotFoundException(default));
-        
+
         var dto = new Fixture().Build<AnimalDto>().With(x => x.Gender, GenderConstants.Male).Create();
 
         var response = await sut.CreateAnimal(dto).ConfigureAwait(false);
 
         response.Should().BeOfType<NotFoundResult>();
     }
-    
+
     [Theory]
     [AutoMoqData]
     public async Task CreateAnimal_LocationNotFound_Returns404([Frozen] Mock<IAnimalService> animalService,
@@ -76,14 +73,14 @@ public partial class AnimalsControllerTests
     {
         animalService.Setup(x => x.CreateAnimalAsync(It.IsAny<AnimalDto>()))
             .ThrowsAsync(new LocationPointNotFoundException(default));
-        
+
         var dto = new Fixture().Build<AnimalDto>().With(x => x.Gender, GenderConstants.Male).Create();
 
         var response = await sut.CreateAnimal(dto).ConfigureAwait(false);
 
         response.Should().BeOfType<NotFoundResult>();
     }
-    
+
     [Theory]
     [AutoMoqData]
     public async Task CreateAnimal_AnimalTypeDuplicate_Returns404([Frozen] Mock<IAnimalService> animalService,
@@ -91,7 +88,7 @@ public partial class AnimalsControllerTests
     {
         animalService.Setup(x => x.CreateAnimalAsync(It.IsAny<AnimalDto>()))
             .ThrowsAsync(new DuplicateAnimalTypeException());
-        
+
         var dto = new Fixture().Build<AnimalDto>().With(x => x.Gender, GenderConstants.Male).Create();
 
         var response = await sut.CreateAnimal(dto).ConfigureAwait(false);

@@ -81,5 +81,4 @@ public class AccountService : IAccountService
         if (accountId != accountByEmail.Id)
             throw new ChangingNotOwnAccountException();
     }
-
 }

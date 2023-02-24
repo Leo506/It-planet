@@ -128,7 +128,7 @@ public class AnimalsController : PublicControllerBase
             return Conflict();
         }
     }
-    
+
     [HttpDelete("types/{typeId:long}")]
     [Authorize]
     public async Task<IActionResult> DeleteAnimalType([Required] [Range(1, long.MaxValue)] long typeId)

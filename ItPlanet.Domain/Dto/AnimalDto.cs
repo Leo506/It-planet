@@ -5,24 +5,16 @@ namespace ItPlanet.Domain.Dto;
 
 public class AnimalDto
 {
-    [Required]
-    [Range(1f, float.MaxValue)]
-    public float Weight { get; set; }
-   
-    [Required]
-    [Range(1f, float.MaxValue)]
-    public float Length { get; set; }
-    
-    [Required]
-    [Range(1f, float.MaxValue)]
-    public float Height { get; set; }
+    [Required] [Range(1f, float.MaxValue)] public float Weight { get; set; }
+
+    [Required] [Range(1f, float.MaxValue)] public float Length { get; set; }
+
+    [Required] [Range(1f, float.MaxValue)] public float Height { get; set; }
 
     [Required] public string Gender { get; set; } = default!;
-    
-    [Required]
-    [Range(1, int.MaxValue)]
-    public int ChipperId { get; set; }
-    
+
+    [Required] [Range(1, int.MaxValue)] public int ChipperId { get; set; }
+
     public long ChippingLocationId { get; set; }
 
     [Required] [MinLength(1)] public long[] AnimalTypes { get; set; } = default!;

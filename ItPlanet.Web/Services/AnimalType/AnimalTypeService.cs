@@ -56,7 +56,7 @@ public class AnimalTypeService : IAnimalTypeService
 
         if (type is null)
             throw new AnimalTypeNotFoundException(typeId);
-        
+
         if (type.Animals.Any())
             throw new AnimalTypeDeletionException();
 
