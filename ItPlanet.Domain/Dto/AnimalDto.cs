@@ -15,7 +15,7 @@ public class AnimalDto
 
     [Required] [Range(1, int.MaxValue)] public int ChipperId { get; set; }
 
-    [Required] [Range(1, long.MaxValue)] public long ChippingLocationId { get; set; }
+    [Required] [Range(typeof(long), "1", "9223372036854775807")] public long ChippingLocationId { get; set; }
 
     [Required] [MinLength(1)] public long[] AnimalTypes { get; set; } = default!;
 
