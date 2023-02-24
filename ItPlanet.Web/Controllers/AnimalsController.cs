@@ -147,4 +147,14 @@ public class AnimalsController : PublicControllerBase
             return NotFound();
         }
     }
+
+    [HttpPost("")]
+    [Authorize]
+    public async Task<IActionResult> CreateAnimal([FromBody] AnimalDto animalDto)
+    {
+        if (animalDto.IsValid() is false)
+            return BadRequest();
+        
+        return CreatedAtAction(nameof(CreateAnimal), default!);
+    }
 }
