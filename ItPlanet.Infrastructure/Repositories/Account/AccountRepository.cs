@@ -21,6 +21,7 @@ public class AccountRepository : IAccountRepository
                 x.FirstName.ToLower().Contains(search.FirstName.ToLower()) &&
                 x.LastName.ToLower().Contains(search.LastName.ToLower()) &&
                 x.Email.ToLower().Contains(search.Email.ToLower()))
+            .OrderBy(x => x.Id)
             .Skip(search.From).Take(search.Size);
     }
 
