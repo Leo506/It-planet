@@ -195,4 +195,44 @@ public class AnimalService : IAnimalService
 
         return await _animalRepository.UpdateAsync(animalModel);
     }
+
+    public async Task<VisitedPoint> UpdateVisitedPoint(long animalId, ReplaceVisitedPointDto replaceDto)
+    {
+        if (await _locationPointRepository.ExistAsync(replaceDto.LocationPointId) is false)
+            throw new LocationPointNotFoundException(replaceDto.LocationPointId);
+
+        var animal = await GetAnimalAsync(animalId);
+
+        var visitedPoints = animal.VisitedPoints.ToList();
+
+        for (var i = 0; i < visitedPoints.Count; i++)
+        {
+            if (visitedPoints[i].Id != replaceDto.VisitedLocationPointId) continue;
+
+            if (visitedPoints[i - 1].LocationPointId == replaceDto.LocationPointId)
+                throw new UnableChangeVisitedPoint();
+
+            if (i + 1 < visitedPoints.Count && visitedPoints[i + 1].LocationPointId == replaceDto.LocationPointId)
+                throw new UnableChangeVisitedPoint();
+
+            if (visitedPoints[i].LocationPointId == replaceDto.LocationPointId)
+                throw new UnableChangeVisitedPoint();
+
+            break;
+        }
+
+        var point = visitedPoints.FirstOrDefault(x => x.Id == replaceDto.VisitedLocationPointId);
+        if (point is null)
+            throw new LocationPointNotFoundException(default); // TODO переработать
+
+        var visitedPoint = new VisitedPoint
+        {
+            Id = replaceDto.VisitedLocationPointId,
+            AnimalId = animalId,
+            LocationPointId = replaceDto.LocationPointId,
+            DateTimeOfVisitLocationPoint = point.DateTimeOfVisitLocationPoint
+        };
+
+        return await _visitedPointsRepository.UpdateAsync(visitedPoint);
+    }
 }

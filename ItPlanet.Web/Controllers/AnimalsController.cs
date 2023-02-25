@@ -297,4 +297,24 @@ public class AnimalsController : PublicControllerBase
             return BadRequest();
         }
     }
+
+    [HttpPut("{animalId:long}/locations")]
+    [Authorize]
+    public async Task<IActionResult> ReplaceVisitedPoint([Required] [Range(1, long.MaxValue)] long animalId,
+        [FromBody] ReplaceVisitedPointDto replaceDto)
+    {
+        try
+        {
+            var visitedPoint = await _animalService.UpdateVisitedPoint(animalId, replaceDto);
+            return Ok(visitedPoint);
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or LocationPointNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnableChangeVisitedPoint e)
+        {
+            return BadRequest();
+        }
+    }
 }

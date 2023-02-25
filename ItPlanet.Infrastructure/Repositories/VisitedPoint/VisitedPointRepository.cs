@@ -1,4 +1,5 @@
 ﻿using ItPlanet.Infrastructure.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItPlanet.Infrastructure.Repositories.VisitedPoint;
 
@@ -13,7 +14,7 @@ public class VisitedPointRepository : IVisitedPointsRepository
 
     public Task<Domain.Models.VisitedPoint?> GetAsync(long id)
     {
-        throw new NotImplementedException();
+        return _dbContext.VisitedPoints.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<List<Domain.Models.VisitedPoint>> GetAllAsync()
@@ -33,9 +34,17 @@ public class VisitedPointRepository : IVisitedPointsRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.VisitedPoint> UpdateAsync(Domain.Models.VisitedPoint model)
+    public async Task<Domain.Models.VisitedPoint> UpdateAsync(Domain.Models.VisitedPoint model)
     {
-        throw new NotImplementedException();
+        var point = await GetAsync(model.Id);
+
+        point!.AnimalId = model.AnimalId;
+        point.LocationPointId = model.LocationPointId;
+        point.DateTimeOfVisitLocationPoint = model.DateTimeOfVisitLocationPoint;
+
+        await _dbContext.SaveChangesAsync();
+
+        return point;
     }
 
     public Task UpdateRangeAsync(IEnumerable<Domain.Models.VisitedPoint> models)

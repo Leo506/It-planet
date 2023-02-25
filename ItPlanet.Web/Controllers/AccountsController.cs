@@ -64,7 +64,7 @@ public class AccountsController : PublicControllerBase
             var user = await _accountService.GetAccountAsync(accountId);
             if (user.Email != email)
                 return Forbid();
-            
+
             await _accountService.RemoveAccountAsync(accountId).ConfigureAwait(false);
             return Ok();
         }

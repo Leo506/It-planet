@@ -30,7 +30,7 @@ public class RegistrationController : ControllerBase
             var (email, password) = Request.ExtractUserData();
             if (string.IsNullOrEmpty(email) is false && string.IsNullOrEmpty(password) is false)
                 return Forbid();
-            
+
             var account = await _accountService.RegisterAccountAsync(accountDto);
             return Created(string.Empty, account);
         }
