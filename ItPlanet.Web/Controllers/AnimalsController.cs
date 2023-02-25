@@ -150,6 +150,28 @@ public class AnimalsController : PublicControllerBase
         }
     }
 
+    [HttpPut("{animalId:long}/types")]
+    [Authorize]
+    public async Task<IActionResult> ReplaceAnimalType([Required] [Range(1, long.MaxValue)] long animalId,
+        [FromBody] ReplaceAnimalTypeDto replaceDto)
+    {
+        try
+        {
+            var oldType = await _animalTypeService.GetAnimalTypeAsync(replaceDto.OldTypeId);
+            var newType = await _animalTypeService.GetAnimalTypeAsync(replaceDto.NewTypeId);
+            var animal = await _animalService.ReplaceAnimalTypeAsync(animalId, oldType, newType);
+            return Ok(animal);
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (DuplicateAnimalTypeException e)
+        {
+            return Conflict();
+        }
+    }
+
     [HttpDelete("types/{typeId:long}")]
     [Authorize]
     public async Task<IActionResult> DeleteAnimalType([Required] [Range(1, long.MaxValue)] long typeId)

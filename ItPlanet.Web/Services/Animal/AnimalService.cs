@@ -128,9 +128,23 @@ public class AnimalService : IAnimalService
     public async Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType type)
     {
         var animal = await GetAnimalAsync(animalId);
-        if (animal.Types.Any(x => x.Id == type.Id))
+        if (animal.AnimalTypes.Contains(type.Id))
             throw new DuplicateAnimalTypeException();
 
-        return await _animalRepository.AddType(animalId, type);
+        return await _animalRepository.AddTypeAsync(animalId, type);
+    }
+
+    public async Task<Domain.Models.Animal> ReplaceAnimalTypeAsync(long animalId, Domain.Models.AnimalType oldType,
+        Domain.Models.AnimalType newType)
+    {
+        var animal = await GetAnimalAsync(animalId);
+
+        if (animal.AnimalTypes.Contains(newType.Id))
+            throw new DuplicateAnimalTypeException();
+
+        if (animal.AnimalTypes.Contains(oldType.Id) is false)
+            throw new AnimalTypeNotFoundException(oldType.Id);
+
+        return await _animalRepository.ReplaceTypeAsync(animalId, oldType, newType);
     }
 }
