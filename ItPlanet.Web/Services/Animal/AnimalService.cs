@@ -99,7 +99,7 @@ public class AnimalService : IAnimalService
             throw new UnableAddPointException();
 
         if (animal.VisitedPoints.Any() &&
-            animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
+            animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.LocationPointId == pointId)
             throw new UnableAddPointException();
 
         if (await _locationPointRepository.ExistAsync(pointId) is false)

@@ -37,6 +37,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication("Header")
     .AddScheme<HeaderAuthenticationOptions, HeaderAuthenticationHandler>("Header", null);
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
