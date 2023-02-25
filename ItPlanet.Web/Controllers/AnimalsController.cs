@@ -172,6 +172,27 @@ public class AnimalsController : PublicControllerBase
         }
     }
 
+    [HttpDelete("{animalId:long}/types/{typeId:long}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteAnimalTypeFromAnimal([Required] [Range(1, long.MaxValue)] long animalId,
+        [Required] [Range(1, long.MaxValue)] long typeId)
+    {
+        try
+        {
+            var type = await _animalTypeService.GetAnimalTypeAsync(typeId);
+            var animal = await _animalService.DeleteAnimalTypeFromAnimalAsync(animalId, type);
+            return Ok(animal);
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnableDeleteAnimalTypeException e)
+        {
+            return BadRequest();
+        }
+    }
+
     [HttpDelete("types/{typeId:long}")]
     [Authorize]
     public async Task<IActionResult> DeleteAnimalType([Required] [Range(1, long.MaxValue)] long typeId)

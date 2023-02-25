@@ -16,4 +16,6 @@ public interface IAnimalService
 
     Task<Domain.Models.Animal> ReplaceAnimalTypeAsync(long animalId, Domain.Models.AnimalType oldType,
         Domain.Models.AnimalType newType);
+
+    Task<Domain.Models.Animal> DeleteAnimalTypeFromAnimalAsync(long animalId, Domain.Models.AnimalType type);
 }

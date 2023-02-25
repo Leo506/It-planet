@@ -147,4 +147,18 @@ public class AnimalService : IAnimalService
 
         return await _animalRepository.ReplaceTypeAsync(animalId, oldType, newType);
     }
+
+    public async Task<Domain.Models.Animal> DeleteAnimalTypeFromAnimalAsync(long animalId,
+        Domain.Models.AnimalType type)
+    {
+        var animal = await GetAnimalAsync(animalId);
+
+        if (animal.AnimalTypes.Contains(type.Id) is false)
+            throw new AnimalTypeNotFoundException(type.Id);
+
+        if (animal.AnimalTypes.Contains(type.Id) && animal.AnimalTypes.Count() == 1)
+            throw new UnableDeleteAnimalTypeException();
+
+        return await _animalRepository.DeleteTypeAsync(animalId, type);
+    }
 }

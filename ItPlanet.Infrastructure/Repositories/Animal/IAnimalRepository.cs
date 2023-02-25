@@ -9,4 +9,6 @@ public interface IAnimalRepository : IRepository<Domain.Models.Animal, long>
 
     Task<Domain.Models.Animal> ReplaceTypeAsync(long animalId, Domain.Models.AnimalType oldType,
         Domain.Models.AnimalType newType);
+
+    Task<Domain.Models.Animal> DeleteTypeAsync(long animalId, Domain.Models.AnimalType type);
 }

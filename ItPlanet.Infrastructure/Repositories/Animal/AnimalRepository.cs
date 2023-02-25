@@ -65,6 +65,17 @@ public class AnimalRepository : IAnimalRepository
         return animal;
     }
 
+    public async Task<Domain.Models.Animal> DeleteTypeAsync(long animalId, Domain.Models.AnimalType type)
+    {
+        var animal = await GetAsync(animalId);
+
+        animal!.Types.Remove(type);
+
+        await _dbContext.SaveChangesAsync();
+
+        return animal;
+    }
+
     public Task<Domain.Models.Animal?> GetAsync(long id)
     {
         return _dbContext.Animals
