@@ -42,6 +42,16 @@ public class AnimalRepository : IAnimalRepository
         return await animals.Skip(search.From).Take(search.Size).ToListAsync().ConfigureAwait(false);
     }
 
+    public async Task<Domain.Models.Animal> AddType(long animalId, Domain.Models.AnimalType type)
+    {
+        var animal = await GetAsync(animalId);
+        animal!.Types.Add(type);
+
+        await _dbContext.SaveChangesAsync();
+
+        return animal;
+    }
+
     public Task<Domain.Models.Animal?> GetAsync(long id)
     {
         return _dbContext.Animals

@@ -12,4 +12,5 @@ public interface IAnimalService
     Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto);
     Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId);
     Task DeleteAnimalAsync(long animalId);
+    Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType typeId);
 }

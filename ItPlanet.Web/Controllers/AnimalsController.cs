@@ -129,6 +129,27 @@ public class AnimalsController : PublicControllerBase
         }
     }
 
+    [HttpPost("{animalId:long}/types/{typeId:long}")]
+    [Authorize]
+    public async Task<IActionResult> AddTypeToAnimal([Required] [Range(1, long.MaxValue)] long animalId,
+        [Required] [Range(1, long.MaxValue)] long typeId)
+    {
+        try
+        {
+            var type = await _animalTypeService.GetAnimalTypeAsync(typeId);
+            var animal = await _animalService.AddTypeToAnimalAsync(animalId, type);
+            return CreatedAtAction(nameof(AddTypeToAnimal), animal);
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (DuplicateAnimalTypeException e)
+        {
+            return Conflict();
+        }
+    }
+
     [HttpDelete("types/{typeId:long}")]
     [Authorize]
     public async Task<IActionResult> DeleteAnimalType([Required] [Range(1, long.MaxValue)] long typeId)

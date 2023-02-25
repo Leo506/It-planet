@@ -87,7 +87,7 @@ public class AnimalService : IAnimalService
         var newAnimal = await _animalRepository.CreateAsync(animal);
 
         await AddVisitedPointAsync(newAnimal.Id, animalDto.ChippingLocationId);
-        
+
         return await GetAnimalAsync(newAnimal.Id);
     }
 
@@ -98,7 +98,8 @@ public class AnimalService : IAnimalService
         if (animal.LifeStatus is LifeStatusConstants.Dead)
             throw new UnableAddPointException();
 
-        if (animal.VisitedPoints.Any() && animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
+        if (animal.VisitedPoints.Any() &&
+            animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.Id == pointId)
             throw new UnableAddPointException();
 
         if (await _locationPointRepository.ExistAsync(pointId) is false)
@@ -122,5 +123,14 @@ public class AnimalService : IAnimalService
             throw new UnableDeleteAnimalException();
 
         await _animalRepository.DeleteAsync(animal);
+    }
+
+    public async Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType type)
+    {
+        var animal = await GetAnimalAsync(animalId);
+        if (animal.Types.Any(x => x.Id == type.Id))
+            throw new DuplicateAnimalTypeException();
+
+        return await _animalRepository.AddType(animalId, type);
     }
 }
