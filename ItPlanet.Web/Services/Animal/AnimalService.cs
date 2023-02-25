@@ -161,4 +161,38 @@ public class AnimalService : IAnimalService
 
         return await _animalRepository.DeleteTypeAsync(animalId, type);
     }
+
+    public async Task<Domain.Models.Animal> UpdateAnimalAsync(long animalId, UpdateAnimalDto updateDto)
+    {
+        var animal = await GetAnimalAsync(animalId);
+
+        if (animal.LifeStatus is LifeStatusConstants.Dead && updateDto.LifeStatus is LifeStatusConstants.Alive)
+            throw new UnableUpdateAnimalException();
+
+        if (animal.VisitedPoints.Count > 1)
+            if (animal.VisitedPoints.OrderBy(x => x.DateTimeOfVisitLocationPoint).Skip(1).FirstOrDefault()
+                    ?.LocationPointId == updateDto.ChippingLocationId)
+                throw new UnableUpdateAnimalException();
+
+        if (await _accountRepository.ExistAsync(updateDto.ChipperId) is false)
+            throw new AccountNotFoundException(updateDto.ChipperId);
+
+        if (await _locationPointRepository.ExistAsync(updateDto.ChippingLocationId) is false)
+            throw new LocationPointNotFoundException(updateDto.ChippingLocationId);
+
+        var animalModel = new Domain.Models.Animal
+        {
+            Id = animalId,
+            ChipperId = updateDto.ChipperId,
+            Height = updateDto.Height,
+            Weight = updateDto.Weight,
+            Length = updateDto.Length,
+            ChippingLocationId = updateDto.ChippingLocationId,
+            LifeStatus = updateDto.LifeStatus,
+            Gender = updateDto.Gender,
+            DeathDateTime = updateDto.LifeStatus is LifeStatusConstants.Dead ? DateTime.Now : null
+        };
+
+        return await _animalRepository.UpdateAsync(animalModel);
+    }
 }

@@ -273,4 +273,28 @@ public class AnimalsController : PublicControllerBase
             return NotFound();
         }
     }
+
+    [HttpPut("{animalId:long}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateAnimal([Required] [Range(1, long.MaxValue)] long animalId,
+        [FromBody] UpdateAnimalDto updateDto)
+    {
+        if (updateDto.IsValid() is false)
+            return BadRequest();
+
+        try
+        {
+            var animal = await _animalService.UpdateAnimalAsync(animalId, updateDto);
+            return Ok(animal);
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or AccountNotFoundException
+                                      or LocationPointNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnableUpdateAnimalException e)
+        {
+            return BadRequest();
+        }
+    }
 }

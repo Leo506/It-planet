@@ -102,9 +102,22 @@ public class AnimalRepository : IAnimalRepository
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Models.Animal> UpdateAsync(Domain.Models.Animal model)
+    public async Task<Domain.Models.Animal> UpdateAsync(Domain.Models.Animal model)
     {
-        throw new NotImplementedException();
+        var animal = await GetAsync(model.Id);
+
+        animal!.Weight = model.Weight;
+        animal.Height = model.Height;
+        animal.LifeStatus = model.LifeStatus;
+        animal.Length = model.Length;
+        animal.ChipperId = model.ChipperId;
+        animal.Gender = model.Gender;
+        animal.DeathDateTime = model.DeathDateTime;
+        animal.ChippingLocationId = model.ChippingLocationId;
+
+        await _dbContext.SaveChangesAsync();
+
+        return animal;
     }
 
     public Task UpdateRangeAsync(IEnumerable<Domain.Models.Animal> models)
