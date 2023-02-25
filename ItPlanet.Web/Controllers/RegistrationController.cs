@@ -1,5 +1,6 @@
 ﻿using ItPlanet.Dto;
 using ItPlanet.Exceptions;
+using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,10 @@ public class RegistrationController : ControllerBase
     {
         try
         {
+            var (email, password) = Request.ExtractUserData();
+            if (string.IsNullOrEmpty(email) is false && string.IsNullOrEmpty(password) is false)
+                return Forbid();
+            
             var account = await _accountService.RegisterAccountAsync(accountDto);
             return Created(string.Empty, account);
         }
