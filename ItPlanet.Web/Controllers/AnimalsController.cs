@@ -317,4 +317,20 @@ public class AnimalsController : PublicControllerBase
             return BadRequest();
         }
     }
+
+    [HttpDelete("{animalId:long}/locations/{visitedPointId:long}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteVisitedPoint([Required] [Range(1, long.MaxValue)] long animalId,
+        [Required] [Range(1, long.MaxValue)] long visitedPointId)
+    {
+        try
+        {
+            await _animalService.DeleteVisitedPointAsync(animalId, visitedPointId);
+            return Ok();
+        }
+        catch (Exception e) when (e is AnimalNotFoundException or VisitedPointNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

@@ -52,9 +52,10 @@ public class VisitedPointRepository : IVisitedPointsRepository
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Domain.Models.VisitedPoint model)
+    public async Task DeleteAsync(Domain.Models.VisitedPoint model)
     {
-        throw new NotImplementedException();
+        _dbContext.VisitedPoints.Remove(model);
+        await _dbContext.SaveChangesAsync();
     }
 
     public Task DeleteRangeAsync(IEnumerable<Domain.Models.VisitedPoint> models)
