@@ -205,13 +205,16 @@ public class AnimalService : IAnimalService
         {
             if (visitedPoints[i].Id != replaceDto.VisitedLocationPointId) continue;
 
-            if (visitedPoints[i - 1].LocationPointId == replaceDto.LocationPointId)
+            if (i - 1 >= 0 && visitedPoints[i - 1].LocationPointId == replaceDto.LocationPointId)
                 throw new UnableChangeVisitedPoint();
 
             if (i + 1 < visitedPoints.Count && visitedPoints[i + 1].LocationPointId == replaceDto.LocationPointId)
                 throw new UnableChangeVisitedPoint();
 
             if (visitedPoints[i].LocationPointId == replaceDto.LocationPointId)
+                throw new UnableChangeVisitedPoint();
+
+            if (i == 0 && replaceDto.LocationPointId == animal.ChippingLocationId)
                 throw new UnableChangeVisitedPoint();
 
             break;
