@@ -98,6 +98,10 @@ public class AnimalService : IAnimalService
             animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.LocationPointId == pointId)
             throw new UnableAddPointException();
 
+        if (animal.VisitedPoints.Any() is false &&
+            animal.ChippingLocationId == pointId)
+            throw new UnableAddPointException();
+
         if (await _locationPointRepository.ExistAsync(pointId) is false)
             throw new LocationPointNotFoundException(pointId);
 
