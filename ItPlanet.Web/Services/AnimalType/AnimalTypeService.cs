@@ -22,7 +22,7 @@ public class AnimalTypeService : IAnimalTypeService
 
     public async Task<Domain.Models.AnimalType> CreateTypeAsync(AnimalTypeDto typeDto)
     {
-        if (await _repository.GetByType(typeDto.Type) is not null)
+        if (await HasType(typeDto.Type))
             throw new DuplicateAnimalTypeException();
 
         var typeModel = new Domain.Models.AnimalType
@@ -35,11 +35,7 @@ public class AnimalTypeService : IAnimalTypeService
 
     public async Task<Domain.Models.AnimalType> UpdateType(long typeId, AnimalTypeDto animalTypeDto)
     {
-        if (await _repository.ExistAsync(typeId).ConfigureAwait(false) is false)
-            throw new AnimalTypeNotFoundException(typeId);
-
-        if (await _repository.GetByType(animalTypeDto.Type) is not null)
-            throw new DuplicateAnimalTypeException();
+        await EnsureAvailableUpdateType(typeId, animalTypeDto);
 
         var typeModel = new Domain.Models.AnimalType
         {
@@ -50,16 +46,27 @@ public class AnimalTypeService : IAnimalTypeService
         return await _repository.UpdateAsync(typeModel);
     }
 
-    public async Task DeleteTypeAsync(long typeId)
+    private async Task EnsureAvailableUpdateType(long typeId, AnimalTypeDto animalTypeDto)
     {
-        var type = await _repository.GetAsync(typeId);
-
-        if (type is null)
+        if (await HasType(typeId) is false)
             throw new AnimalTypeNotFoundException(typeId);
 
-        if (type.Animals.Any())
-            throw new AnimalTypeDeletionException();
+        if (await HasType(animalTypeDto.Type))
+            throw new DuplicateAnimalTypeException();
+    }
 
+    private async Task<bool> HasType(string typeName) => await _repository.GetByType(typeName) is not null;
+    private Task<bool> HasType(long typeId) => _repository.ExistAsync(typeId);
+
+    public async Task DeleteTypeAsync(long typeId)
+    {
+        var type = await GetAnimalTypeAsync(typeId);
+
+        if (HasAnimalsWithType(type))
+            throw new AnimalTypeDeletionException();
+        
         await _repository.DeleteAsync(type);
+
+        bool HasAnimalsWithType(Domain.Models.AnimalType animalType) => animalType.Animals.Any();
     }
 }
