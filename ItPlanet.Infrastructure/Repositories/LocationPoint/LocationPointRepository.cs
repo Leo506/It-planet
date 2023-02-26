@@ -14,7 +14,9 @@ public class LocationPointRepository : ILocationPointRepository
 
     public Task<Domain.Models.LocationPoint?> GetAsync(long id)
     {
-        return _dbContext.LocationPoints.FirstOrDefaultAsync(x => x.Id == id);
+        return _dbContext.LocationPoints
+            .Include(x => x.VisitedPoints)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<List<Domain.Models.LocationPoint>> GetAllAsync()
@@ -71,5 +73,10 @@ public class LocationPointRepository : ILocationPointRepository
         const double precision = 0.00001;
         return _dbContext.LocationPoints.FirstOrDefaultAsync(x =>
             Math.Abs(x.Latitude - pointLatitude) <= precision && Math.Abs(x.Longitude - pointLongitude) <= precision);
+    }
+
+    public Task<bool> HasLinkedAnimal(long pointId)
+    {
+        return _dbContext.Animals.AnyAsync(x => x.ChippingLocationId == pointId);
     }
 }

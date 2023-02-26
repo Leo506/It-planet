@@ -69,6 +69,10 @@ public class LocationsController : PublicControllerBase
         {
             return NotFound();
         }
+        catch (UnableDeleteLocationPointException e)
+        {
+            return BadRequest();
+        }
     }
 
     [HttpPut("{pointId:long}")]
