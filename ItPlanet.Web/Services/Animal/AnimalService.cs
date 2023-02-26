@@ -119,7 +119,7 @@ public class AnimalService : IAnimalService
     {
         var animal = await GetAnimalAsync(animalId);
 
-        if (animal.VisitedPoints.Count >= 2)
+        if (animal.VisitedPoints.Any())
             throw new UnableDeleteAnimalException();
 
         await _animalRepository.DeleteAsync(animal);
