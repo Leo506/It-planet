@@ -7,6 +7,7 @@ using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 using ItPlanet.Web.Auth;
 using ItPlanet.Web.Converters;
 using ItPlanet.Web.Extensions;
+using ItPlanet.Web.Mapping;
 using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
@@ -30,7 +31,8 @@ builder.Services
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
     .AddTransient<ILocationPointRepository, LocationPointRepository>()
-    .AddTransient<IVisitedPointsRepository, VisitedPointRepository>();
+    .AddTransient<IVisitedPointsRepository, VisitedPointRepository>()
+    .AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

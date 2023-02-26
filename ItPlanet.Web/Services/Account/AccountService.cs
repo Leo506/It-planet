@@ -1,4 +1,5 @@
-﻿using ItPlanet.Domain.Exceptions;
+﻿using AutoMapper;
+using ItPlanet.Domain.Exceptions;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
@@ -8,10 +9,12 @@ namespace ItPlanet.Web.Services.Account;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IMapper _mapper;
 
-    public AccountService(IAccountRepository accountRepository)
+    public AccountService(IAccountRepository accountRepository, IMapper mapper)
     {
         _accountRepository = accountRepository;
+        _mapper = mapper;
     }
 
     public async Task<Domain.Models.Account> GetAccountAsync(int id)
@@ -22,6 +25,7 @@ public class AccountService : IAccountService
 
     public Task<IEnumerable<Domain.Models.Account>> SearchAsync(SearchAccountDto searchAccountDto)
     {
+        // TODO think about searching implementation
         return _accountRepository.FindAsync(searchAccountDto);
     }
 
@@ -30,14 +34,7 @@ public class AccountService : IAccountService
         if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
             throw new DuplicateEmailException();
 
-        // TODO use AutoMapper
-        var account = new Domain.Models.Account
-        {
-            FirstName = accountDto.FirstName,
-            LastName = accountDto.LastName,
-            Email = accountDto.Email,
-            Password = accountDto.Password
-        };
+        var account = _mapper.Map<Domain.Models.Account>(accountDto);
 
         return await _accountRepository.CreateAsync(account);
     }
@@ -45,32 +42,42 @@ public class AccountService : IAccountService
     public async Task RemoveAccountAsync(int id)
     {
         var account = await GetAccountAsync(id).ConfigureAwait(false);
-        if (account.Animals.Any())
+        
+        if (AccountRelatedToAnimal())
             throw new AccountDeletionException();
+        
         await _accountRepository.DeleteAsync(account).ConfigureAwait(false);
+
+        bool AccountRelatedToAnimal()
+        {
+            return account.Animals.Any();
+        }
     }
 
     public async Task<Domain.Models.Account> UpdateAccountAsync(int accountId, AccountDto accountDto)
     {
+        await EnsureAvailableAccountUpdate(accountId, accountDto);
+
+        var account = _mapper.Map<Domain.Models.Account>(accountDto);
+        account.Id = accountId;
+
+        return await _accountRepository.UpdateAsync(account).ConfigureAwait(false);
+    }
+
+    private async Task EnsureAvailableAccountUpdate(int accountId, AccountDto accountDto)
+    {
         if (await _accountRepository.ExistAsync(accountId).ConfigureAwait(false) is false)
             throw new AccountNotFoundException(accountId);
 
-        var accountWithProvidedEmail = await _accountRepository.GetByEmail(accountDto.Email).ConfigureAwait(false);
-
-        if (accountWithProvidedEmail is not null && accountId != accountWithProvidedEmail.Id)
+        if (await IsEmailAlreadyUsed())
             throw new DuplicateEmailException();
-
-        // TODO Add AutoMapper
-        var account = new Domain.Models.Account
+        
+        async Task<bool> IsEmailAlreadyUsed()
         {
-            Id = accountId,
-            FirstName = accountDto.FirstName,
-            LastName = accountDto.LastName,
-            Email = accountDto.Email,
-            Password = accountDto.Password
-        };
+            var accountWithProvidedEmail = await _accountRepository.GetByEmail(accountDto.Email).ConfigureAwait(false);
 
-        return await _accountRepository.UpdateAsync(account).ConfigureAwait(false);
+            return accountWithProvidedEmail is not null && accountId != accountWithProvidedEmail.Id;
+        }
     }
 
     public async Task EnsureEmailBelongsToAccount(int accountId, string email)
