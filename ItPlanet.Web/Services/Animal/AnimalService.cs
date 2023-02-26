@@ -169,8 +169,8 @@ public class AnimalService : IAnimalService
         if (animal.LifeStatus is LifeStatusConstants.Dead && updateDto.LifeStatus is LifeStatusConstants.Alive)
             throw new UnableUpdateAnimalException();
 
-        if (animal.VisitedPoints.Count > 1)
-            if (animal.VisitedPoints.OrderBy(x => x.DateTimeOfVisitLocationPoint).Skip(1).FirstOrDefault()
+        if (animal.VisitedPoints.Any())
+            if (animal.VisitedPoints.MinBy(x => x.DateTimeOfVisitLocationPoint)
                     ?.LocationPointId == updateDto.ChippingLocationId)
                 throw new UnableUpdateAnimalException();
 
