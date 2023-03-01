@@ -6,6 +6,7 @@ using ItPlanet.Exceptions;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
 using ItPlanet.Web.Services.Auth;
+using ItPlanet.Web.Services.VisitedPoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +18,18 @@ public class AnimalsController : PublicControllerBase
 {
     private readonly IAnimalService _animalService;
     private readonly IAnimalTypeService _animalTypeService;
+    private readonly IVisitedPointsService _visitedPointsService;
     private readonly ILogger<AnimalsController> _logger;
 
     public AnimalsController(IAnimalService animalService, ILogger<AnimalsController> logger,
-        IAnimalTypeService animalTypeService, IHeaderAuthenticationService headerAuthenticationService) : base(
+        IAnimalTypeService animalTypeService, IHeaderAuthenticationService headerAuthenticationService,
+        IVisitedPointsService visitedPointsService) : base(
         headerAuthenticationService)
     {
         _animalService = animalService;
         _logger = logger;
         _animalTypeService = animalTypeService;
+        _visitedPointsService = visitedPointsService;
     }
 
     [HttpGet("{id:long}")]
@@ -84,7 +88,7 @@ public class AnimalsController : PublicControllerBase
 
         try
         {
-            var points = await _animalService.GetAnimalVisitedPoints(animalId, visitedLocationDto);
+            var points = await _visitedPointsService.GetAnimalVisitedPoints(animalId, visitedLocationDto);
             return Ok(points);
         }
         catch (AnimalNotFoundException e)
@@ -241,7 +245,7 @@ public class AnimalsController : PublicControllerBase
     {
         try
         {
-            var visitedPoint = await _animalService.AddVisitedPointAsync(animalId, pointId).ConfigureAwait(false);
+            var visitedPoint = await _visitedPointsService.AddVisitedPointAsync(animalId, pointId).ConfigureAwait(false);
 
             return CreatedAtAction(nameof(AddVisitedPoint), visitedPoint);
         }
@@ -305,7 +309,7 @@ public class AnimalsController : PublicControllerBase
     {
         try
         {
-            var visitedPoint = await _animalService.UpdateVisitedPoint(animalId, replaceDto);
+            var visitedPoint = await _visitedPointsService.UpdateVisitedPoint(animalId, replaceDto);
             return Ok(visitedPoint);
         }
         catch (Exception e) when (e is AnimalNotFoundException or LocationPointNotFoundException)
@@ -325,7 +329,7 @@ public class AnimalsController : PublicControllerBase
     {
         try
         {
-            await _animalService.DeleteVisitedPointAsync(animalId, visitedPointId);
+            await _visitedPointsService.DeleteVisitedPointAsync(animalId, visitedPointId);
             return Ok();
         }
         catch (Exception e) when (e is AnimalNotFoundException or VisitedPointNotFoundException)

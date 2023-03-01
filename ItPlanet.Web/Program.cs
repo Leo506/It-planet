@@ -13,6 +13,7 @@ using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
 using ItPlanet.Web.Services.Auth;
 using ItPlanet.Web.Services.LocationPoint;
+using ItPlanet.Web.Services.VisitedPoints;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ builder.Services
     .AddTransient<IAnimalTypeService, AnimalTypeService>()
     .AddTransient<ILocationPointService, LocationPointService>()
     .AddTransient<IHeaderAuthenticationService, HeaderAuthenticationService>()
+    .AddTransient<IVisitedPointsService, VisitedPointsService>()
     .AddTransient<IAccountRepository, AccountRepository>()
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()

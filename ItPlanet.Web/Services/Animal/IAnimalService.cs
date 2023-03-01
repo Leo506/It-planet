@@ -8,9 +8,7 @@ public interface IAnimalService
 {
     Task<Domain.Models.Animal> GetAnimalAsync(long id);
     Task<IEnumerable<Domain.Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto);
-    Task<IEnumerable<VisitedPoint>> GetAnimalVisitedPoints(long animalId, VisitedLocationDto visitedLocationDto);
     Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto);
-    Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId);
     Task DeleteAnimalAsync(long animalId);
     Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType typeId);
 
@@ -19,6 +17,4 @@ public interface IAnimalService
 
     Task<Domain.Models.Animal> DeleteAnimalTypeFromAnimalAsync(long animalId, Domain.Models.AnimalType type);
     Task<Domain.Models.Animal> UpdateAnimalAsync(long animalId, UpdateAnimalDto updateDto);
-    Task<VisitedPoint> UpdateVisitedPoint(long animalId, ReplaceVisitedPointDto replaceDto);
-    Task DeleteVisitedPointAsync(long animalId, long visitedPointId);
 }
