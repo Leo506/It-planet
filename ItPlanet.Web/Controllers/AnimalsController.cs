@@ -141,7 +141,7 @@ public class AnimalsController : PublicControllerBase
         try
         {
             var type = await _animalTypeService.GetAnimalTypeAsync(typeId);
-            var animal = await _animalService.AddTypeToAnimalAsync(animalId, type);
+            var animal = await _animalTypeService.AddTypeToAnimalAsync(animalId, type);
             return CreatedAtAction(nameof(AddTypeToAnimal), animal);
         }
         catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)
@@ -163,7 +163,7 @@ public class AnimalsController : PublicControllerBase
         {
             var oldType = await _animalTypeService.GetAnimalTypeAsync(replaceDto.OldTypeId);
             var newType = await _animalTypeService.GetAnimalTypeAsync(replaceDto.NewTypeId);
-            var animal = await _animalService.ReplaceAnimalTypeAsync(animalId, oldType, newType);
+            var animal = await _animalTypeService.ReplaceAnimalTypeAsync(animalId, oldType, newType);
             return Ok(animal);
         }
         catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)
@@ -184,7 +184,7 @@ public class AnimalsController : PublicControllerBase
         try
         {
             var type = await _animalTypeService.GetAnimalTypeAsync(typeId);
-            var animal = await _animalService.DeleteAnimalTypeFromAnimalAsync(animalId, type);
+            var animal = await _animalTypeService.DeleteAnimalTypeFromAnimalAsync(animalId, type);
             return Ok(animal);
         }
         catch (Exception e) when (e is AnimalNotFoundException or AnimalTypeNotFoundException)

@@ -1,5 +1,4 @@
 ﻿using ItPlanet.Domain.Dto;
-using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 
 namespace ItPlanet.Web.Services.Animal;
@@ -10,11 +9,5 @@ public interface IAnimalService
     Task<IEnumerable<Domain.Models.Animal>> SearchAnimalAsync(SearchAnimalDto searchAnimalDto);
     Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto);
     Task DeleteAnimalAsync(long animalId);
-    Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType typeId);
-
-    Task<Domain.Models.Animal> ReplaceAnimalTypeAsync(long animalId, Domain.Models.AnimalType oldType,
-        Domain.Models.AnimalType newType);
-
-    Task<Domain.Models.Animal> DeleteAnimalTypeFromAnimalAsync(long animalId, Domain.Models.AnimalType type);
     Task<Domain.Models.Animal> UpdateAnimalAsync(long animalId, UpdateAnimalDto updateDto);
 }

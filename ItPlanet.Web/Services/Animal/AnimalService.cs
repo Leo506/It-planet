@@ -8,7 +8,6 @@ using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
-using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 using ItPlanet.Web.Extensions;
 
 namespace ItPlanet.Web.Services.Animal;
@@ -19,18 +18,15 @@ public class AnimalService : IAnimalService
     private readonly IAnimalRepository _animalRepository;
     private readonly IAnimalTypeRepository _animalTypeRepository;
     private readonly ILocationPointRepository _locationPointRepository;
-    private readonly IVisitedPointsRepository _visitedPointsRepository;
     private readonly IMapper _mapper;
 
     public AnimalService(IAnimalRepository animalRepository, IAnimalTypeRepository animalTypeRepository,
-        IAccountRepository accountRepository, ILocationPointRepository locationPointRepository,
-        IVisitedPointsRepository visitedPointsRepository, IMapper mapper)
+        IAccountRepository accountRepository, ILocationPointRepository locationPointRepository, IMapper mapper)
     {
         _animalRepository = animalRepository;
         _animalTypeRepository = animalTypeRepository;
         _accountRepository = accountRepository;
         _locationPointRepository = locationPointRepository;
-        _visitedPointsRepository = visitedPointsRepository;
         _mapper = mapper;
     }
 
@@ -82,43 +78,6 @@ public class AnimalService : IAnimalService
             throw new UnableDeleteAnimalException();
 
         await _animalRepository.DeleteAsync(animal);
-    }
-
-    public async Task<Domain.Models.Animal> AddTypeToAnimalAsync(long animalId, Domain.Models.AnimalType type)
-    {
-        var animal = await GetAnimalAsync(animalId);
-        if (animal.AnimalTypes.Contains(type.Id))
-            throw new DuplicateAnimalTypeException();
-
-        return await _animalRepository.AddTypeAsync(animalId, type);
-    }
-
-    public async Task<Domain.Models.Animal> ReplaceAnimalTypeAsync(long animalId, Domain.Models.AnimalType oldType,
-        Domain.Models.AnimalType newType)
-    {
-        var animal = await GetAnimalAsync(animalId);
-
-        if (animal.AnimalTypes.Contains(newType.Id))
-            throw new DuplicateAnimalTypeException();
-
-        if (animal.AnimalTypes.Contains(oldType.Id) is false)
-            throw new AnimalTypeNotFoundException(oldType.Id);
-
-        return await _animalRepository.ReplaceTypeAsync(animalId, oldType, newType);
-    }
-
-    public async Task<Domain.Models.Animal> DeleteAnimalTypeFromAnimalAsync(long animalId,
-        Domain.Models.AnimalType type)
-    {
-        var animal = await GetAnimalAsync(animalId);
-
-        if (animal.AnimalTypes.Contains(type.Id) is false)
-            throw new AnimalTypeNotFoundException(type.Id);
-
-        if (animal.AnimalTypes.Contains(type.Id) && animal.AnimalTypes.Count() == 1)
-            throw new UnableDeleteAnimalTypeException();
-
-        return await _animalRepository.DeleteTypeAsync(animalId, type);
     }
 
     public async Task<Domain.Models.Animal> UpdateAnimalAsync(long animalId, UpdateAnimalDto updateDto)
