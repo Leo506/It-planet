@@ -1,4 +1,5 @@
-﻿using ItPlanet.Domain.Dto;
+﻿using AutoMapper;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
@@ -8,6 +9,7 @@ using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
 using ItPlanet.Infrastructure.Repositories.VisitedPoint;
+using ItPlanet.Web.Extensions;
 
 namespace ItPlanet.Web.Services.Animal;
 
@@ -18,16 +20,18 @@ public class AnimalService : IAnimalService
     private readonly IAnimalTypeRepository _animalTypeRepository;
     private readonly ILocationPointRepository _locationPointRepository;
     private readonly IVisitedPointsRepository _visitedPointsRepository;
+    private readonly IMapper _mapper;
 
     public AnimalService(IAnimalRepository animalRepository, IAnimalTypeRepository animalTypeRepository,
         IAccountRepository accountRepository, ILocationPointRepository locationPointRepository,
-        IVisitedPointsRepository visitedPointsRepository)
+        IVisitedPointsRepository visitedPointsRepository, IMapper mapper)
     {
         _animalRepository = animalRepository;
         _animalTypeRepository = animalTypeRepository;
         _accountRepository = accountRepository;
         _locationPointRepository = locationPointRepository;
         _visitedPointsRepository = visitedPointsRepository;
+        _mapper = mapper;
     }
 
     public async Task<Domain.Models.Animal> GetAnimalAsync(long id)
@@ -57,7 +61,20 @@ public class AnimalService : IAnimalService
 
     public async Task<Domain.Models.Animal> CreateAnimalAsync(AnimalDto animalDto)
     {
-        if (animalDto.AnimalTypes.ToHashSet().Count != animalDto.AnimalTypes.Length)
+        await EnsureAvailableCreateAnimal(animalDto);
+
+        var animal = _mapper.Map<Domain.Models.Animal>(animalDto);
+        animal.LifeStatus = LifeStatusConstants.Alive;
+        animal.ChippingDateTime = DateTime.Now;
+
+        foreach (var typeId in animalDto.AnimalTypes) animal.Types.Add((await _animalTypeRepository.GetAsync(typeId))!);
+
+        return await _animalRepository.CreateAsync(animal);
+    }
+
+    private async Task EnsureAvailableCreateAnimal(AnimalDto animalDto)
+    {
+        if (animalDto.AnimalTypes.HasDuplicates())
             throw new DuplicateAnimalTypeException();
 
         foreach (var type in animalDto.AnimalTypes)
@@ -69,41 +86,13 @@ public class AnimalService : IAnimalService
 
         if (await _locationPointRepository.ExistAsync(animalDto.ChippingLocationId) is false)
             throw new LocationPointNotFoundException(animalDto.ChippingLocationId);
-
-        var animal = new Domain.Models.Animal
-        {
-            ChipperId = animalDto.ChipperId,
-            Weight = animalDto.Weight,
-            Height = animalDto.Height,
-            Length = animalDto.Length,
-            LifeStatus = LifeStatusConstants.Alive,
-            ChippingDateTime = DateTime.Now,
-            ChippingLocationId = animalDto.ChippingLocationId,
-            Gender = animalDto.Gender
-        };
-
-        foreach (var typeId in animalDto.AnimalTypes) animal.Types.Add((await _animalTypeRepository.GetAsync(typeId))!);
-
-        return await _animalRepository.CreateAsync(animal);
     }
 
     public async Task<VisitedPoint> AddVisitedPointAsync(long animalId, long pointId)
     {
         var animal = await GetAnimalAsync(animalId);
 
-        if (animal.LifeStatus is LifeStatusConstants.Dead)
-            throw new UnableAddPointException();
-
-        if (animal.VisitedPoints.Any() &&
-            animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.LocationPointId == pointId)
-            throw new UnableAddPointException();
-
-        if (animal.VisitedPoints.Any() is false &&
-            animal.ChippingLocationId == pointId)
-            throw new UnableAddPointException();
-
-        if (await _locationPointRepository.ExistAsync(pointId) is false)
-            throw new LocationPointNotFoundException(pointId);
+        await EnsureAvailableAddVisitedPoint(pointId, animal);
 
         var visitedPoint = new VisitedPoint
         {
@@ -115,6 +104,33 @@ public class AnimalService : IAnimalService
         return await _visitedPointsRepository.CreateAsync(visitedPoint);
     }
 
+    private async Task EnsureAvailableAddVisitedPoint(long pointId, Domain.Models.Animal animal)
+    {
+        if (animal.LifeStatus is LifeStatusConstants.Dead)
+            throw new UnableAddPointException();
+
+        if (IsAttemptToAddDuplicatePoint(pointId, animal))
+            throw new UnableAddPointException();
+
+        if (IsAttemptToAddChippingPointAsFirstVisited(pointId, animal))
+            throw new UnableAddPointException();
+
+        if (await _locationPointRepository.ExistAsync(pointId) is false)
+            throw new LocationPointNotFoundException(pointId);
+    }
+
+    private static bool IsAttemptToAddDuplicatePoint(long pointId, Domain.Models.Animal animal)
+    {
+        return animal.VisitedPoints.Any() &&
+               animal.VisitedPoints.MaxBy(x => x.DateTimeOfVisitLocationPoint)?.LocationPointId == pointId;
+    }
+    
+    private static bool IsAttemptToAddChippingPointAsFirstVisited(long pointId, Domain.Models.Animal animal)
+    {
+        return animal.VisitedPoints.Any() is false &&
+               animal.ChippingLocationId == pointId;
+    }
+    
     public async Task DeleteAnimalAsync(long animalId)
     {
         var animal = await GetAnimalAsync(animalId);
@@ -169,10 +185,8 @@ public class AnimalService : IAnimalService
         if (animal.LifeStatus is LifeStatusConstants.Dead && updateDto.LifeStatus is LifeStatusConstants.Alive)
             throw new UnableUpdateAnimalException();
 
-        if (animal.VisitedPoints.Any())
-            if (animal.VisitedPoints.MinBy(x => x.DateTimeOfVisitLocationPoint)
-                    ?.LocationPointId == updateDto.ChippingLocationId)
-                throw new UnableUpdateAnimalException();
+        if (IsAttemptToSetFirstVisitedPointAsChippingPoint(animal, updateDto.ChippingLocationId))
+            throw new UnableUpdateAnimalException();
 
         if (await _accountRepository.ExistAsync(updateDto.ChipperId) is false)
             throw new AccountNotFoundException(updateDto.ChipperId);
@@ -180,53 +194,28 @@ public class AnimalService : IAnimalService
         if (await _locationPointRepository.ExistAsync(updateDto.ChippingLocationId) is false)
             throw new LocationPointNotFoundException(updateDto.ChippingLocationId);
 
-        var animalModel = new Domain.Models.Animal
-        {
-            Id = animalId,
-            ChipperId = updateDto.ChipperId,
-            Height = updateDto.Height,
-            Weight = updateDto.Weight,
-            Length = updateDto.Length,
-            ChippingLocationId = updateDto.ChippingLocationId,
-            LifeStatus = updateDto.LifeStatus,
-            Gender = updateDto.Gender,
-            DeathDateTime = updateDto.LifeStatus is LifeStatusConstants.Dead ? DateTime.Now : null
-        };
+        var animalModel = _mapper.Map<Domain.Models.Animal>(updateDto);
+        animalModel.DeathDateTime = updateDto.LifeStatus is LifeStatusConstants.Dead ? DateTime.Now : null;
+        animalModel.Id = animalId;
+        animalModel.ChippingDateTime = animal.ChippingDateTime;
 
         return await _animalRepository.UpdateAsync(animalModel);
     }
 
+    private static bool IsAttemptToSetFirstVisitedPointAsChippingPoint(Domain.Models.Animal animal, long locationPointId)
+    {
+        return animal.VisitedPoints.Any() &&
+               animal.VisitedPoints.MinBy(x => x.DateTimeOfVisitLocationPoint)?.LocationPointId == locationPointId;
+    }
+
     public async Task<VisitedPoint> UpdateVisitedPoint(long animalId, ReplaceVisitedPointDto replaceDto)
     {
-        if (await _locationPointRepository.ExistAsync(replaceDto.LocationPointId) is false)
-            throw new LocationPointNotFoundException(replaceDto.LocationPointId);
-
         var animal = await GetAnimalAsync(animalId);
+        
+        await EnsureAvailableUpdateVisitedPoint(replaceDto, animal);
 
         var visitedPoints = animal.VisitedPoints.ToList();
-
-        for (var i = 0; i < visitedPoints.Count; i++)
-        {
-            if (visitedPoints[i].Id != replaceDto.VisitedLocationPointId) continue;
-
-            if (i - 1 >= 0 && visitedPoints[i - 1].LocationPointId == replaceDto.LocationPointId)
-                throw new UnableChangeVisitedPoint();
-
-            if (i + 1 < visitedPoints.Count && visitedPoints[i + 1].LocationPointId == replaceDto.LocationPointId)
-                throw new UnableChangeVisitedPoint();
-
-            if (visitedPoints[i].LocationPointId == replaceDto.LocationPointId)
-                throw new UnableChangeVisitedPoint();
-
-            if (i == 0 && replaceDto.LocationPointId == animal.ChippingLocationId)
-                throw new UnableChangeVisitedPoint();
-
-            break;
-        }
-
-        var point = visitedPoints.FirstOrDefault(x => x.Id == replaceDto.VisitedLocationPointId);
-        if (point is null)
-            throw new LocationPointNotFoundException(default); // TODO переработать
+        var point = visitedPoints.First(x => x.Id == replaceDto.VisitedLocationPointId);
 
         var visitedPoint = new VisitedPoint
         {
@@ -237,6 +226,30 @@ public class AnimalService : IAnimalService
         };
 
         return await _visitedPointsRepository.UpdateAsync(visitedPoint);
+    }
+
+    private async Task EnsureAvailableUpdateVisitedPoint(ReplaceVisitedPointDto replaceDto, Domain.Models.Animal animal)
+    {
+        var previousAndNextPoints =
+            animal.VisitedPoints.GetPreviousAndNextElements(x => x.Id == replaceDto.VisitedLocationPointId);
+        
+        if (previousAndNextPoints.previous?.LocationPointId == replaceDto.LocationPointId)
+            throw new UnableChangeVisitedPoint();
+
+        if (previousAndNextPoints.previous is null && animal.ChippingLocationId == replaceDto.LocationPointId)
+            throw new UnableChangeVisitedPoint();
+
+        if (previousAndNextPoints.next?.LocationPointId == replaceDto.LocationPointId)
+            throw new UnableChangeVisitedPoint();
+
+        if (previousAndNextPoints.current is null)
+            throw new LocationPointNotFoundException(replaceDto.VisitedLocationPointId);
+
+        if (previousAndNextPoints.current.LocationPointId == replaceDto.LocationPointId)
+            throw new UnableChangeVisitedPoint();
+
+        if (await _locationPointRepository.ExistAsync(replaceDto.LocationPointId) is false)
+            throw new LocationPointNotFoundException(replaceDto.LocationPointId);
     }
 
     public async Task DeleteVisitedPointAsync(long animalId, long visitedPointId)
