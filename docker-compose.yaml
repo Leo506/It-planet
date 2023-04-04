@@ -24,7 +24,7 @@ services:
       - app-tier
 
   tests: 
-    image: mrexpen/planet_olymp_phase1
+    image: mrexpen/planet_olymp_phase2
     pull_policy: always
     ports:
       - "8090:8080"
@@ -32,7 +32,7 @@ services:
       - webapi
     environment:
       SERVER_URL: http://webapi:80
-      STAGE: all
+      STAGE: 0
     networks:
       - app-tier
 
