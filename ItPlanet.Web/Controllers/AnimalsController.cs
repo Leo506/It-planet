@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
-using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;

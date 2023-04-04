@@ -1,4 +1,4 @@
-﻿using ItPlanet.Dto;
+﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;

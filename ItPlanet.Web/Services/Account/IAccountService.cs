@@ -1,4 +1,4 @@
-﻿using ItPlanet.Dto;
+﻿using ItPlanet.Domain.Dto;
 
 namespace ItPlanet.Web.Services.Account;
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Models;
-using ItPlanet.Dto;
 
 namespace ItPlanet.Web.Mapping;
 

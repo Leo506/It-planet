@@ -1,5 +1,4 @@
 ﻿using ItPlanet.Domain.Dto;
-using ItPlanet.Dto;
 
 namespace ItPlanet.Web.Services.Animal;
 

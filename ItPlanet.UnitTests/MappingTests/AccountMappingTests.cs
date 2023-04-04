@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Models;
-using ItPlanet.Dto;
 
 namespace ItPlanet.UnitTests.MappingTests;
 

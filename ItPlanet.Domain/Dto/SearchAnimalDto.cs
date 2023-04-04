@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ItPlanet.Dto;
+namespace ItPlanet.Domain.Dto;
 
 public class SearchAnimalDto
 {

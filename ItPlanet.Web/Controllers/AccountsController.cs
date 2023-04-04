@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
-using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;

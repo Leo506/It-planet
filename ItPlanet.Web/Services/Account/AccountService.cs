@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
-using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Role;

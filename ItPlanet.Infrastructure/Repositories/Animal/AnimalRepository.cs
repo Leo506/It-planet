@@ -1,4 +1,4 @@
-﻿using ItPlanet.Dto;
+﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
