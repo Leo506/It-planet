@@ -31,7 +31,7 @@ public class LocationPointRepository : ILocationPointRepository
         return result.Entity;
     }
 
-    public Task CreateRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)
+    public Task CreateRangeAsync(params Domain.Models.LocationPoint[] models)
     {
         throw new NotImplementedException();
     }

@@ -29,7 +29,7 @@ public class VisitedPointRepository : IVisitedPointsRepository
         return entity.Entity;
     }
 
-    public Task CreateRangeAsync(IEnumerable<Domain.Models.VisitedPoint> models)
+    public Task CreateRangeAsync(params Domain.Models.VisitedPoint[] models)
     {
         throw new NotImplementedException();
     }

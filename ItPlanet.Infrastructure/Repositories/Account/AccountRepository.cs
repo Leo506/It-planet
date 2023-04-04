@@ -60,16 +60,20 @@ public class AccountRepository : IAccountRepository
             .ToListAsync();
     }
 
+
+    public async Task CreateRangeAsync(params Domain.Models.Account[] models)
+    {
+        foreach (var account in models)
+        {
+            await CreateAsync(account).ConfigureAwait(false);
+        }
+    }
+    
     public async Task<Domain.Models.Account> CreateAsync(Domain.Models.Account model)
     {
         var result = await _dbContext.Accounts.AddAsync(model).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         return result.Entity;
-    }
-
-    public Task CreateRangeAsync(IEnumerable<Domain.Models.Account> models)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Domain.Models.Account> UpdateAsync(Domain.Models.Account model)

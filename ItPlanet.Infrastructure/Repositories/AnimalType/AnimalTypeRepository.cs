@@ -31,7 +31,7 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         return result.Entity;
     }
 
-    public Task CreateRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
+    public Task CreateRangeAsync(params Domain.Models.AnimalType[] models)
     {
         throw new NotImplementedException();
     }

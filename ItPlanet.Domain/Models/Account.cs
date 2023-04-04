@@ -14,5 +14,9 @@ public class Account
 
     [JsonIgnore] public string Password { get; set; } = null!;
 
+    [JsonIgnore] public int RoleId { get; set; }
+
     [JsonIgnore] public virtual ICollection<Animal> Animals { get; } = new List<Animal>();
+
+    public virtual Role Role { get; set; } = null!;
 }

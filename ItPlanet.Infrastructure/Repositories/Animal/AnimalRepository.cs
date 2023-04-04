@@ -97,7 +97,7 @@ public class AnimalRepository : IAnimalRepository
         return animal.Entity;
     }
 
-    public Task CreateRangeAsync(IEnumerable<Domain.Models.Animal> models)
+    public Task CreateRangeAsync(params Domain.Models.Animal[] models)
     {
         throw new NotImplementedException();
     }

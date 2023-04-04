@@ -24,24 +24,37 @@ public partial class ApiDbContext : DbContext
 
     public virtual DbSet<LocationPoint> LocationPoints { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<VisitedPoint> VisitedPoints { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("User Id=admin;Password=password;Host=localhost;Port=5432;Database=Test");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
+            entity.HasIndex(e => e.Email, "IX_Accounts_Email").IsUnique();
+
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'password'::character varying");
-            entity.HasIndex(e => e.Email).IsUnique();
-        });
 
+            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Accounts_Roles_Id_fk");
+        });
 
         modelBuilder.Entity<Animal>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Animal_pk");
 
             entity.ToTable("Animal");
+
+            entity.HasIndex(e => e.ChipperId, "IX_Animal_ChipperId");
 
             entity.Property(e => e.ChippingDateTime).HasColumnType("timestamp without time zone");
             entity.Property(e => e.DeathDateTime).HasColumnType("timestamp without time zone");
@@ -65,6 +78,7 @@ public partial class ApiDbContext : DbContext
                     j =>
                     {
                         j.HasKey("AnimalId", "TypeId").HasName("AnimalToTypes_pk");
+                        j.ToTable("AnimalToType");
                         j.HasIndex(new[] { "TypeId" }, "IX_AnimalToTypes_TypeId");
                     });
         });
@@ -83,6 +97,13 @@ public partial class ApiDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("LocationPoints_pk");
 
             entity.Property(e => e.Longitude).HasColumnName("longitude");
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Roles_pk");
+
+            entity.Property(e => e.RoleName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<VisitedPoint>(entity =>

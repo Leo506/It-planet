@@ -12,6 +12,7 @@ using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
 using ItPlanet.Web.Services.Auth;
+using ItPlanet.Web.Services.DatabaseFiller;
 using ItPlanet.Web.Services.LocationPoint;
 using ItPlanet.Web.Services.VisitedPoints;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,8 @@ builder.Services
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
     .AddTransient<ILocationPointRepository, LocationPointRepository>()
     .AddTransient<IVisitedPointsRepository, VisitedPointRepository>()
-    .AddAutoMapper(typeof(AutoMapperProfile));
+    .AddAutoMapper(typeof(AutoMapperProfile))
+    .AddHostedService<AccountFiller>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

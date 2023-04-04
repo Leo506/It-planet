@@ -8,7 +8,7 @@ public interface IRepository<TModel, in TId>
 
     Task<TModel> CreateAsync(TModel model);
 
-    Task CreateRangeAsync(IEnumerable<TModel> models);
+    Task CreateRangeAsync(params TModel[] models);
 
     Task<TModel> UpdateAsync(TModel model);
 
