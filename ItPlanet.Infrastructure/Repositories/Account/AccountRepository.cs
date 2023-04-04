@@ -13,23 +13,22 @@ public class AccountRepository : IAccountRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search)
+    public Task<IEnumerable<Domain.Models.Account>> FindAsync(SearchAccountDto search)
     {
-        return _dbContext.Accounts
+        return Task.FromResult<IEnumerable<Domain.Models.Account>>(_dbContext.Accounts
             .Include(x => x.Animals)
+            .Include(x => x.Role)
             .Where(x =>
                 x.FirstName.ToLower().Contains(search.FirstName.ToLower()) &&
                 x.LastName.ToLower().Contains(search.LastName.ToLower()) &&
                 x.Email.ToLower().Contains(search.Email.ToLower()))
             .OrderBy(x => x.Id)
-            .Skip(search.From).Take(search.Size);
+            .Skip(search.From).Take(search.Size));
     }
 
-    public async Task<bool> HasAccountWithEmail(string email)
+    public Task<bool> HasAccountWithEmail(string email)
     {
-        var account = await _dbContext.Accounts
-            .FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
-        return account is not null;
+        return _dbContext.Accounts.AnyAsync(x => x.Email == email);
     }
 
     public Task<Domain.Models.Account?> GetByEmailAndPassword(string email, string password)
@@ -43,6 +42,7 @@ public class AccountRepository : IAccountRepository
     {
         return _dbContext.Accounts
             .Include(x => x.Animals)
+            .Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Email == email);
     }
 
@@ -50,6 +50,7 @@ public class AccountRepository : IAccountRepository
     {
         return _dbContext.Accounts
             .Include(x => x.Animals)
+            .Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -57,6 +58,7 @@ public class AccountRepository : IAccountRepository
     {
         return _dbContext.Accounts
             .Include(x => x.Animals)
+            .Include(x => x.Role)
             .ToListAsync();
     }
 
