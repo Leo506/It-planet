@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ItPlanet.Domain.Models;
 
@@ -18,5 +19,9 @@ public class Account
 
     [JsonIgnore] public virtual ICollection<Animal> Animals { get; } = new List<Animal>();
 
-    public virtual Role Role { get; set; } = null!;
+    [JsonIgnore] public virtual Role Role { get; set; } = null!;
+
+    [NotMapped]
+    [JsonPropertyName("role")]
+    public string RoleName => Role.RoleName;
 }

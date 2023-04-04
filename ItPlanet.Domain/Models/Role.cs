@@ -1,6 +1,6 @@
 ﻿namespace ItPlanet.Domain.Models;
 
-public class Role
+public partial class Role
 {
     public int Id { get; set; }
 

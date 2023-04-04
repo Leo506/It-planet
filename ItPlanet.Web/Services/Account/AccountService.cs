@@ -1,20 +1,24 @@
 ﻿using AutoMapper;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Dto;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
+using ItPlanet.Infrastructure.Repositories.Role;
 
 namespace ItPlanet.Web.Services.Account;
 
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IRoleRepository _roleRepository;
     private readonly IMapper _mapper;
 
-    public AccountService(IAccountRepository accountRepository, IMapper mapper)
+    public AccountService(IAccountRepository accountRepository, IMapper mapper, IRoleRepository roleRepository)
     {
         _accountRepository = accountRepository;
         _mapper = mapper;
+        _roleRepository = roleRepository;
     }
 
     public async Task<Domain.Models.Account> GetAccountAsync(int id)
@@ -35,7 +39,9 @@ public class AccountService : IAccountService
             throw new DuplicateEmailException();
 
         var account = _mapper.Map<Domain.Models.Account>(accountDto);
-
+        var role = await _roleRepository.GetRoleByName(Role.User).ConfigureAwait(false);
+        account.RoleId = role!.Id;
+        
         return await _accountRepository.CreateAsync(account);
     }
 

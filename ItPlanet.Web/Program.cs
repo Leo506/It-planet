@@ -1,8 +1,10 @@
+using System.Text.Json.Serialization;
 using ItPlanet.Infrastructure.DatabaseContext;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
+using ItPlanet.Infrastructure.Repositories.Role;
 using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 using ItPlanet.Web.Auth;
 using ItPlanet.Web.Converters;
@@ -20,7 +22,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()));
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+    });
 var connectionString = builder.Configuration.GetConnectionString("postgres");
 builder.Services
     .AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString))
@@ -35,6 +41,7 @@ builder.Services
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
     .AddTransient<ILocationPointRepository, LocationPointRepository>()
     .AddTransient<IVisitedPointsRepository, VisitedPointRepository>()
+    .AddTransient<IRoleRepository, RoleRepository>()
     .AddAutoMapper(typeof(AutoMapperProfile))
     .AddHostedService<AccountFiller>();
 
