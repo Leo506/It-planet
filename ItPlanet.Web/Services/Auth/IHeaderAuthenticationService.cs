@@ -2,5 +2,5 @@
 
 public interface IHeaderAuthenticationService
 {
-    Task<bool> TryLogin(string login, string password);
+    Task<Domain.Models.Account?> TryLogin(string login, string password);
 }

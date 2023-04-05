@@ -35,6 +35,7 @@ public class AccountRepository : IAccountRepository
     {
         return _dbContext.Accounts
             .Include(x => x.Animals)
+            .Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
     }
 

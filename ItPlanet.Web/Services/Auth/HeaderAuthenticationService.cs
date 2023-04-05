@@ -11,9 +11,8 @@ public class HeaderAuthenticationService : IHeaderAuthenticationService
         _accountRepository = accountRepository;
     }
 
-    public async Task<bool> TryLogin(string login, string password)
+    public Task<Domain.Models.Account?> TryLogin(string login, string password)
     {
-        var account = await _accountRepository.GetByEmailAndPassword(login, password);
-        return account is not null;
+        return _accountRepository.GetByEmailAndPassword(login, password);
     }
 }

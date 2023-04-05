@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
+using ItPlanet.Web.Auth;
 using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Auth;
@@ -96,6 +98,22 @@ public class AccountsController : PublicControllerBase
         catch (ChangingNotOwnAccountException e)
         {
             return Forbid();
+        }
+        catch (DuplicateEmailException e)
+        {
+            return Conflict();
+        }
+    }
+
+    [HttpPost]
+    [Authorize]
+    [RoleAuthorize(Role = Role.Admin)]
+    public async Task<IActionResult> CreateAccount([FromBody] AddAccountDto accountDto)
+    {
+        try
+        {
+            var account = await _accountService.CrateAccountAsync(accountDto).ConfigureAwait(false);
+            return Created("", account);
         }
         catch (DuplicateEmailException e)
         {

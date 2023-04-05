@@ -32,5 +32,11 @@ public class AutoMapperProfile : Profile
             .ForMember(x => x.Chipper, opt => opt.Ignore())
             .ForMember(x => x.ChippingDateTime, opt => opt.Ignore())
             .ForMember(x => x.AnimalTypes, opt => opt.Ignore());
+
+        CreateMap<AddAccountDto, Account>()
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.Animals, opt => opt.Ignore())
+            .ForMember(x => x.RoleId, opt => opt.Ignore())
+            .ForMember(x => x.Role, opt => opt.Ignore());
     }
 }

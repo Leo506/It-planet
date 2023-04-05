@@ -22,12 +22,19 @@ public class HeaderAuthenticationHandler : AuthenticationHandler<HeaderAuthentic
     {
         var (login, password) = Request.ExtractUserData();
 
-        if (await _authenticationService.TryLogin(login, password))
-        {
-            var identity = new ClaimsIdentity(new List<Claim>(), Scheme.Name);
-            return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), "Header"));
-        }
+        var identityTest = new ClaimsIdentity();
+        identityTest.AddClaim(new Claim("Role", "Test"));
+        Context.User.AddIdentity(identityTest);
 
-        return AuthenticateResult.Fail("Unauthorized");
+        var account = await _authenticationService.TryLogin(login, password).ConfigureAwait(false);
+        if (account is null)
+            return AuthenticateResult.Fail("Unauthorized");
+        
+        var identity = new ClaimsIdentity(new List<Claim>()
+        {
+            new(ClaimTypes.Role, account.RoleName)
+        }, Scheme.Name);
+        return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), "Header"));
+
     }
 }

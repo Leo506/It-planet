@@ -18,6 +18,6 @@ public class PublicControllerBase : ControllerBase
         var (login, password) = Request.ExtractUserData();
         if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(password))
             return true;
-        return await _authenticationService.TryLogin(login, password);
+        return await _authenticationService.TryLogin(login, password) is not null;
     }
 }

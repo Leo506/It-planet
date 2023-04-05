@@ -94,4 +94,16 @@ public class AccountService : IAccountService
         if (accountId != accountByEmail.Id)
             throw new ChangingNotOwnAccountException();
     }
+
+    public async Task<Domain.Models.Account> CrateAccountAsync(AddAccountDto accountDto)
+    {
+        if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
+            throw new DuplicateEmailException();
+        
+        var accountModel = _mapper.Map<Domain.Models.Account>(accountDto);
+        var role = await _roleRepository.GetRoleByName(accountDto.Role).ConfigureAwait(false);
+        accountModel.RoleId = role!.Id;
+
+        return await _accountRepository.CreateAsync(accountModel).ConfigureAwait(false);
+    }
 }
