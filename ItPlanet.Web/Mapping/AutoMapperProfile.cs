@@ -40,5 +40,11 @@ public class AutoMapperProfile : Profile
             .ForMember(x => x.Animals, opt => opt.Ignore())
             .ForMember(x => x.RoleId, opt => opt.Ignore())
             .ForMember(x => x.Role, opt => opt.Ignore());
+
+        CreateMap<RegisterAccountDto, Account>()
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.Animals, opt => opt.Ignore())
+            .ForMember(x => x.Role, opt => opt.Ignore())
+            .ForMember(x => x.RoleId, opt => opt.Ignore());
     }
 }

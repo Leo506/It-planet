@@ -23,7 +23,7 @@ public class RegistrationController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAccount([FromBody] UpdateAccountDto updateAccountDto)
+    public async Task<IActionResult> RegisterAccount([FromBody] RegisterAccountDto registerAccountDto)
     {
         try
         {
@@ -31,7 +31,7 @@ public class RegistrationController : ControllerBase
             if (string.IsNullOrEmpty(email) is false && string.IsNullOrEmpty(password) is false)
                 return Forbid();
 
-            var account = await _accountService.RegisterAccountAsync(updateAccountDto);
+            var account = await _accountService.RegisterAccountAsync(registerAccountDto);
             return Created(string.Empty, account);
         }
         catch (DuplicateEmailException e)

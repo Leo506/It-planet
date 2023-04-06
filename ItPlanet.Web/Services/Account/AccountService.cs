@@ -33,12 +33,12 @@ public class AccountService : IAccountService
         return _accountRepository.FindAsync(searchAccountDto);
     }
 
-    public async Task<Domain.Models.Account> RegisterAccountAsync(UpdateAccountDto updateAccountDto)
+    public async Task<Domain.Models.Account> RegisterAccountAsync(RegisterAccountDto registerAccountDto)
     {
-        if (await _accountRepository.HasAccountWithEmail(updateAccountDto.Email))
+        if (await _accountRepository.HasAccountWithEmail(registerAccountDto.Email))
             throw new DuplicateEmailException();
 
-        var account = _mapper.Map<Domain.Models.Account>(updateAccountDto);
+        var account = _mapper.Map<Domain.Models.Account>(registerAccountDto);
         var role = await _roleRepository.GetRoleByName(Role.User).ConfigureAwait(false);
         account.RoleId = role!.Id;
         
