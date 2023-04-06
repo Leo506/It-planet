@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
@@ -62,6 +63,35 @@ public class AccountsController : PublicControllerBase
     {
         try
         {
+            var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+            if (role is Role.Admin)
+                return await DeleteAccountByAdmin(accountId).ConfigureAwait(false);
+            
+            return await DeleteAccountByUserOrChipper(accountId).ConfigureAwait(false);
+        }
+        catch (AccountRelatedToAnimalException)
+        {
+            return BadRequest();
+        }
+    }
+
+    private async Task<IActionResult> DeleteAccountByAdmin(int accountId)
+    {
+        try
+        {
+            await _accountService.RemoveAccountAsync(accountId).ConfigureAwait(false);
+            return Ok();
+        }
+        catch (AccountNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    private async Task<IActionResult> DeleteAccountByUserOrChipper(int accountId)
+    {
+        try
+        {
             var (email, _) = Request.ExtractUserData();
             var user = await _accountService.GetAccountAsync(accountId);
             if (user.Email != email)
@@ -70,11 +100,7 @@ public class AccountsController : PublicControllerBase
             await _accountService.RemoveAccountAsync(accountId).ConfigureAwait(false);
             return Ok();
         }
-        catch (AccountDeletionException e)
-        {
-            return BadRequest();
-        }
-        catch (AccountNotFoundException e)
+        catch (AccountNotFoundException)
         {
             return Forbid();
         }

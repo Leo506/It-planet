@@ -50,7 +50,7 @@ public class AccountService : IAccountService
         var account = await GetAccountAsync(id).ConfigureAwait(false);
         
         if (AccountRelatedToAnimal())
-            throw new AccountDeletionException();
+            throw new AccountRelatedToAnimalException();
         
         await _accountRepository.DeleteAsync(account).ConfigureAwait(false);
 
