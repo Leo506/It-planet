@@ -31,8 +31,8 @@ public class VisitedPointsService : IVisitedPointsService
         visitedLocationDto.EndDateTime ??= DateTime.MaxValue;
 
         var visitedPoints = animal.VisitedPoints;
-        var result = visitedPoints.Where(x => x.DateTimeOfVisitLocationPoint >= visitedLocationDto.StarDateTime &&
-                                              x.DateTimeOfVisitLocationPoint <= visitedLocationDto.EndDateTime);
+        var result = visitedPoints.Where(x => x.DateTimeOfVisitLocationPoint.TrimSeconds() >= visitedLocationDto.StarDateTime &&
+                                              x.DateTimeOfVisitLocationPoint.TrimSeconds() <= visitedLocationDto.EndDateTime);
 
         return result.Skip(visitedLocationDto.From).Take(visitedLocationDto.Size);
     }
