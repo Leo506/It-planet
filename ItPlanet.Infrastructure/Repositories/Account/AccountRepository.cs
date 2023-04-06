@@ -86,6 +86,7 @@ public class AccountRepository : IAccountRepository
         account!.LastName = model.LastName;
         account!.Email = model.Email;
         account!.Password = model.Password;
+        account!.RoleId = model.RoleId;
 
         await _dbContext.SaveChangesAsync();
 

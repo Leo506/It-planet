@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ItPlanet.Domain.ValidationAttributes;
 
 namespace ItPlanet.Domain.Dto;
 
-public class AccountDto
+public class UpdateAccountDto
 {
     [Required] [MinLength(1)] public string FirstName { get; set; } = default!;
 
@@ -14,4 +15,6 @@ public class AccountDto
     public string Email { get; set; } = default!;
 
     [Required] [MinLength(1)] public string Password { get; set; } = default!;
+
+    [Required] [Role] public string Role { get; set; } = default!;
 }

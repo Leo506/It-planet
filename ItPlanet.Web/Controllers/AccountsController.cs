@@ -108,26 +108,51 @@ public class AccountsController : PublicControllerBase
 
     [HttpPut("{accountId:int}")]
     [Authorize]
-    public async Task<IActionResult> UpdateAccount([Required] int accountId, [FromBody] AccountDto accountDto)
+    public async Task<IActionResult> UpdateAccount([Required] int accountId, [FromBody] UpdateAccountDto updateAccountDto)
+    {
+        try
+        {
+            var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+            if (role is Role.Admin)
+                return await UpdateAccountByAdmin(accountId, updateAccountDto);
+            
+            return await UpdateAccountByUserOrChipper(accountId, updateAccountDto).ConfigureAwait(false);
+        }
+        catch (DuplicateEmailException e)
+        {
+            return Conflict();
+        }
+    }
+
+    private async Task<IActionResult> UpdateAccountByAdmin(int accountId, UpdateAccountDto updateAccountDto)
+    {
+        try
+        {
+            var updatedAccount = await _accountService.UpdateAccountAsync(accountId, updateAccountDto);
+            return Ok(updatedAccount);
+        }
+        catch (AccountNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    private async Task<IActionResult> UpdateAccountByUserOrChipper(int accountId, UpdateAccountDto updateAccountDto)
     {
         try
         {
             var (email, _) = Request.ExtractUserData();
             await _accountService.EnsureEmailBelongsToAccount(accountId, email);
-            var updatedAccount = await _accountService.UpdateAccountAsync(accountId, accountDto);
+            var updatedAccount = await _accountService.UpdateAccountAsync(accountId, updateAccountDto);
             return Ok(updatedAccount);
         }
-        catch (AccountNotFoundException e)
+        catch (AccountNotFoundException)
         {
             return Forbid();
         }
-        catch (ChangingNotOwnAccountException e)
+        catch (ChangingNotOwnAccountException)
         {
             return Forbid();
-        }
-        catch (DuplicateEmailException e)
-        {
-            return Conflict();
         }
     }
 

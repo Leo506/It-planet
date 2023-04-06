@@ -33,12 +33,12 @@ public class AccountService : IAccountService
         return _accountRepository.FindAsync(searchAccountDto);
     }
 
-    public async Task<Domain.Models.Account> RegisterAccountAsync(AccountDto accountDto)
+    public async Task<Domain.Models.Account> RegisterAccountAsync(UpdateAccountDto updateAccountDto)
     {
-        if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
+        if (await _accountRepository.HasAccountWithEmail(updateAccountDto.Email))
             throw new DuplicateEmailException();
 
-        var account = _mapper.Map<Domain.Models.Account>(accountDto);
+        var account = _mapper.Map<Domain.Models.Account>(updateAccountDto);
         var role = await _roleRepository.GetRoleByName(Role.User).ConfigureAwait(false);
         account.RoleId = role!.Id;
         
@@ -60,17 +60,20 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<Domain.Models.Account> UpdateAccountAsync(int accountId, AccountDto accountDto)
+    public async Task<Domain.Models.Account> UpdateAccountAsync(int accountId, UpdateAccountDto updateAccountDto)
     {
-        await EnsureAvailableAccountUpdate(accountId, accountDto);
+        await EnsureAvailableAccountUpdate(accountId, updateAccountDto);
 
-        var account = _mapper.Map<Domain.Models.Account>(accountDto);
+        var account = _mapper.Map<Domain.Models.Account>(updateAccountDto);
         account.Id = accountId;
 
+        var role = await _roleRepository.GetRoleByName(updateAccountDto.Role).ConfigureAwait(false);
+        account.RoleId = role!.Id;
+        
         return await _accountRepository.UpdateAsync(account).ConfigureAwait(false);
     }
 
-    private async Task EnsureAvailableAccountUpdate(int accountId, AccountDto accountDto)
+    private async Task EnsureAvailableAccountUpdate(int accountId, UpdateAccountDto updateAccountDto)
     {
         if (await _accountRepository.ExistAsync(accountId).ConfigureAwait(false) is false)
             throw new AccountNotFoundException(accountId);
@@ -80,7 +83,7 @@ public class AccountService : IAccountService
         
         async Task<bool> IsEmailAlreadyUsed()
         {
-            var accountWithProvidedEmail = await _accountRepository.GetByEmail(accountDto.Email).ConfigureAwait(false);
+            var accountWithProvidedEmail = await _accountRepository.GetByEmail(updateAccountDto.Email).ConfigureAwait(false);
 
             return accountWithProvidedEmail is not null && accountId != accountWithProvidedEmail.Id;
         }

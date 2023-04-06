@@ -12,7 +12,7 @@ public class AccountMappingTests
     {
         var mapper = MappingHelper.CreateMapper();
 
-        var dto = new Fixture().Create<AccountDto>();
+        var dto = new Fixture().Create<UpdateAccountDto>();
 
         var account = mapper.Map<Account>(dto);
 
