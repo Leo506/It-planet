@@ -22,6 +22,10 @@ public partial class ApiDbContext : DbContext
 
     public virtual DbSet<AnimalType> AnimalTypes { get; set; }
 
+    public virtual DbSet<Area> Areas { get; set; }
+
+    public virtual DbSet<AreaPoint> AreaPoints { get; set; }
+
     public virtual DbSet<LocationPoint> LocationPoints { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -33,6 +37,8 @@ public partial class ApiDbContext : DbContext
         modelBuilder.Entity<Account>(entity =>
         {
             entity.HasIndex(e => e.Email, "IX_Accounts_Email").IsUnique();
+
+            entity.HasIndex(e => e.RoleId, "IX_Accounts_RoleId");
 
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
@@ -86,6 +92,24 @@ public partial class ApiDbContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(100)
                 .HasColumnName("type");
+        });
+
+        modelBuilder.Entity<Area>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Areas_pk");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<AreaPoint>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AreaPoints_pk");
+
+            entity.Property(e => e.Longitude).HasColumnName("Longitude ");
+
+            entity.HasOne(d => d.Area).WithMany(p => p.AreaPoints)
+                .HasForeignKey(d => d.AreaId)
+                .HasConstraintName("AreaPoints_Areas_Id_fk");
         });
 
         modelBuilder.Entity<LocationPoint>(entity =>
