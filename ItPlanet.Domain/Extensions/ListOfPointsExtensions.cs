@@ -1,5 +1,6 @@
 ﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Geometry;
+using ItPlanet.Domain.Models;
 
 namespace ItPlanet.Domain.Extensions;
 
@@ -36,6 +37,36 @@ public static class ListOfPointsExtensions
                 End = new Point(points[i].Latitude, points[i].Longitude)
             });
         }
+        
+        result.Add(new Segment()
+        {
+            Start = new Point(points.Last().Latitude, points.Last().Longitude),
+            End = new Point(points.First().Latitude, points.First().Longitude)
+        });
+
+        return result;
+    }
+
+    public static List<Segment> ToSegments(this ICollection<AreaPoint> points)
+    {
+        if (points.Any() is false)
+            return new List<Segment>();
+        
+        var result = new List<Segment>();
+        for (var i = 1; i < points.Count; i++)
+        {
+            result.Add(new Segment()
+            {
+                Start = new Point(points.ElementAt(i - 1).Latitude, points.ElementAt(i - 1).Longitude),
+                End = new Point(points.ElementAt(i).Latitude, points.ElementAt(i).Longitude)
+            });   
+        }
+        
+        result.Add(new Segment()
+        {
+            Start = new Point(points.Last().Latitude, points.Last().Longitude),
+            End = new Point(points.First().Latitude, points.First().Longitude)
+        });
 
         return result;
     }

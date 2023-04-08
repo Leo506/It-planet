@@ -13,6 +13,7 @@ using ItPlanet.Web.Mapping;
 using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
+using ItPlanet.Web.Services.Area;
 using ItPlanet.Web.Services.Auth;
 using ItPlanet.Web.Services.DatabaseFiller;
 using ItPlanet.Web.Services.LocationPoint;
@@ -36,6 +37,7 @@ builder.Services
     .AddTransient<ILocationPointService, LocationPointService>()
     .AddTransient<IHeaderAuthenticationService, HeaderAuthenticationService>()
     .AddTransient<IVisitedPointsService, VisitedPointsService>()
+    .AddTransient<IAreaService, AreaService>()
     .AddTransient<IAccountRepository, AccountRepository>()
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
