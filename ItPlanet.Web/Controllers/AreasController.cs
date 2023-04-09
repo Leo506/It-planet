@@ -34,15 +34,9 @@ public class AreasController : ControllerBase
 
         try
         {
-            return await Policy
-                .Handle<InvalidOperationException>()
-                .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1_000))
-                .ExecuteAsync(async () =>
-                {
-                    var areaModel = _mapper.Map<Area>(createAreaDto);
-                    var area = await _areaService.CreateAreaAsync(areaModel).ConfigureAwait(false);
-                    return Created("", area);
-                });
+            var areaModel = _mapper.Map<Area>(createAreaDto);
+            var area = await _areaService.CreateAreaAsync(areaModel).ConfigureAwait(false);
+            return Created("", area);
         }
         catch (InvalidAreaPointsDataException e)
         {
@@ -82,6 +76,31 @@ public class AreasController : ControllerBase
         catch (AreaNotFoundException)
         {
             return NotFound();
+        }
+    }
+
+    [HttpPut("{areaId:long}")]
+    [Authorize]
+    [RoleAuthorize(Role = Role.Admin)]
+    public async Task<IActionResult> UpdateArea([Required] [Range(1, long.MaxValue)] long areaId,
+        [FromBody] CreateAreaDto areaDto)
+    {
+        if (areaDto.IsValidArea() is false)
+            return BadRequest();
+
+        try
+        {
+            var areaModel = _mapper.Map<Area>(areaDto);
+            var area = await _areaService.UpdateArea(areaId, areaModel).ConfigureAwait(false);
+            return Ok(area);
+        }
+        catch (InvalidAreaPointsDataException e)
+        {
+            return BadRequest(e.GetType().Name);
+        }
+        catch (ConflictWithExistingAreasException)
+        {
+            return Conflict();
         }
     }
 }

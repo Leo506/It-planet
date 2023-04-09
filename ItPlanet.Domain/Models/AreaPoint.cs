@@ -6,7 +6,7 @@ public class AreaPoint
 {
     [JsonIgnore] public int Id { get; set; }
 
-    [JsonIgnore] public int AreaId { get; set; }
+    [JsonIgnore] public long AreaId { get; set; }
 
     public double Longitude { get; set; }
 

@@ -19,6 +19,7 @@ public class AreaServiceTests
     {
         var existingArea = new Area()
         {
+            Id = 1,
             AreaPoints =
             {
                 new AreaPoint()

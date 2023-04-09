@@ -50,4 +50,19 @@ public class AreaRepository : IAreaRepository
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         _logger.LogInformation($"Area with id {area.Id} was deleted [{DateTime.Now}]");
     }
+
+    public async Task<Domain.Models.Area> UpdateAsync(Domain.Models.Area area)
+    {
+        await _dbContext.AreaPoints.Where(x => x.AreaId == area.Id).ExecuteDeleteAsync().ConfigureAwait(false);
+        foreach (var point in area.AreaPoints)
+        {
+            point.AreaId = area.Id;
+            await _dbContext.AreaPoints.AddAsync(point).ConfigureAwait(false);
+        }
+        
+        var updatedEntity = await GetAsync(area.Id).ConfigureAwait(false)!;
+        updatedEntity.Name = area.Name;
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        return area;
+    }
 }

@@ -25,16 +25,26 @@ public class AreaService : IAreaService
 
     public async Task<Domain.Models.Area> CreateAreaAsync(Domain.Models.Area area)
     {
-        await EnsureNameIsUnique(area).ConfigureAwait(false);
-        
-        await EnsureCanCreateNewArea(area).ConfigureAwait(false);
+        await EnsureCanCreateOrUpdateNewArea(area).ConfigureAwait(false);
 
         return await _areaRepository.CreateAsync(area).ConfigureAwait(false);
     }
-
-    private async Task EnsureCanCreateNewArea(Domain.Models.Area area)
+    
+    public async Task<Domain.Models.Area> UpdateArea(long areaId, Domain.Models.Area area)
     {
+        area.Id = areaId;
+        
+        await EnsureCanCreateOrUpdateNewArea(area).ConfigureAwait(false);
+
+        return await _areaRepository.UpdateAsync(area).ConfigureAwait(false);
+    }
+
+    private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)
+    {
+        await EnsureNameIsUnique(area).ConfigureAwait(false);
+        
         var areas = await _areaRepository.GetAllAsync().ConfigureAwait(false);
+        areas = areas.Where(x => x.Id != area.Id);
         var exisingSegments = areas.SelectMany(x => x.AreaPoints.ToSegments());
         var newSegments = area.AreaPoints.ToSegments();
         

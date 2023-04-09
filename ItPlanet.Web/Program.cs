@@ -3,6 +3,7 @@ using ItPlanet.Infrastructure.DatabaseContext;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
+using ItPlanet.Infrastructure.Repositories.Area;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
 using ItPlanet.Infrastructure.Repositories.Role;
 using ItPlanet.Infrastructure.Repositories.VisitedPoint;
@@ -44,6 +45,7 @@ builder.Services
     .AddTransient<ILocationPointRepository, LocationPointRepository>()
     .AddTransient<IVisitedPointsRepository, VisitedPointRepository>()
     .AddTransient<IRoleRepository, RoleRepository>()
+    .AddTransient<IAreaRepository, AreaRepository>()
     .AddAutoMapper(typeof(AutoMapperProfile))
     .AddHostedService<AccountFiller>();
 

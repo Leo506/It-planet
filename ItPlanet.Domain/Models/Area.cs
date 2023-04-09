@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ItPlanet.Domain.Models;
+﻿namespace ItPlanet.Domain.Models;
 
 public class Area
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public string Name { get; set; } = null!;
     
