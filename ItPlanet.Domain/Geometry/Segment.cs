@@ -10,20 +10,39 @@ public class Segment
 
     public bool Intersects(Segment segment)
     {
-        var v1 = VectorMult(segment.End.X - segment.Start.X, segment.End.Y - segment.Start.Y, Start.X - segment.Start.X,
-            Start.Y - segment.Start.Y);
-        var v2 = VectorMult(segment.End.X - segment.Start.X, segment.End.Y - segment.Start.Y, End.X - segment.Start.X,
-            End.Y - segment.Start.Y);
-        var v3 = VectorMult(End.X - Start.X, End.Y - Start.Y, segment.Start.X - Start.X, segment.Start.Y - Start.Y);
-        var v4 = VectorMult(End.X - Start.X, End.Y - Start.Y, segment.End.X - Start.X, segment.End.Y - Start.Y);
+        var x1 = Start.X;
+        var y1 = Start.Y;
+        var x2 = End.X;
+        var y2 = End.Y;
+        var x3 = segment.Start.X;
+        var y3 = segment.Start.Y;
+        var x4 = segment.End.X;
+        var y4 = segment.End.Y;
 
-        if (v1 * v2 < 0 && v3 * v4 < 0)
-            return true;
-        return false;
+        var d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+        if (d == 0) return false;
+
+        var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
+        var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / d;
+
+        if (ua is <= 0 or >= 1 || ub is <= 0 or >= 1) return false;
+
+        return true;
     }
 
-    private double VectorMult(double ax, double ay, double bx, double by)
+    private static double VectorMult(double ax, double ay, double bx, double by)
     {
         return ax * by - bx * ay;
+    }
+
+    public bool IsEqualTo(Segment segment)
+    {
+        return (Start.Equals(segment.Start) && End.Equals(segment.End)) ||
+               (Start.Equals(segment.End) && End.Equals(segment.Start));
+    }
+
+    public override string ToString()
+    {
+        return $"(Start = ${Start}; End = ${End})";
     }
 }

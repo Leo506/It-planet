@@ -46,5 +46,11 @@ public class AutoMapperProfile : Profile
             .ForMember(x => x.Animals, opt => opt.Ignore())
             .ForMember(x => x.Role, opt => opt.Ignore())
             .ForMember(x => x.RoleId, opt => opt.Ignore());
+
+        CreateMap<CreateAreaDto, Area>()
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.AreaPoints,
+                opt => opt.MapFrom(dto =>
+                    dto.AreaPoints.Select(x => new AreaPoint() { Latitude = x.Latitude, Longitude = x.Longitude })));
     }
 }

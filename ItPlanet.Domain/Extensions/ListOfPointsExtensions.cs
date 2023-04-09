@@ -14,16 +14,19 @@ public static class ListOfPointsExtensions
             var secondPoint = points[i - 1];
             var thirdPoint = points[i - 2];
 
-            var left = (thirdPoint.Latitude - firstPoint.Latitude) / (secondPoint.Latitude - firstPoint.Latitude);
-            var right = (thirdPoint.Longitude - firstPoint.Longitude) / (secondPoint.Longitude - firstPoint.Longitude);
-
-            if (Math.Abs(left - right) > 0.01)
-            {
+            if (ArePointsOnLine(firstPoint, secondPoint, thirdPoint) is false)
                 return false;
-            }
         }
 
         return true;
+    }
+    
+    private static bool ArePointsOnLine(LocationPointDto p1, LocationPointDto p2, LocationPointDto p3)
+    {
+        var angle1 = Math.Atan2(p2.Longitude - p1.Longitude, p2.Latitude - p1.Latitude);
+        var angle2 = Math.Atan2(p3.Longitude - p2.Longitude, p3.Latitude - p2.Latitude);
+
+        return Math.Abs(angle1 - angle2) < 0.01;
     }
 
     public static List<Segment> ToSegments(this List<LocationPointDto> points)

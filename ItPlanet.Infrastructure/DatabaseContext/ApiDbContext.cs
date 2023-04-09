@@ -105,6 +105,8 @@ public partial class ApiDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("AreaPoints_pk");
 
+            entity.HasIndex(e => e.AreaId, "IX_AreaPoints_AreaId");
+
             entity.Property(e => e.Longitude).HasColumnName("Longitude ");
 
             entity.HasOne(d => d.Area).WithMany(p => p.AreaPoints)

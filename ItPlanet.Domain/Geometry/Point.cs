@@ -1,6 +1,6 @@
 ﻿namespace ItPlanet.Domain.Geometry;
 
-public class Point
+public record Point
 {
     public double X { get; set; }
     

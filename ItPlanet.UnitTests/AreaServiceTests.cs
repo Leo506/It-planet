@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Models;
 using ItPlanet.Infrastructure.Repositories.Area;
 using ItPlanet.Web.Services.Area;
@@ -64,71 +65,7 @@ public class AreaServiceTests
 
         var action = () => sut.CreateAreaAsync(newArea);
 
-        await action.Should().ThrowExactlyAsync<NewAreaIntersectsExistingException>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task CreateNewArea_NewAreaInsideExistingArea_Throws([Frozen] Mock<IAreaRepository> mockAreaRepository,
-        AreaService sut)
-    {
-        var exisingArea = new Area()
-        {
-            AreaPoints =
-            {
-                new AreaPoint() { Latitude = 0, Longitude = 0 },
-                new AreaPoint() { Latitude = 5, Longitude = 8 },
-                new AreaPoint() { Latitude = 9, Longitude = 0 }
-            }
-        };
-
-        var newArea = new Area()
-        {
-            AreaPoints =
-            {
-                new AreaPoint() { Latitude = 3, Longitude = 1 },
-                new AreaPoint() { Latitude = 5, Longitude = 4 },
-                new AreaPoint() { Latitude = 7, Longitude = 1 }
-            }
-        };
-
-        mockAreaRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new[] { exisingArea });
-
-        var action = () => sut.CreateAreaAsync(newArea);
-
-        await action.Should().ThrowExactlyAsync<NewAreaInsideExistingException>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task CreateNewArea_ExistingAreaInsideNewArea_Throws([Frozen] Mock<IAreaRepository> mockAreaRepository,
-        AreaService sut)
-    {
-        var newArea = new Area()
-        {
-            AreaPoints =
-            {
-                new AreaPoint() { Latitude = 0, Longitude = 0 },
-                new AreaPoint() { Latitude = 5, Longitude = 8 },
-                new AreaPoint() { Latitude = 9, Longitude = 0 }
-            }
-        };
-
-        var exisingArea = new Area()
-        {
-            AreaPoints =
-            {
-                new AreaPoint() { Latitude = 3, Longitude = 1 },
-                new AreaPoint() { Latitude = 5, Longitude = 4 },
-                new AreaPoint() { Latitude = 7, Longitude = 1 }
-            }
-        };
-        
-        mockAreaRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new[] { exisingArea });
-
-        var action = () => sut.CreateAreaAsync(newArea);
-
-        await action.Should().ThrowExactlyAsync<ExistingAreaInsideNewException>();
+        await action.Should().ThrowExactlyAsync<NewAreaPointsIntersectsExistingException>();
     }
 
     [Theory]
@@ -166,4 +103,71 @@ public class AreaServiceTests
 
         result.Should().BeSameAs(expectedReturnArea);
     }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task CreateAreaAsync_ThereIsAreaWithSameName_Throws([Frozen] Mock<IAreaRepository> mockAreaRepository,
+        AreaService sut)
+    {
+        mockAreaRepository.Setup(x => x.ExistAsync(It.IsAny<string>())).ReturnsAsync(true);
+
+        var action = () => sut.CreateAreaAsync(new Area());
+
+        await action.Should().ThrowExactlyAsync<AreaNameIsAlreadyInUsedException>();
+    }
+
+    /*[Theory]
+    [AutoMoqData]
+    public async Task CreateAreaAsync_ThereIsAreaWithSamePoints_Throws(
+        [Frozen] Mock<IAreaRepository> mockAreaRepository,
+        AreaService sut)
+    {
+        var area = new Area()
+        {
+            AreaPoints =
+            {
+                new() { Latitude = 0, Longitude = 0 },
+                new() { Latitude = 5, Longitude = 8 },
+                new() { Latitude = 9, Longitude = 0 }
+            }
+        };
+        
+        mockAreaRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new[] { area });
+
+        var action = () => sut.CreateAreaAsync(area);
+
+        await action.Should().ThrowExactlyAsync<AreaWithSamePointHasAlreadyException>();
+    }*/
+
+    /*[Theory]
+    [AutoMoqData]
+    public async Task CreateAreaAsync_SomePointsFromExistingAreas_CreateArea([Frozen] Mock<IAreaRepository> mockAreaRepository,
+        AreaService sut)
+    {
+        var existingArea = new Area()
+        {
+            AreaPoints =
+            {
+                new() { Latitude = -44, Longitude = -164 },
+                new() { Latitude = -44, Longitude = -151 },
+                new() { Latitude = -37.5, Longitude = -157.5 }
+            }
+        };
+
+        var newArea = new Area()
+        {
+            AreaPoints =
+            {
+                new() { Latitude = -44, Longitude = -151 },
+                new() { Latitude = -31, Longitude = -151 },
+                new() { Latitude = -37.5, Longitude = -157.5 }
+            }
+        };
+        
+        mockAreaRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new[] { existingArea });
+
+        await sut.CreateAreaAsync(newArea).ConfigureAwait(false);
+        
+        mockAreaRepository.Verify(x => x.CreateAsync(newArea), Times.Once);
+    }*/
 }
