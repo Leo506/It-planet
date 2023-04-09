@@ -34,3 +34,14 @@ jobs:
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+
+    - name: Send telegram notifcation
+      if: success()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.CHAT_ID }}
+        token: ${{ secrets.TOKEN }}
+        message: |
+          ${{ github.repository }} repository.
+          Commit: ${{ github.event.commits[0].message }}
+          Build and tests successful pass
