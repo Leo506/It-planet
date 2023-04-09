@@ -25,21 +25,43 @@ public class AreaService : IAreaService
 
     public async Task<Domain.Models.Area> CreateAreaAsync(Domain.Models.Area area)
     {
-        if (await _areaRepository.ExistAsync(area.Name))
-            throw new AreaNameIsAlreadyInUsedException();
+        await EnsureNameIsUnique(area).ConfigureAwait(false);
         
+        await EnsureCanCreateNewArea(area).ConfigureAwait(false);
+
+        return await _areaRepository.CreateAsync(area).ConfigureAwait(false);
+    }
+
+    private async Task EnsureCanCreateNewArea(Domain.Models.Area area)
+    {
         var areas = await _areaRepository.GetAllAsync().ConfigureAwait(false);
         var exisingSegments = areas.SelectMany(x => x.AreaPoints.ToSegments());
         var newSegments = area.AreaPoints.ToSegments();
+        
+        EnsureThereIsNoIntersectsWithExistingAreas(newSegments, exisingSegments);
+
+        EnsureThereIsNoAreasWithSamePoints(newSegments, exisingSegments);
+    }
+
+    private async Task EnsureNameIsUnique(Domain.Models.Area area)
+    {
+        if (await _areaRepository.ExistAsync(area.Name))
+            throw new AreaNameIsAlreadyInUsedException();
+    }
+
+    private static void EnsureThereIsNoIntersectsWithExistingAreas(List<Segment> newSegments, IEnumerable<Segment> exisingSegments)
+    {
         if (newSegments.Any(newSegment => exisingSegments.Any(newSegment.Intersects)))
         {
             throw new NewAreaPointsIntersectsExistingException();
         }
+    }
 
+    private static void EnsureThereIsNoAreasWithSamePoints(List<Segment> newSegments,
+        IEnumerable<Segment> exisingSegments)
+    {
         if (newSegments.All(newSegment => exisingSegments.Any(newSegment.IsEqualTo)))
             throw new AreaWithSamePointHasAlreadyException();
-
-        return await _areaRepository.CreateAsync(area).ConfigureAwait(false);
     }
 
     public async Task DeleteAreaById(long areaId)
