@@ -1,8 +1,7 @@
-﻿using ItPlanet.Domain.Exceptions;
-using ItPlanet.Domain.Exceptions.Areas;
-using ItPlanet.Infrastructure.Repositories.Area;
+﻿using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
+using ItPlanet.Infrastructure.Repositories.Area;
 
 namespace ItPlanet.Web.Services.Area;
 
@@ -53,21 +52,22 @@ public class AreaService : IAreaService
         EnsureThereIsNoAreasWithSamePoints(newSegments, exisingSegments);
     }
 
-    private async Task EnsureNameIsUnique(Domain.Models.Area area)
+    public async Task EnsureNameIsUnique(Domain.Models.Area area)
     {
         if (await _areaRepository.ExistAsync(area.Name))
             throw new AreaNameIsAlreadyInUsedException();
     }
 
-    private static void EnsureThereIsNoIntersectsWithExistingAreas(List<Segment> newSegments, IEnumerable<Segment> exisingSegments)
+    public static void EnsureThereIsNoIntersectsWithExistingAreas(IEnumerable<Segment> newAreaSegments,
+        IEnumerable<Segment> exisingAreaSegments)
     {
-        if (newSegments.Any(newSegment => exisingSegments.Any(newSegment.Intersects)))
+        if (newAreaSegments.Any(newSegment => exisingAreaSegments.Any(newSegment.Intersects)))
         {
             throw new NewAreaPointsIntersectsExistingException();
         }
     }
 
-    private static void EnsureThereIsNoAreasWithSamePoints(List<Segment> newSegments,
+    public static void EnsureThereIsNoAreasWithSamePoints(IEnumerable<Segment> newSegments,
         IEnumerable<Segment> exisingSegments)
     {
         if (newSegments.All(newSegment => exisingSegments.Any(newSegment.IsEqualTo)))
