@@ -1,4 +1,5 @@
-﻿using ItPlanet.Domain.Exceptions.Areas;
+﻿using ItPlanet.Domain.Dto;
+using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.Repositories.Area;
@@ -36,6 +37,11 @@ public class AreaService : IAreaService
         await EnsureCanCreateOrUpdateNewArea(area).ConfigureAwait(false);
 
         return await _areaRepository.UpdateAsync(area).ConfigureAwait(false);
+    }
+
+    public Task<AnalyticDto> GetAnalytics(long isAny, DateTime dateTime, DateTime isAny1)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)

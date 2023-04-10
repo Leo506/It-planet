@@ -7,7 +7,6 @@ using ItPlanet.Web.Auth;
 using ItPlanet.Web.Services.Area;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Polly;
 
 namespace ItPlanet.Web.Controllers;
 
@@ -101,6 +100,25 @@ public class AreasController : ControllerBase
         catch (ConflictWithExistingAreasException)
         {
             return Conflict();
+        }
+    }
+
+    [HttpGet("{areaId:long}/analytics")]
+    [Authorize]
+    public async Task<IActionResult> GetAnalytics([Required] [Range(1, long.MaxValue)] long areaId,
+        [Required] [FromQuery] DateTime startDate, [Required] [FromQuery] DateTime endDate)
+    {
+        if (startDate >= endDate)
+            return BadRequest();
+
+        try
+        {
+            var analytics = await _areaService.GetAnalytics(areaId, startDate, endDate);
+            return Ok(analytics);
+        }
+        catch (AreaNotFoundException)
+        {
+            return NotFound();
         }
     }
 }
