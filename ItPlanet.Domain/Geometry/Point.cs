@@ -11,4 +11,11 @@ public record Point
         X = x;
         Y = y;
     }
+
+    public bool IsInside(List<Segment> polygon)
+    {
+        var beam = new Segment() { Start = this, End = new Point(X + 200, Y) };
+        var intersectsCount = polygon.Count(x => x.Intersects(beam));
+        return intersectsCount % 2 == 1;
+    }
 }
