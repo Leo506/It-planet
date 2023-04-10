@@ -1,15 +1,19 @@
-﻿using ItPlanet.Infrastructure.DatabaseContext;
+﻿using System.Text.Json;
+using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ItPlanet.Infrastructure.Repositories.VisitedPoint;
 
 public class VisitedPointRepository : IVisitedPointsRepository
 {
     private readonly ApiDbContext _dbContext;
+    private readonly ILogger<VisitedPointRepository> _logger;
 
-    public VisitedPointRepository(ApiDbContext dbContext)
+    public VisitedPointRepository(ApiDbContext dbContext, ILogger<VisitedPointRepository> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public Task<Domain.Models.VisitedPoint?> GetAsync(long id)
@@ -66,5 +70,22 @@ public class VisitedPointRepository : IVisitedPointsRepository
     public Task<bool> ExistAsync(long id)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<Domain.Models.VisitedPoint>> GetVisitedPointsInInterval(DateTime startDate,
+        DateTime endDate)
+    {
+        await foreach (var point in _dbContext.VisitedPoints)
+        {
+            _logger.LogInformation(JsonSerializer.Serialize(point));
+        }
+        
+        var points = await _dbContext.VisitedPoints
+            .Include(x => x.Animal)
+            .Include(x => x.LocationPoint)
+            .Where(x => x.DateTimeOfVisitLocationPoint >= startDate && x.DateTimeOfVisitLocationPoint <= endDate)
+            .ToListAsync();
+
+        return points;
     }
 }

@@ -29,4 +29,6 @@ public partial class Animal
     [JsonIgnore] public virtual ICollection<VisitedPoint> VisitedPoints { get; } = new List<VisitedPoint>();
 
     [JsonIgnore] public virtual ICollection<AnimalType> Types { get; } = new List<AnimalType>();
+    
+    [JsonIgnore] public virtual LocationPoint ChippingLocation { get; set; } = null!;
 }

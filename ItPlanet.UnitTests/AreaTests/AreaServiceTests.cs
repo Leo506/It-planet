@@ -8,9 +8,9 @@ using ItPlanet.Infrastructure.Repositories.Area;
 using ItPlanet.Web.Services.Area;
 using Moq;
 
-namespace ItPlanet.UnitTests;
+namespace ItPlanet.UnitTests.AreaTests;
 
-public class AreaServiceTests
+public partial class AreaServiceTests
 {
     [Theory]
     [AutoMoqData]

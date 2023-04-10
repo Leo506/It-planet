@@ -12,7 +12,7 @@ public record Point
         Y = y;
     }
 
-    public bool IsInside(List<Segment> polygon)
+    public bool IsInside(IEnumerable<Segment> polygon)
     {
         var beam = new Segment() { Start = this, End = new Point(X + 200, Y) };
         var intersectsCount = polygon.Count(x => x.Intersects(beam));

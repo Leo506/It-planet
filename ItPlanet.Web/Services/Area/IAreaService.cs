@@ -8,5 +8,5 @@ public interface IAreaService
     Task<Domain.Models.Area> CreateAreaAsync(Domain.Models.Area area);
     Task DeleteAreaById(long areaId);
     Task<Domain.Models.Area> UpdateArea(long areaId, Domain.Models.Area area);
-    Task<AnalyticDto> GetAnalytics(long isAny, DateTime dateTime, DateTime isAny1);
+    Task<AnalyticDto> GetAnalytics(long areaId, DateTime startDate, DateTime endDate);
 }

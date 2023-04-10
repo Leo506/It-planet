@@ -76,6 +76,16 @@ public class AnimalRepository : IAnimalRepository
         return animal;
     }
 
+    public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsChippingInInterval(DateTime startDate, DateTime endDate)
+    {
+        var animals = await _dbContext.Animals
+            .Include(x => x.ChippingLocation)
+            .Where(x => x.ChippingDateTime >= startDate && x.ChippingDateTime <= endDate)
+            .ToListAsync();
+
+        return animals;
+    }
+
     public Task<Domain.Models.Animal?> GetAsync(long id)
     {
         return _dbContext.Animals

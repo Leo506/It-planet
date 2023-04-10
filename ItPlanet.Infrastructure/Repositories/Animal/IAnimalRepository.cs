@@ -11,4 +11,5 @@ public interface IAnimalRepository : IRepository<Domain.Models.Animal, long>
         Domain.Models.AnimalType newType);
 
     Task<Domain.Models.Animal> DeleteTypeAsync(long animalId, Domain.Models.AnimalType type);
+    Task<IEnumerable<Domain.Models.Animal>> GetAnimalsChippingInInterval(DateTime startDate, DateTime endDate);
 }

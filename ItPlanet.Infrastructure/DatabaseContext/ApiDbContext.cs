@@ -68,6 +68,10 @@ public partial class ApiDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("Animal_Accounts_null_fk");
 
+            entity.HasOne(d => d.ChippingLocation).WithMany(p => p.Animals)
+                .HasForeignKey(d => d.ChippingLocationId)
+                .HasConstraintName("Animal_LocationPoints_Id_fk");
+
             entity.HasMany(d => d.Types).WithMany(p => p.Animals)
                 .UsingEntity<Dictionary<string, object>>(
                     "AnimalToType",
