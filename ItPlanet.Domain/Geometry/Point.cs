@@ -18,4 +18,9 @@ public record Point
         var intersectsCount = polygon.Count(x => x.Intersects(beam));
         return intersectsCount % 2 == 1;
     }
+
+    public bool IsInsideOrOnEdge(IEnumerable<Segment> polygon)
+    {
+        return IsInside(polygon) || polygon.Any(x => x.Start == this || x.End == this);
+    }
 }

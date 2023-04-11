@@ -1,9 +1,7 @@
-﻿using System.Text.Json;
-using ItPlanet.Domain.Dto;
+﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
-using ItPlanet.Domain.Models;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.Area;
 using ItPlanet.Infrastructure.Repositories.VisitedPoint;
@@ -50,44 +48,47 @@ public class AreaService : IAreaService
 
     public async Task<AnalyticDto> GetAnalytics(long areaId, DateTime startDate, DateTime endDate)
     {
-        var visitedPoints = await _visitedPointsRepository.GetVisitedPointsInInterval(startDate, endDate);
+        var area = await GetAreaById(areaId).ConfigureAwait(false);
+        var areaSegments = area.AreaPoints.ToSegments();
 
-        var area = await GetAreaById(areaId);
-        visitedPoints = GetLocationPointsInsideArea(visitedPoints, area.AreaPoints.ToSegments());
+        var totalAnimalsInArea = await GetAllAnimalsInArea(areaSegments, startDate, endDate).ConfigureAwait(false);
 
-        _logger.LogInformation(nameof(GetAnalytics));
-        foreach (var visitedPoint in visitedPoints)
-        {
-            _logger.LogInformation($"Visited point inside area: {JsonSerializer.Serialize(visitedPoint)}");
-        }
+        var arrivedAnimals = await GetArrivedAnimalsInArea(areaSegments, startDate, endDate).ConfigureAwait(false);
 
-        var animalsInArea = visitedPoints.Select(x => x.AnimalId).Distinct();
-        animalsInArea = animalsInArea.Concat((await _animalRepository.GetAnimalsChippingInInterval(startDate, endDate))
-            .Where(x => x.ChippingLocation.ToPoint().IsInside(area.AreaPoints.ToSegments()))
-            .Select(x => x.Id)).Distinct();
-        foreach (var l in animalsInArea)
-        {
-            _logger.LogInformation($"Animal in area: {l}");
-        }
-        var totalQuantityAnimals = animalsInArea.Count();
+        var goneAnimals = await GetGoneAnimalsFromArea(areaSegments, startDate, endDate).ConfigureAwait(false);
         
         return new AnalyticDto()
         {
-            TotalQuantityAnimals = totalQuantityAnimals
+            TotalQuantityAnimals = totalAnimalsInArea.Count(),
+            TotalAnimalsArrived = arrivedAnimals.Count(),
+            TotalAnimalsGone = goneAnimals.Count()
         };
     }
 
-    public IEnumerable<VisitedPoint> GetLocationPointsInsideArea(IEnumerable<VisitedPoint> points,
-        IEnumerable<Segment> area)
+    public async Task<IEnumerable<Domain.Models.Animal>> GetAllAnimalsInArea(IEnumerable<Segment> area, DateTime startDate,
+        DateTime endDate)
     {
-        _logger.LogInformation(nameof(GetLocationPointsInsideArea));
-        _logger.LogInformation(JsonSerializer.Serialize(area));
-        foreach (var p in points)
-        {
-            var isInside = p.LocationPoint.ToPoint().IsInside(area);
-            _logger.LogInformation($"Point {JsonSerializer.Serialize(p.LocationPoint.ToPoint())} is inside? {isInside}");
-        }
-        return points.Where(x => x.LocationPoint.ToPoint().IsInside(area));
+        var visitedAnimals =
+            await _animalRepository.GetAnimalsThatVisitArea(area, startDate, endDate).ConfigureAwait(false);
+
+        var chippedInArea =
+            await _animalRepository.GetAnimalsChippedInArea(area, startDate, endDate).ConfigureAwait(false);
+        return visitedAnimals.Concat(chippedInArea).DistinctBy(x => x.Id);
+    }
+
+    public async Task<IEnumerable<Domain.Models.Animal>> GetArrivedAnimalsInArea(IEnumerable<Segment> area,
+        DateTime startDate, DateTime endDate)
+    {
+        var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(area, startDate, endDate);
+        return arrivedAnimals.DistinctBy(x => x.Id);
+    }
+
+    public async Task<IEnumerable<Domain.Models.Animal>> GetGoneAnimalsFromArea(IEnumerable<Segment> area,
+        DateTime startDate, DateTime endDate)
+    {
+        var goneAnimals = await _animalRepository.GetAnimalsThatDoNotVisitArea(area, startDate, endDate);
+        var chippedAnimals = await _animalRepository.GetAnimalsChippedInArea(area, startDate, endDate).ConfigureAwait(false);
+        return goneAnimals.Except(chippedAnimals).DistinctBy(x => x.Id);
     }
 
     private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)

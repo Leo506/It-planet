@@ -52,4 +52,20 @@ public class PointTests
 
         isInside.Should().BeFalse();
     }
+
+    [Fact]
+    public void IsInsideOrOnEdge_PointOnEdge_ReturnsTrue()
+    {
+        var polygon = new List<Segment>()
+        {
+            new() { Start = new Point(0, 0), End = new Point(0, 2) },
+            new() { Start = new Point(0, 2), End = new Point(5, 2) },
+            new() { Start = new Point(5, 2), End = new Point(5, 0) },
+            new() { Start = new Point(5, 0), End = new Point(0, 0) }
+        };
+        
+        var isInside = new Point(0, 0).IsInsideOrOnEdge(polygon);
+
+        isInside.Should().BeTrue();
+    }
 }
