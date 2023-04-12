@@ -85,10 +85,13 @@ public class AnimalRepository : IAnimalRepository
     {
         var animals = await _dbContext.Animals
             .Include(x => x.ChippingLocation)
+            .Include(x => x.VisitedPoints)
+            .Include(x => x.Types)
             .Where(x => x.ChippingDateTime >= startDate && x.ChippingDateTime <= endDate)
             .ToListAsync().ConfigureAwait(false);
 
-        return animals.Where(x => x.ChippingLocation.ToPoint().IsInside(area)).DistinctBy(x => x.Id);
+        return animals.Where(x => x.ChippingLocation.ToPoint().IsInside(area) && x.VisitedPoints.Count == 0)
+            .DistinctBy(x => x.Id);
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsThatVisitArea(IEnumerable<Segment> area,
@@ -119,7 +122,7 @@ public class AnimalRepository : IAnimalRepository
     {
         var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
         return visitedPoints
-            .Where(x => x.LocationPoint.ToPoint().IsInside(area) is false)
+            .Where(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false)
             .Select(x => x.Animal);
     }
 
@@ -128,6 +131,7 @@ public class AnimalRepository : IAnimalRepository
     {
         var visitedPoints = await _dbContext.VisitedPoints
             .Include(x => x.Animal)
+                .ThenInclude(x => x.Types)
             .Include(x => x.LocationPoint)
             .Where(x => x.DateTimeOfVisitLocationPoint >= startDate && x.DateTimeOfVisitLocationPoint <= endDate)
             .ToListAsync().ConfigureAwait(false);

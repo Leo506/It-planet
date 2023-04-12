@@ -51,29 +51,37 @@ public class AreaService : IAreaService
         var area = await GetAreaById(areaId).ConfigureAwait(false);
         var areaSegments = area.AreaPoints.ToSegments();
 
-        var totalAnimalsInArea = await GetAllAnimalsInArea(areaSegments, startDate, endDate).ConfigureAwait(false);
+        var arrivedAnimals = await GetArrivedAnimalsInArea(areaSegments, startDate, endDate)
+            .ConfigureAwait(false);
 
-        var arrivedAnimals = await GetArrivedAnimalsInArea(areaSegments, startDate, endDate).ConfigureAwait(false);
-
-        var goneAnimals = await GetGoneAnimalsFromArea(areaSegments, startDate, endDate).ConfigureAwait(false);
+        var totalAnimalsInArea = await _animalRepository.GetAnimalsChippedInArea(areaSegments, startDate, endDate)
+            .ConfigureAwait(false);
+        totalAnimalsInArea = totalAnimalsInArea.Concat(arrivedAnimals).DistinctBy(x => x.Id);
         
+        var goneAnimals = await GetGoneAnimalsFromArea(areaSegments, startDate, endDate)
+            .ConfigureAwait(false);
+
+        var animalTypesForAnalytics = totalAnimalsInArea.Concat(arrivedAnimals).Concat(goneAnimals)
+            .SelectMany(x => x.Types)
+            .DistinctBy(x => x.Id);
+        
+        var animalsAnalytics = animalTypesForAnalytics.Select(key => new AnimalAnalytic()
+            {
+                AnimalType = key.Type,
+                AnimalTypeId = key.Id,
+                QuantityAnimals = totalAnimalsInArea.Count(x => x.Types.Contains(key)),
+                AnimalsArrived = arrivedAnimals.Count(x => x.Types.Contains(key)),
+                AnimalsGone = goneAnimals.Count(x => x.Types.Contains(key))
+            })
+            .ToList();
+
         return new AnalyticDto()
         {
             TotalQuantityAnimals = totalAnimalsInArea.Count(),
             TotalAnimalsArrived = arrivedAnimals.Count(),
-            TotalAnimalsGone = goneAnimals.Count()
+            TotalAnimalsGone = goneAnimals.Count(),
+            AnimalsAnalytics = animalsAnalytics
         };
-    }
-
-    public async Task<IEnumerable<Domain.Models.Animal>> GetAllAnimalsInArea(IEnumerable<Segment> area, DateTime startDate,
-        DateTime endDate)
-    {
-        var visitedAnimals =
-            await _animalRepository.GetAnimalsThatVisitArea(area, startDate, endDate).ConfigureAwait(false);
-
-        var chippedInArea =
-            await _animalRepository.GetAnimalsChippedInArea(area, startDate, endDate).ConfigureAwait(false);
-        return visitedAnimals.Concat(chippedInArea).DistinctBy(x => x.Id);
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> GetArrivedAnimalsInArea(IEnumerable<Segment> area,
@@ -87,8 +95,7 @@ public class AreaService : IAreaService
         DateTime startDate, DateTime endDate)
     {
         var goneAnimals = await _animalRepository.GetAnimalsThatDoNotVisitArea(area, startDate, endDate);
-        var chippedAnimals = await _animalRepository.GetAnimalsChippedInArea(area, startDate, endDate).ConfigureAwait(false);
-        return goneAnimals.Except(chippedAnimals).DistinctBy(x => x.Id);
+        return goneAnimals.DistinctBy(x => x.Id);
     }
 
     private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)
