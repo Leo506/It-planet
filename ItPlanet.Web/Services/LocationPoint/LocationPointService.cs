@@ -50,7 +50,6 @@ public class LocationPointService : ILocationPointService
         if (await _repository.GetPointByCoordinateAsync(pointDto.Latitude, pointDto.Longitude) is not null)
             throw new DuplicateLocationPointException();
 
-        // TODO refactoring update login
         var pointModel = new Domain.Models.LocationPoint
         {
             Id = pointId,
@@ -58,5 +57,11 @@ public class LocationPointService : ILocationPointService
             Longitude = pointDto.Longitude
         };
         return await _repository.UpdateAsync(pointModel);
+    }
+
+    public async Task<long> GetLocationPointIdAsync(double latitude, double longitude)
+    {
+        var point = await _repository.GetPointByCoordinateAsync(latitude, longitude).ConfigureAwait(false);
+        return point?.Id ?? throw new LocationPointNotFoundException();
     }
 }

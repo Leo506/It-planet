@@ -95,4 +95,20 @@ public class LocationsController : PublicControllerBase
             return Conflict();
         }
     }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Test([FromQuery] double latitude, [FromQuery] double longitude)
+    {
+        try
+        {
+            var id = await _locationPointService.GetLocationPointIdAsync(latitude, longitude).ConfigureAwait(false);
+            return Ok(id);
+        }
+        catch (LocationPointNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
 }
