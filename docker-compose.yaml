@@ -32,7 +32,7 @@ services:
       - webapi
     environment:
       SERVER_URL: http://webapi:80
-      STAGE: 3
+      STAGE: ALL
     networks:
       - app-tier
 

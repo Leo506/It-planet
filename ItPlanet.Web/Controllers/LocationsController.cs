@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Exceptions;
@@ -6,6 +8,7 @@ using ItPlanet.Web.Services.Auth;
 using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NGeoHash;
 
 namespace ItPlanet.Web.Controllers;
 
@@ -98,7 +101,7 @@ public class LocationsController : PublicControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> Test([FromQuery] double latitude, [FromQuery] double longitude)
+    public async Task<IActionResult> GetLocationId([FromQuery] double latitude, [FromQuery] double longitude)
     {
         try
         {
@@ -111,4 +114,34 @@ public class LocationsController : PublicControllerBase
         }
     }
 
+    [HttpGet("geohash")]
+    [Authorize]
+    public async Task<IActionResult> Test2([FromQuery] double latitude, [FromQuery] double longitude)
+    {
+        return Ok(GeoHash.Encode(latitude, longitude, 12));
+    }
+    
+    [HttpGet("geohashv2")]
+    [Authorize]
+    public async Task<IActionResult> Test2V2([FromQuery] double latitude, [FromQuery] double longitude)
+    {
+        var hashCode = GeoHash.Encode(latitude, longitude, 12);
+        return Ok(Convert.ToBase64String(Encoding.UTF8.GetBytes(hashCode)));
+    }
+    
+    [HttpGet("geohashv3")]
+    [Authorize]
+    public async Task<IActionResult> Test2V3([FromQuery] double latitude, [FromQuery] double longitude)
+    {
+        var hashCode = GeoHash.Encode(latitude, longitude, 12);
+        var md5HashCode = MD5.HashData(Encoding.UTF8.GetBytes(hashCode));
+        for (var i = 0; i < md5HashCode.Length / 2; i++)
+        {
+            (md5HashCode[i], md5HashCode[md5HashCode.Length - i - 1]) =
+                (md5HashCode[md5HashCode.Length - i - 1], md5HashCode[i]);
+        }
+
+        var result = Convert.ToBase64String(md5HashCode);
+        return Ok(result);
+    }
 }
