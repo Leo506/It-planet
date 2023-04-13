@@ -51,14 +51,14 @@ public class AreaService : IAreaService
         var area = await GetAreaById(areaId).ConfigureAwait(false);
         var areaSegments = area.AreaPoints.ToSegments();
 
-        var arrivedAnimals = await GetArrivedAnimalsInArea(areaSegments, startDate, endDate)
+        var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
 
         var totalAnimalsInArea = await _animalRepository.GetAnimalsChippedInArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
         totalAnimalsInArea = totalAnimalsInArea.Concat(arrivedAnimals).DistinctBy(x => x.Id);
         
-        var goneAnimals = await GetGoneAnimalsFromArea(areaSegments, startDate, endDate)
+        var goneAnimals = await _animalRepository.GetGoneAnimalsFromArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
 
         var animalTypesForAnalytics = totalAnimalsInArea.Concat(arrivedAnimals).Concat(goneAnimals)
@@ -82,20 +82,6 @@ public class AreaService : IAreaService
             TotalAnimalsGone = goneAnimals.Count(),
             AnimalsAnalytics = animalsAnalytics
         };
-    }
-
-    public async Task<IEnumerable<Domain.Models.Animal>> GetArrivedAnimalsInArea(IEnumerable<Segment> area,
-        DateTime startDate, DateTime endDate)
-    {
-        var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(area, startDate, endDate);
-        return arrivedAnimals.DistinctBy(x => x.Id);
-    }
-
-    public async Task<IEnumerable<Domain.Models.Animal>> GetGoneAnimalsFromArea(IEnumerable<Segment> area,
-        DateTime startDate, DateTime endDate)
-    {
-        var goneAnimals = await _animalRepository.GetAnimalsThatDoNotVisitArea(area, startDate, endDate);
-        return goneAnimals.DistinctBy(x => x.Id);
     }
 
     private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)

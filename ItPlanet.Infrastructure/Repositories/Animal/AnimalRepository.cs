@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using ItPlanet.Domain.Dto;
+﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -94,22 +93,6 @@ public class AnimalRepository : IAnimalRepository
             .DistinctBy(x => x.Id);
     }
 
-    public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsThatVisitArea(IEnumerable<Segment> area,
-        DateTime startDate, DateTime endDate)
-    {
-        var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
-        _logger.LogInformation("Visited points:");
-        foreach (var p in visitedPoints)
-        {
-            _logger.LogInformation(JsonSerializer.Serialize(p.LocationPoint));
-        }
-        
-        return visitedPoints
-            .Where(x => x.LocationPoint.ToPoint().IsInside(area))
-            .Select(x => x.Animal)
-            .DistinctBy(x => x.Id);
-    }
-
     public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsThatVisitAreaIncludingEdge(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
     {
         var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
@@ -118,12 +101,14 @@ public class AnimalRepository : IAnimalRepository
             .Select(x => x.Animal);
     }
 
-    public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsThatDoNotVisitArea(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Domain.Models.Animal>> GetGoneAnimalsFromArea(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
     {
         var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
         return visitedPoints
             .Where(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false)
-            .Select(x => x.Animal);
+            .Select(x => x.Animal)
+            .Where(x => x.ChippingLocation.ToPoint().IsInside(area))
+            .DistinctBy(x => x.Id);
     }
 
     private async Task<IEnumerable<Domain.Models.VisitedPoint>> GetVisitedPointsInInterval(DateTime startDate,
@@ -132,6 +117,8 @@ public class AnimalRepository : IAnimalRepository
         var visitedPoints = await _dbContext.VisitedPoints
             .Include(x => x.Animal)
                 .ThenInclude(x => x.Types)
+            .Include(x => x.Animal)
+                .ThenInclude(x => x.ChippingLocation)
             .Include(x => x.LocationPoint)
             .Where(x => x.DateTimeOfVisitLocationPoint >= startDate && x.DateTimeOfVisitLocationPoint <= endDate)
             .ToListAsync().ConfigureAwait(false);
