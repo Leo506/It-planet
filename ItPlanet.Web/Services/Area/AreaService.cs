@@ -1,4 +1,5 @@
-﻿using ItPlanet.Domain.Dto;
+﻿using System.Text.Json;
+using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
@@ -53,13 +54,27 @@ public class AreaService : IAreaService
 
         var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
+        _logger.LogInformation("Arrived animals:");
+        foreach (var animal in arrivedAnimals)
+        {
+            _logger.LogInformation(JsonSerializer.Serialize(animal));
+            _logger.LogInformation(JsonSerializer.Serialize(animal.VisitedPoints));
+        }
 
         var totalAnimalsInArea = await _animalRepository.GetAnimalsChippedInArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
         totalAnimalsInArea = totalAnimalsInArea.Concat(arrivedAnimals).DistinctBy(x => x.Id);
+        foreach (var animal in totalAnimalsInArea)
+        {
+            _logger.LogInformation(JsonSerializer.Serialize(animal));
+        }
         
         var goneAnimals = await _animalRepository.GetGoneAnimalsFromArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
+        foreach (var animal in goneAnimals)
+        {
+            _logger.LogInformation(JsonSerializer.Serialize(animal));
+        }
 
         var animalTypesForAnalytics = totalAnimalsInArea.Concat(arrivedAnimals).Concat(goneAnimals)
             .SelectMany(x => x.Types)

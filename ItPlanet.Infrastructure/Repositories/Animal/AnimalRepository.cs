@@ -98,7 +98,10 @@ public class AnimalRepository : IAnimalRepository
         var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
         return visitedPoints
             .Where(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area))
-            .Select(x => x.Animal);
+            .Select(x => x.Animal)
+            .Where(x => x.VisitedPoints.Any(x => x.DateTimeOfVisitLocationPoint >= startDate 
+                                                 && x.DateTimeOfVisitLocationPoint <= endDate
+                                                 && x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false) is false);
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> GetGoneAnimalsFromArea(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)

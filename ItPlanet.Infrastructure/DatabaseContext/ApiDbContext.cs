@@ -36,8 +36,6 @@ public partial class ApiDbContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasIndex(e => e.Email, "IX_Accounts_Email").IsUnique();
-
             entity.HasIndex(e => e.RoleId, "IX_Accounts_RoleId");
 
             entity.Property(e => e.Password)
