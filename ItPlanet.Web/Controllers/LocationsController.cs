@@ -101,11 +101,12 @@ public class LocationsController : PublicControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetLocationId([FromQuery] double latitude, [FromQuery] double longitude)
+    public async Task<IActionResult> GetLocationId([Required] [FromQuery] LocationPointDto locationDto)
     {
         try
         {
-            var id = await _locationPointService.GetLocationPointIdAsync(latitude, longitude).ConfigureAwait(false);
+            var id = await _locationPointService.GetLocationPointIdAsync(locationDto.Latitude, locationDto.Longitude)
+                .ConfigureAwait(false);
             return Ok(id);
         }
         catch (LocationPointNotFoundException)
@@ -116,24 +117,24 @@ public class LocationsController : PublicControllerBase
 
     [HttpGet("geohash")]
     [Authorize]
-    public async Task<IActionResult> Test2([FromQuery] double latitude, [FromQuery] double longitude)
+    public IActionResult GetGeoHash([Required] [FromQuery] LocationPointDto locationDto)
     {
-        return Ok(GeoHash.Encode(latitude, longitude, 12));
+        return Ok(GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12));
     }
-    
+
     [HttpGet("geohashv2")]
     [Authorize]
-    public async Task<IActionResult> Test2V2([FromQuery] double latitude, [FromQuery] double longitude)
+    public IActionResult GetGeoHashV2([Required] [FromQuery] LocationPointDto locationDto)
     {
-        var hashCode = GeoHash.Encode(latitude, longitude, 12);
+        var hashCode = GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12);
         return Ok(Convert.ToBase64String(Encoding.UTF8.GetBytes(hashCode)));
     }
-    
+
     [HttpGet("geohashv3")]
     [Authorize]
-    public async Task<IActionResult> Test2V3([FromQuery] double latitude, [FromQuery] double longitude)
+    public IActionResult GetGeoHashV3([Required] [FromQuery] LocationPointDto locationDto)
     {
-        var hashCode = GeoHash.Encode(latitude, longitude, 12);
+        var hashCode = GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12);
         var md5HashCode = MD5.HashData(Encoding.UTF8.GetBytes(hashCode));
         for (var i = 0; i < md5HashCode.Length / 2; i++)
         {
