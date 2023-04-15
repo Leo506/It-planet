@@ -21,11 +21,7 @@ public class HeaderAuthenticationHandler : AuthenticationHandler<HeaderAuthentic
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var (login, password) = Request.ExtractUserData();
-
-        var identityTest = new ClaimsIdentity();
-        identityTest.AddClaim(new Claim("Role", "Test"));
-        Context.User.AddIdentity(identityTest);
-
+        
         var account = await _authenticationService.TryLogin(login, password).ConfigureAwait(false);
         if (account is null)
             return AuthenticateResult.Fail("Unauthorized");

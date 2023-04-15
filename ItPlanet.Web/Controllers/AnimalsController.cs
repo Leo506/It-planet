@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Services.Animal;
 using ItPlanet.Web.Services.AnimalType;
@@ -98,7 +99,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPost("types")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> CreateAnimalType(AnimalTypeDto dto)
     {
         try
@@ -113,7 +114,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPut("types/{typeId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> UpdateAnimalType([Range(1, long.MaxValue)] [Required] long typeId,
         AnimalTypeDto typeDto)
     {
@@ -133,7 +134,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPost("{animalId:long}/types/{typeId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> AddTypeToAnimal([Required] [Range(1, long.MaxValue)] long animalId,
         [Required] [Range(1, long.MaxValue)] long typeId)
     {
@@ -154,7 +155,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPut("{animalId:long}/types")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> ReplaceAnimalType([Required] [Range(1, long.MaxValue)] long animalId,
         [FromBody] ReplaceAnimalTypeDto replaceDto)
     {
@@ -176,7 +177,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpDelete("{animalId:long}/types/{typeId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> DeleteAnimalTypeFromAnimal([Required] [Range(1, long.MaxValue)] long animalId,
         [Required] [Range(1, long.MaxValue)] long typeId)
     {
@@ -197,7 +198,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpDelete("types/{typeId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> DeleteAnimalType([Required] [Range(1, long.MaxValue)] long typeId)
     {
         try
@@ -216,7 +217,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPost("")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> CreateAnimal([FromBody] AnimalDto animalDto)
     {
         if (animalDto.IsValid() is false)
@@ -259,7 +260,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpDelete("{animalId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> DeleteAnimal([Required] [Range(1, long.MaxValue)] long animalId)
     {
         try
@@ -278,7 +279,7 @@ public class AnimalsController : PublicControllerBase
     }
 
     [HttpPut("{animalId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> UpdateAnimal([Required] [Range(1, long.MaxValue)] long animalId,
         [FromBody] UpdateAnimalDto updateDto)
     {

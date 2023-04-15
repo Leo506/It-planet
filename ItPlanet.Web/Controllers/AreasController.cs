@@ -3,7 +3,6 @@ using AutoMapper;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Models;
-using ItPlanet.Web.Auth;
 using ItPlanet.Web.Services.Area;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +23,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpPost("")]
-    [Authorize]
-    [RoleAuthorize(Role = Role.Admin)]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> CreateArea([FromBody] CreateAreaDto createAreaDto)
     {
         if (createAreaDto.IsValidArea() is false)
@@ -63,8 +61,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpDelete("{areaId:long}")]
-    [Authorize]
-    [RoleAuthorize(Role = Role.Admin)]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> DeleteArea([Required] [Range(1, long.MaxValue)] long areaId)
     {
         try
@@ -79,8 +76,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpPut("{areaId:long}")]
-    [Authorize]
-    [RoleAuthorize(Role = Role.Admin)]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> UpdateArea([Required] [Range(1, long.MaxValue)] long areaId,
         [FromBody] CreateAreaDto areaDto)
     {

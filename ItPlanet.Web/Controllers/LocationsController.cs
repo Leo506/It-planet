@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
 using ItPlanet.Web.Services.Auth;
 using ItPlanet.Web.Services.LocationPoint;
@@ -45,7 +46,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpPost("")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> CreateLocationPoint([FromBody] LocationPointDto dto)
     {
         try
@@ -60,7 +61,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpDelete("{pointId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> DeleteLocationPoint([Range(1, long.MaxValue)] [Required] long pointId)
     {
         try
@@ -79,7 +80,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpPut("{pointId:long}")]
-    [Authorize]
+    [Authorize(Roles = Role.AdminOrChipper)]
     public async Task<IActionResult> UpdateLocationPoint([Range(1, long.MaxValue)] [Required] long pointId,
         LocationPointDto pointDto)
     {

@@ -7,4 +7,6 @@ public partial class Role
     public const string Chipper = "CHIPPER";
 
     public const string User = "USER";
+
+    public const string AdminOrChipper = "ADMIN,CHIPPER";
 }
