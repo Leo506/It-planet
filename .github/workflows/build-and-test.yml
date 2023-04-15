@@ -41,7 +41,9 @@ jobs:
       with:
         to: ${{ secrets.CHAT_ID }}
         token: ${{ secrets.TOKEN }}
+        format: markdown
         message: |
-          ${{ github.repository }} repository.
+          *${{ github.repository }} repository.*
+          New commit was pushed
           Commit: ${{ github.event.commits[0].message }}
           Build and tests successful pass
