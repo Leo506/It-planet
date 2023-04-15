@@ -1,27 +1,20 @@
-﻿using System.Text.Json;
-using ItPlanet.Domain.Dto;
+﻿using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.Area;
-using ItPlanet.Infrastructure.Repositories.VisitedPoint;
 
 namespace ItPlanet.Web.Services.Area;
 
 public class AreaService : IAreaService
 {
     private readonly IAreaRepository _areaRepository;
-    private readonly ILogger<AreaService> _logger;
-    private readonly IVisitedPointsRepository _visitedPointsRepository;
     private readonly IAnimalRepository _animalRepository;
 
-    public AreaService(IAreaRepository areaRepository, ILogger<AreaService> logger,
-        IVisitedPointsRepository visitedPointsRepository, IAnimalRepository animalRepository)
+    public AreaService(IAreaRepository areaRepository, IAnimalRepository animalRepository)
     {
         _areaRepository = areaRepository;
-        _logger = logger;
-        _visitedPointsRepository = visitedPointsRepository;
         _animalRepository = animalRepository;
     }
 
@@ -47,6 +40,49 @@ public class AreaService : IAreaService
         return await _areaRepository.UpdateAsync(area).ConfigureAwait(false);
     }
 
+    private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)
+    {
+        await EnsureNameIsUnique(area).ConfigureAwait(false);
+        
+        var areas = await GetExistingAreas(area);
+        var exisingSegments = areas.SelectMany(x => x.AreaPoints.ToSegments());
+        var newSegments = area.AreaPoints.ToSegments();
+        
+        EnsureThereIsNoIntersectsWithExistingAreas(newSegments, exisingSegments);
+
+        EnsureThereIsNoAreasWithSamePoints(newSegments, exisingSegments);
+    }
+
+
+    public async Task EnsureNameIsUnique(Domain.Models.Area area)
+    {
+        if (await _areaRepository.ExistAsync(area.Name))
+            throw new AreaNameIsAlreadyInUsedException();
+    }
+    
+    private async Task<IEnumerable<Domain.Models.Area>> GetExistingAreas(Domain.Models.Area newArea)
+    {
+        var areas = await _areaRepository.GetAllAsync().ConfigureAwait(false);
+        areas = areas.Where(x => x.Id != newArea.Id);
+        return areas;
+    }
+
+    public static void EnsureThereIsNoIntersectsWithExistingAreas(IEnumerable<Segment> newAreaSegments,
+        IEnumerable<Segment> exisingAreaSegments)
+    {
+        if (newAreaSegments.Any(newSegment => exisingAreaSegments.Any(newSegment.Intersects)))
+        {
+            throw new NewAreaPointsIntersectsExistingException();
+        }
+    }
+
+    public static void EnsureThereIsNoAreasWithSamePoints(IEnumerable<Segment> newSegments,
+        IEnumerable<Segment> exisingSegments)
+    {
+        if (newSegments.All(newSegment => exisingSegments.Any(newSegment.IsEqualTo)))
+            throw new AreaWithSamePointHasAlreadyException();
+    }
+    
     public async Task<AnalyticDto> GetAnalytics(long areaId, DateTime startDate, DateTime endDate)
     {
         var area = await GetAreaById(areaId).ConfigureAwait(false);
@@ -54,27 +90,13 @@ public class AreaService : IAreaService
 
         var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
-        _logger.LogInformation("Arrived animals:");
-        foreach (var animal in arrivedAnimals)
-        {
-            _logger.LogInformation(JsonSerializer.Serialize(animal));
-            _logger.LogInformation(JsonSerializer.Serialize(animal.VisitedPoints));
-        }
 
         var totalAnimalsInArea = await _animalRepository.GetAnimalsChippedInArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
         totalAnimalsInArea = totalAnimalsInArea.Concat(arrivedAnimals).DistinctBy(x => x.Id);
-        foreach (var animal in totalAnimalsInArea)
-        {
-            _logger.LogInformation(JsonSerializer.Serialize(animal));
-        }
-        
+
         var goneAnimals = await _animalRepository.GetGoneAnimalsFromArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
-        foreach (var animal in goneAnimals)
-        {
-            _logger.LogInformation(JsonSerializer.Serialize(animal));
-        }
 
         var animalTypesForAnalytics = totalAnimalsInArea.Concat(arrivedAnimals).Concat(goneAnimals)
             .SelectMany(x => x.Types)
@@ -97,42 +119,6 @@ public class AreaService : IAreaService
             TotalAnimalsGone = goneAnimals.Count(),
             AnimalsAnalytics = animalsAnalytics
         };
-    }
-
-    private async Task EnsureCanCreateOrUpdateNewArea(Domain.Models.Area area)
-    {
-        await EnsureNameIsUnique(area).ConfigureAwait(false);
-        
-        var areas = await _areaRepository.GetAllAsync().ConfigureAwait(false);
-        areas = areas.Where(x => x.Id != area.Id);
-        var exisingSegments = areas.SelectMany(x => x.AreaPoints.ToSegments());
-        var newSegments = area.AreaPoints.ToSegments();
-        
-        EnsureThereIsNoIntersectsWithExistingAreas(newSegments, exisingSegments);
-
-        EnsureThereIsNoAreasWithSamePoints(newSegments, exisingSegments);
-    }
-
-    public async Task EnsureNameIsUnique(Domain.Models.Area area)
-    {
-        if (await _areaRepository.ExistAsync(area.Name))
-            throw new AreaNameIsAlreadyInUsedException();
-    }
-
-    public static void EnsureThereIsNoIntersectsWithExistingAreas(IEnumerable<Segment> newAreaSegments,
-        IEnumerable<Segment> exisingAreaSegments)
-    {
-        if (newAreaSegments.Any(newSegment => exisingAreaSegments.Any(newSegment.Intersects)))
-        {
-            throw new NewAreaPointsIntersectsExistingException();
-        }
-    }
-
-    public static void EnsureThereIsNoAreasWithSamePoints(IEnumerable<Segment> newSegments,
-        IEnumerable<Segment> exisingSegments)
-    {
-        if (newSegments.All(newSegment => exisingSegments.Any(newSegment.IsEqualTo)))
-            throw new AreaWithSamePointHasAlreadyException();
     }
 
     public async Task DeleteAreaById(long areaId)

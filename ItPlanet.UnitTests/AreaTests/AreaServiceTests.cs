@@ -210,4 +210,30 @@ public partial class AreaServiceTests
 
         action.Should().ThrowExactly<AreaWithSamePointHasAlreadyException>();
     }
+
+    [Fact]
+    public void EnsureThereIsNoAreasWithSamePoints_ThereIsNoAreasWithSamePoints_DoesNotThrow()
+    {
+        var existingSegments = new List<Segment>()
+        {
+            new()
+            {
+                Start = new Point(0, 0),
+                End = new Point(10, 10)
+            }
+        };
+
+        var newSegments = new List<Segment>()
+        {
+            new()
+            {
+                Start = new Point(10, 10),
+                End = new Point(20, 20)
+            }
+        };
+
+        var action = () => AreaService.EnsureThereIsNoAreasWithSamePoints(newSegments, existingSegments);
+
+        action.Should().NotThrow();
+    }
 }
