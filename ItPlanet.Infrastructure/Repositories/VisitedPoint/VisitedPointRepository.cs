@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ItPlanet.Infrastructure.Repositories.VisitedPoint;
 
-public class VisitedPointRepository : IVisitedPointsRepository
+public class VisitedPointRepository : IVisitedPointRepository
 {
     private readonly ApiDbContext _dbContext;
     private readonly ILogger<VisitedPointRepository> _logger;
@@ -21,21 +21,11 @@ public class VisitedPointRepository : IVisitedPointsRepository
         return _dbContext.VisitedPoints.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<List<Domain.Models.VisitedPoint>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Domain.Models.VisitedPoint> CreateAsync(Domain.Models.VisitedPoint model)
     {
         var entity = await _dbContext.AddAsync(model);
         await _dbContext.SaveChangesAsync();
         return entity.Entity;
-    }
-
-    public Task CreateRangeAsync(params Domain.Models.VisitedPoint[] models)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Domain.Models.VisitedPoint> UpdateAsync(Domain.Models.VisitedPoint model)
@@ -51,25 +41,10 @@ public class VisitedPointRepository : IVisitedPointsRepository
         return point;
     }
 
-    public Task UpdateRangeAsync(IEnumerable<Domain.Models.VisitedPoint> models)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task DeleteAsync(Domain.Models.VisitedPoint model)
     {
         _dbContext.VisitedPoints.Remove(model);
         await _dbContext.SaveChangesAsync();
-    }
-
-    public Task DeleteRangeAsync(IEnumerable<Domain.Models.VisitedPoint> models)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> ExistAsync(long id)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<Domain.Models.VisitedPoint>> GetVisitedPointsInInterval(DateTime startDate,

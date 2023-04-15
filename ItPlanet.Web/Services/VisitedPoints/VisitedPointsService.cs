@@ -12,10 +12,10 @@ namespace ItPlanet.Web.Services.VisitedPoints;
 public class VisitedPointsService : IVisitedPointsService
 {
     private readonly IAnimalRepository _animalRepository;
-    private readonly IVisitedPointsRepository _visitedPointsRepository;
+    private readonly IVisitedPointRepository _visitedPointsRepository;
     private readonly ILocationPointRepository _locationPointRepository;
 
-    public VisitedPointsService(IAnimalRepository animalRepository, IVisitedPointsRepository visitedPointsRepository,
+    public VisitedPointsService(IAnimalRepository animalRepository, IVisitedPointRepository visitedPointsRepository,
         ILocationPointRepository locationPointRepository)
     {
         _animalRepository = animalRepository;

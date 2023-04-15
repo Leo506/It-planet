@@ -19,21 +19,11 @@ public class LocationPointRepository : ILocationPointRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<List<Domain.Models.LocationPoint>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Domain.Models.LocationPoint> CreateAsync(Domain.Models.LocationPoint model)
     {
         var result = await _dbContext.LocationPoints.AddAsync(model).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync();
         return result.Entity;
-    }
-
-    public Task CreateRangeAsync(params Domain.Models.LocationPoint[] models)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Domain.Models.LocationPoint> UpdateAsync(Domain.Models.LocationPoint model)
@@ -47,20 +37,10 @@ public class LocationPointRepository : ILocationPointRepository
         return point;
     }
 
-    public Task UpdateRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task DeleteAsync(Domain.Models.LocationPoint model)
     {
         _dbContext.LocationPoints.Remove(model);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public Task DeleteRangeAsync(IEnumerable<Domain.Models.LocationPoint> models)
-    {
-        throw new NotImplementedException();
     }
 
     public Task<bool> ExistAsync(long id)

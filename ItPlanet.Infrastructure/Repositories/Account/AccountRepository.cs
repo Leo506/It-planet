@@ -62,8 +62,7 @@ public class AccountRepository : IAccountRepository
             .Include(x => x.Role)
             .ToListAsync();
     }
-
-
+    
     public async Task CreateRangeAsync(params Domain.Models.Account[] models)
     {
         foreach (var account in models)
@@ -93,20 +92,10 @@ public class AccountRepository : IAccountRepository
         return account;
     }
 
-    public Task UpdateRangeAsync(IEnumerable<Domain.Models.Account> models)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task DeleteAsync(Domain.Models.Account model)
     {
         _dbContext.Accounts.Remove(model);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public Task DeleteRangeAsync(IEnumerable<Domain.Models.Account> models)
-    {
-        throw new NotImplementedException();
     }
 
     public Task<bool> ExistAsync(int id)

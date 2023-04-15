@@ -2,19 +2,16 @@
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace ItPlanet.Infrastructure.Repositories.Animal;
 
 public class AnimalRepository : IAnimalRepository
 {
     private readonly ApiDbContext _dbContext;
-    private readonly ILogger<AnimalRepository> _logger;
 
-    public AnimalRepository(ApiDbContext dbContext, ILogger<AnimalRepository> logger)
+    public AnimalRepository(ApiDbContext dbContext)
     {
         _dbContext = dbContext;
-        _logger = logger;
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search)
@@ -138,21 +135,11 @@ public class AnimalRepository : IAnimalRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<List<Domain.Models.Animal>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Domain.Models.Animal> CreateAsync(Domain.Models.Animal model)
     {
         var animal = await _dbContext.Animals.AddAsync(model).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         return animal.Entity;
-    }
-
-    public Task CreateRangeAsync(params Domain.Models.Animal[] models)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Domain.Models.Animal> UpdateAsync(Domain.Models.Animal model)
@@ -173,20 +160,10 @@ public class AnimalRepository : IAnimalRepository
         return animal;
     }
 
-    public Task UpdateRangeAsync(IEnumerable<Domain.Models.Animal> models)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task DeleteAsync(Domain.Models.Animal model)
     {
         _dbContext.Animals.Remove(model);
         await _dbContext.SaveChangesAsync();
-    }
-
-    public Task DeleteRangeAsync(IEnumerable<Domain.Models.Animal> models)
-    {
-        throw new NotImplementedException();
     }
 
     public Task<bool> ExistAsync(long id)

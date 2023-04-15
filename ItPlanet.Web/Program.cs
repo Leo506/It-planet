@@ -43,7 +43,7 @@ builder.Services
     .AddTransient<IAnimalRepository, AnimalRepository>()
     .AddTransient<IAnimalTypeRepository, AnimalTypeRepository>()
     .AddTransient<ILocationPointRepository, LocationPointRepository>()
-    .AddTransient<IVisitedPointsRepository, VisitedPointRepository>()
+    .AddTransient<IVisitedPointRepository, VisitedPointRepository>()
     .AddTransient<IRoleRepository, RoleRepository>()
     .AddTransient<IAreaRepository, AreaRepository>()
     .AddAutoMapper(typeof(AutoMapperProfile))

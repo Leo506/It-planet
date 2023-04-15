@@ -19,21 +19,11 @@ public class AnimalTypeRepository : IAnimalTypeRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<List<Domain.Models.AnimalType>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Domain.Models.AnimalType> CreateAsync(Domain.Models.AnimalType model)
     {
         var result = await _dbContext.AnimalTypes.AddAsync(model);
         await _dbContext.SaveChangesAsync();
         return result.Entity;
-    }
-
-    public Task CreateRangeAsync(params Domain.Models.AnimalType[] models)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Domain.Models.AnimalType> UpdateAsync(Domain.Models.AnimalType model)
@@ -46,20 +36,10 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         return typeModel;
     }
 
-    public Task UpdateRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task DeleteAsync(Domain.Models.AnimalType model)
     {
         _dbContext.AnimalTypes.Remove(model);
         await _dbContext.SaveChangesAsync();
-    }
-
-    public Task DeleteRangeAsync(IEnumerable<Domain.Models.AnimalType> models)
-    {
-        throw new NotImplementedException();
     }
 
     public Task<bool> ExistAsync(long id)
