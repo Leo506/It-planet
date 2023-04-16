@@ -53,7 +53,11 @@ public class AreaRepository : IAreaRepository
 
     public async Task<Domain.Models.Area> UpdateAsync(Domain.Models.Area area)
     {
-        await _dbContext.AreaPoints.Where(x => x.AreaId == area.Id).ExecuteDeleteAsync().ConfigureAwait(false);
+        foreach (var areaPoint in _dbContext.AreaPoints.Where(x => x.AreaId == area.Id))
+        {
+            _dbContext.AreaPoints.Remove(areaPoint);
+        }
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         foreach (var point in area.AreaPoints)
         {
             point.AreaId = area.Id;

@@ -51,8 +51,8 @@ builder.Services
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication("Header")
-    .AddScheme<HeaderAuthenticationOptions, HeaderAuthenticationHandler>("Header", null);
+builder.Services.AddAuthentication(AuthSchemaConstants.HeaderSchema)
+    .AddScheme<HeaderAuthenticationOptions, HeaderAuthenticationHandler>(AuthSchemaConstants.HeaderSchema, null);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

@@ -5,6 +5,7 @@ using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
+using ItPlanet.Web.Auth;
 using ItPlanet.Web.Services.Auth;
 using ItPlanet.Web.Services.LocationPoint;
 using Microsoft.AspNetCore.Authorization;
@@ -46,7 +47,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpPost("")]
-    [Authorize(Roles = Role.AdminOrChipper)]
+    [Authorize(Roles = Role.AdminOrChipper, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> CreateLocationPoint([FromBody] LocationPointDto dto)
     {
         try
@@ -61,7 +62,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpDelete("{pointId:long}")]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> DeleteLocationPoint([Range(1, long.MaxValue)] [Required] long pointId)
     {
         try
@@ -80,7 +81,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpPut("{pointId:long}")]
-    [Authorize(Roles = Role.AdminOrChipper)]
+    [Authorize(Roles = Role.AdminOrChipper, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> UpdateLocationPoint([Range(1, long.MaxValue)] [Required] long pointId,
         LocationPointDto pointDto)
     {
@@ -101,7 +102,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> GetLocationId([Required] [FromQuery] LocationPointDto locationDto)
     {
         try
@@ -117,14 +118,14 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpGet("geohash")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public IActionResult GetGeoHash([Required] [FromQuery] LocationPointDto locationDto)
     {
         return Ok(GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12));
     }
 
     [HttpGet("geohashv2")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public IActionResult GetGeoHashV2([Required] [FromQuery] LocationPointDto locationDto)
     {
         var hashCode = GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12);
@@ -132,7 +133,7 @@ public class LocationsController : PublicControllerBase
     }
 
     [HttpGet("geohashv3")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public IActionResult GetGeoHashV3([Required] [FromQuery] LocationPointDto locationDto)
     {
         var hashCode = GeoHash.Encode(locationDto.Latitude, locationDto.Longitude, 12);

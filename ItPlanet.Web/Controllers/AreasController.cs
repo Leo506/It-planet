@@ -3,6 +3,7 @@ using AutoMapper;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions.Areas;
 using ItPlanet.Domain.Models;
+using ItPlanet.Web.Auth;
 using ItPlanet.Web.Services.Area;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpPost("")]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> CreateArea([FromBody] CreateAreaDto createAreaDto)
     {
         if (createAreaDto.IsValidArea() is false)
@@ -46,7 +47,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpGet("{areaId:long}")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> GetArea([Required] [Range(1, long.MaxValue)] long areaId)
     {
         try
@@ -61,7 +62,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpDelete("{areaId:long}")]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> DeleteArea([Required] [Range(1, long.MaxValue)] long areaId)
     {
         try
@@ -76,7 +77,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpPut("{areaId:long}")]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> UpdateArea([Required] [Range(1, long.MaxValue)] long areaId,
         [FromBody] CreateAreaDto areaDto)
     {
@@ -100,7 +101,7 @@ public class AreasController : ControllerBase
     }
 
     [HttpGet("{areaId:long}/analytics")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
     public async Task<IActionResult> GetAnalytics([Required] [Range(1, long.MaxValue)] long areaId,
         [Required] [FromQuery] DateTime startDate, [Required] [FromQuery] DateTime endDate)
     {
