@@ -2,16 +2,19 @@
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ItPlanet.Infrastructure.Repositories.Animal;
 
 public class AnimalRepository : IAnimalRepository
 {
     private readonly ApiDbContext _dbContext;
+    private readonly ILogger<AnimalRepository> _logger;
 
-    public AnimalRepository(ApiDbContext dbContext)
+    public AnimalRepository(ApiDbContext dbContext, ILogger<AnimalRepository> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search)
@@ -95,7 +98,24 @@ public class AnimalRepository : IAnimalRepository
         return (await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false))
             .GroupBy(x => x.Animal)
             .ToDictionary(x => x.Key, x => x.ToList())
-            .Where(x => x.Value.All(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area)))
+            .Where(x =>
+            {
+                var visitedPoints = x.Value.OrderBy(x => x.Id).ToList();
+                for (var i = 0; i < visitedPoints.Count; i++)
+                {
+                    if (i + 1 >= visitedPoints.Count)
+                    {
+                        return x.Key.ChippingLocation.ToPoint().IsInsideOrOnEdge(area) is false &&
+                               visitedPoints[i].LocationPoint.ToPoint().IsInsideOrOnEdge(area);
+                    }
+
+                    if (visitedPoints[i].LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false &&
+                        visitedPoints[i + 1].LocationPoint.ToPoint().IsInsideOrOnEdge(area))
+                        return true;
+                }
+
+                return false;
+            })
             .Select(x => x.Key);
     }
 
@@ -105,7 +125,7 @@ public class AnimalRepository : IAnimalRepository
             .GroupBy(x => x.Animal)
             .ToDictionary(x => x.Key, x => x.ToList())
             .Where(x => IsAnimalWasInArea(area, x) 
-                        && IsLastVisitedPointOutsideArea(area, x.Value))
+                        && IsAnimalWasOutsideArea(area, x.Value))
             .Select(x => x.Key);
     }
 
@@ -115,9 +135,9 @@ public class AnimalRepository : IAnimalRepository
                || animalVisitedPoints.Key.ChippingLocation.ToPoint().IsInside(area);
     }
     
-    private static bool IsLastVisitedPointOutsideArea(IEnumerable<Segment> area, IEnumerable<Domain.Models.VisitedPoint> animalVisitedPoints)
+    private static bool IsAnimalWasOutsideArea(IEnumerable<Segment> area, IEnumerable<Domain.Models.VisitedPoint> animalVisitedPoints)
     {
-        return animalVisitedPoints.MaxBy(point => point.Id)?.LocationPoint.ToPoint().IsInside(area) is false;
+        return animalVisitedPoints.Any(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false);
     }
 
     private async Task<IEnumerable<Domain.Models.VisitedPoint>> GetVisitedPointsInInterval(DateTime startDate,
