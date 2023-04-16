@@ -89,26 +89,35 @@ public class AnimalRepository : IAnimalRepository
         return animals.Where(x => x.ChippingLocation.ToPoint().IsInside(area) && x.VisitedPoints.Count == 0)
             .DistinctBy(x => x.Id);
     }
-
-    public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsThatVisitAreaIncludingEdge(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
+    
+    public async Task<IEnumerable<Domain.Models.Animal>> GetAnimalsArrivedToArea(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
     {
-        var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
-        return visitedPoints
-            .Where(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area))
-            .Select(x => x.Animal)
-            .Where(x => x.VisitedPoints.Any(x => x.DateTimeOfVisitLocationPoint >= startDate 
-                                                 && x.DateTimeOfVisitLocationPoint <= endDate
-                                                 && x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false) is false);
+        return (await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false))
+            .GroupBy(x => x.Animal)
+            .ToDictionary(x => x.Key, x => x.ToList())
+            .Where(x => x.Value.All(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area)))
+            .Select(x => x.Key);
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> GetGoneAnimalsFromArea(IEnumerable<Segment> area, DateTime startDate, DateTime endDate)
     {
-        var visitedPoints = await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false);
-        return visitedPoints
-            .Where(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area) is false)
-            .Select(x => x.Animal)
-            .Where(x => x.ChippingLocation.ToPoint().IsInside(area))
-            .DistinctBy(x => x.Id);
+        return (await GetVisitedPointsInInterval(startDate, endDate).ConfigureAwait(false))
+            .GroupBy(x => x.Animal)
+            .ToDictionary(x => x.Key, x => x.ToList())
+            .Where(x => IsAnimalWasInArea(area, x) 
+                        && IsLastVisitedPointOutsideArea(area, x.Value))
+            .Select(x => x.Key);
+    }
+
+    private static bool IsAnimalWasInArea(IEnumerable<Segment> area, KeyValuePair<Domain.Models.Animal, List<Domain.Models.VisitedPoint>> animalVisitedPoints)
+    {
+        return animalVisitedPoints.Value.Any(x => x.LocationPoint.ToPoint().IsInside(area))
+               || animalVisitedPoints.Key.ChippingLocation.ToPoint().IsInside(area);
+    }
+    
+    private static bool IsLastVisitedPointOutsideArea(IEnumerable<Segment> area, IEnumerable<Domain.Models.VisitedPoint> animalVisitedPoints)
+    {
+        return animalVisitedPoints.MaxBy(point => point.Id)?.LocationPoint.ToPoint().IsInside(area) is false;
     }
 
     private async Task<IEnumerable<Domain.Models.VisitedPoint>> GetVisitedPointsInInterval(DateTime startDate,

@@ -88,7 +88,7 @@ public class AreaService : IAreaService
         var area = await GetAreaById(areaId).ConfigureAwait(false);
         var areaSegments = area.AreaPoints.ToSegments();
 
-        var arrivedAnimals = await _animalRepository.GetAnimalsThatVisitAreaIncludingEdge(areaSegments, startDate, endDate)
+        var arrivedAnimals = await _animalRepository.GetAnimalsArrivedToArea(areaSegments, startDate, endDate)
             .ConfigureAwait(false);
 
         var totalAnimalsInArea = await _animalRepository.GetAnimalsChippedInArea(areaSegments, startDate, endDate)
