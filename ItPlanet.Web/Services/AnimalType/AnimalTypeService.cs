@@ -25,13 +25,10 @@ public class AnimalTypeService : IAnimalTypeService
 
     public async Task<Domain.Models.AnimalType> CreateTypeAsync(AnimalTypeDto typeDto)
     {
-        if (await HasType(typeDto.Type))
+        if (await _repository.ExistAsync(typeDto.Type).ConfigureAwait(false))
             throw new DuplicateAnimalTypeException();
 
-        var typeModel = new Domain.Models.AnimalType
-        {
-            Type = typeDto.Type
-        };
+        var typeModel = new Domain.Models.AnimalType { Type = typeDto.Type };
 
         return await _repository.CreateAsync(typeModel);
     }
@@ -51,15 +48,12 @@ public class AnimalTypeService : IAnimalTypeService
 
     private async Task EnsureAvailableUpdateType(long typeId, AnimalTypeDto animalTypeDto)
     {
-        if (await HasType(typeId) is false)
+        if (await _repository.ExistAsync(typeId).ConfigureAwait(false) is false)
             throw new AnimalTypeNotFoundException(typeId);
 
-        if (await HasType(animalTypeDto.Type))
+        if (await _repository.ExistAsync(animalTypeDto.Type).ConfigureAwait(false))
             throw new DuplicateAnimalTypeException();
     }
-
-    private async Task<bool> HasType(string typeName) => await _repository.GetByType(typeName) is not null;
-    private Task<bool> HasType(long typeId) => _repository.ExistAsync(typeId);
 
     public async Task DeleteTypeAsync(long typeId)
     {

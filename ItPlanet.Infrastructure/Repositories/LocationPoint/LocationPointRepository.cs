@@ -55,7 +55,7 @@ public class LocationPointRepository : ILocationPointRepository
             Math.Abs(x.Latitude - pointLatitude) <= precision && Math.Abs(x.Longitude - pointLongitude) <= precision);
     }
 
-    public Task<bool> HasLinkedAnimal(long pointId)
+    public Task<bool> HasAnimalChippedInPoint(long pointId)
     {
         return _dbContext.Animals.AnyAsync(x => x.ChippingLocationId == pointId);
     }

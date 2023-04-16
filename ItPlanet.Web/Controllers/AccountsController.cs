@@ -162,7 +162,7 @@ public class AccountsController : PublicControllerBase
     {
         try
         {
-            var account = await _accountService.CrateAccountAsync(accountDto).ConfigureAwait(false);
+            var account = await _accountService.CreateAccountAsync(accountDto).ConfigureAwait(false);
             return Created("", account);
         }
         catch (DuplicateEmailException e)

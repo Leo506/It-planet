@@ -28,7 +28,6 @@ public class AreaRepository : IAreaRepository
         var areaEntity = await _dbContext.Areas.AddAsync(areaModel);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        _logger.LogInformation($"Area with id {areaEntity.Entity.Id} was added [{DateTime.Now}]");
         return areaEntity.Entity;
     }
 
@@ -48,25 +47,36 @@ public class AreaRepository : IAreaRepository
     {
         _dbContext.Areas.Remove(area);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-        _logger.LogInformation($"Area with id {area.Id} was deleted [{DateTime.Now}]");
     }
 
     public async Task<Domain.Models.Area> UpdateAsync(Domain.Models.Area area)
     {
-        foreach (var areaPoint in _dbContext.AreaPoints.Where(x => x.AreaId == area.Id))
-        {
-            _dbContext.AreaPoints.Remove(areaPoint);
-        }
+        DeleteOldAreaPoints(area);
+        await CreateNewAreaPoints(area).ConfigureAwait(false);
+        
+        await RenameArea(area).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        return area;
+    }
+
+    private void DeleteOldAreaPoints(Domain.Models.Area area)
+    {
+        foreach (var areaPoint in _dbContext.AreaPoints.Where(x => x.AreaId == area.Id))
+            _dbContext.AreaPoints.Remove(areaPoint);
+    }
+
+    private async Task CreateNewAreaPoints(Domain.Models.Area area)
+    {
         foreach (var point in area.AreaPoints)
         {
             point.AreaId = area.Id;
             await _dbContext.AreaPoints.AddAsync(point).ConfigureAwait(false);
         }
-        
+    }
+    
+    private async Task RenameArea(Domain.Models.Area area)
+    {
         var updatedEntity = await GetAsync(area.Id).ConfigureAwait(false)!;
         updatedEntity.Name = area.Name;
-        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-        return area;
     }
 }

@@ -38,7 +38,7 @@ public class LocationPointService : ILocationPointService
     public async Task DeletePointAsync(long pointId)
     {
         var point = await GetLocationPointAsync(pointId);
-        if (await _repository.HasLinkedAnimal(pointId) || point.VisitedPoints.Any())
+        if (await _repository.HasAnimalChippedInPoint(pointId) || point.VisitedPoints.Any())
             throw new UnableDeleteLocationPointException();
         await _repository.DeleteAsync(point).ConfigureAwait(false);
     }

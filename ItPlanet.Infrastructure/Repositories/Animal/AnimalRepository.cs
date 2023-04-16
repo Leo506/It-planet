@@ -2,19 +2,16 @@
 using ItPlanet.Domain.Geometry;
 using ItPlanet.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace ItPlanet.Infrastructure.Repositories.Animal;
 
 public class AnimalRepository : IAnimalRepository
 {
     private readonly ApiDbContext _dbContext;
-    private readonly ILogger<AnimalRepository> _logger;
 
-    public AnimalRepository(ApiDbContext dbContext, ILogger<AnimalRepository> logger)
+    public AnimalRepository(ApiDbContext dbContext)
     {
         _dbContext = dbContext;
-        _logger = logger;
     }
 
     public async Task<IEnumerable<Domain.Models.Animal>> SearchAsync(SearchAnimalDto search)
@@ -193,10 +190,5 @@ public class AnimalRepository : IAnimalRepository
     {
         _dbContext.Animals.Remove(model);
         await _dbContext.SaveChangesAsync();
-    }
-
-    public Task<bool> ExistAsync(long id)
-    {
-        return _dbContext.Animals.AnyAsync(x => x.Id == id);
     }
 }

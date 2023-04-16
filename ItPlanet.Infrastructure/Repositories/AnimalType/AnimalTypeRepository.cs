@@ -42,13 +42,7 @@ public class AnimalTypeRepository : IAnimalTypeRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public Task<bool> ExistAsync(long id)
-    {
-        return _dbContext.AnimalTypes.AnyAsync(x => x.Id == id);
-    }
+    public Task<bool> ExistAsync(long id) => _dbContext.AnimalTypes.AnyAsync(x => x.Id == id);
 
-    public Task<Domain.Models.AnimalType?> GetByType(string type)
-    {
-        return _dbContext.AnimalTypes.FirstOrDefaultAsync(x => x.Type == type);
-    }
+    public Task<bool> ExistAsync(string typeName) => _dbContext.AnimalTypes.AnyAsync(x => x.Type == typeName);
 }

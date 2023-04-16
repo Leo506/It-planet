@@ -8,5 +8,5 @@ public interface ILocationPointRepository
     Task DeleteAsync(Domain.Models.LocationPoint model);
     Task<bool> ExistAsync(long id);
     Task<Domain.Models.LocationPoint?> GetPointByCoordinateAsync(double pointLatitude, double pointLongitude);
-    Task<bool> HasLinkedAnimal(long pointId);
+    Task<bool> HasAnimalChippedInPoint(long pointId);
 }

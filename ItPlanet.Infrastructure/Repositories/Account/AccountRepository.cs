@@ -55,14 +55,6 @@ public class AccountRepository : IAccountRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<List<Domain.Models.Account>> GetAllAsync()
-    {
-        return _dbContext.Accounts
-            .Include(x => x.Animals)
-            .Include(x => x.Role)
-            .ToListAsync();
-    }
-    
     public async Task CreateRangeAsync(params Domain.Models.Account[] models)
     {
         foreach (var account in models)

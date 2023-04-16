@@ -7,5 +7,5 @@ public interface IAnimalTypeRepository
     Task<Domain.Models.AnimalType> UpdateAsync(Domain.Models.AnimalType model);
     Task DeleteAsync(Domain.Models.AnimalType model);
     Task<bool> ExistAsync(long id);
-    Task<Domain.Models.AnimalType?> GetByType(string type);
+    Task<bool> ExistAsync(string typeName);
 }

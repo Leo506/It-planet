@@ -98,7 +98,7 @@ public class AccountService : IAccountService
             throw new ChangingNotOwnAccountException();
     }
 
-    public async Task<Domain.Models.Account> CrateAccountAsync(AddAccountDto accountDto)
+    public async Task<Domain.Models.Account> CreateAccountAsync(AddAccountDto accountDto)
     {
         if (await _accountRepository.HasAccountWithEmail(accountDto.Email))
             throw new DuplicateEmailException();
