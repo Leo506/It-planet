@@ -69,8 +69,10 @@ public class PointTests
         isInside.Should().BeTrue();
     }
 
-    [Fact]
-    public void IsInsideOrOnEdge_PointOnEdge_ReturnsTrue()
+    [Theory]
+    [InlineData(2, 0)]
+    [InlineData(0, 1)]
+    public void IsInsideOrOnEdge_PointOnEdge_ReturnsTrue(double x, double y)
     {
         var polygon = new List<Segment>()
         {
@@ -80,8 +82,6 @@ public class PointTests
             new() { Start = new Point(5, 0), End = new Point(0, 0) }
         };
         
-        var isInside = new Point(0, 1).IsInsideOrOnEdge(polygon);
-
-        isInside.Should().BeTrue();
+        new Point(x, y).IsInsideOrOnEdge(polygon).Should().BeTrue();
     }
 }

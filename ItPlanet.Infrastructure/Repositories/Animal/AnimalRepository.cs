@@ -86,7 +86,7 @@ public class AnimalRepository : IAnimalRepository
             .Where(x => x.ChippingDateTime >= startDate && x.ChippingDateTime <= endDate)
             .ToListAsync().ConfigureAwait(false);
 
-        return animals.Where(x => x.ChippingLocation.ToPoint().IsInside(area) && x.VisitedPoints.Count == 0)
+        return animals.Where(x => x.ChippingLocation.ToPoint().IsInside(area) && x.VisitedPoints.All(x => x.LocationPoint.ToPoint().IsInsideOrOnEdge(area)))
             .DistinctBy(x => x.Id);
     }
     
