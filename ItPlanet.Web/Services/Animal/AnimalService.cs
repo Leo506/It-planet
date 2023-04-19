@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
+using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
 using ItPlanet.Infrastructure.Repositories.AnimalType;
 using ItPlanet.Infrastructure.Repositories.LocationPoint;
-using ItPlanet.Web.Extensions;
 
 namespace ItPlanet.Web.Services.Animal;
 

@@ -1,4 +1,4 @@
-﻿namespace ItPlanet.Web.Extensions;
+﻿namespace ItPlanet.Domain.Extensions;
 
 public static class CollectionExtensions
 {

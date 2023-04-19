@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using ItPlanet.Web.Extensions;
+using ItPlanet.Domain.Extensions;
 
 namespace ItPlanet.UnitTests;
 

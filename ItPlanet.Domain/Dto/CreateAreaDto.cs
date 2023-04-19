@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ItPlanet.Domain.Extensions;
 using ItPlanet.Domain.Geometry;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace ItPlanet.Domain.Dto;
 
@@ -25,16 +24,8 @@ public class CreateAreaDto
         return IsThereIntersects() is false;
     }
 
-    private bool IsTherePointDuplicates()
-    {
-        var pointsHash = new HashSet<Point>();
-        foreach (var locationPointDto in AreaPoints)
-        {
-            pointsHash.Add(new(locationPointDto.Latitude, locationPointDto.Longitude));
-        }
-
-        return pointsHash.Count != AreaPoints.Count;
-    }
+    private bool IsTherePointDuplicates() => 
+        AreaPoints.Select(x => new Point(x.Latitude, x.Longitude)).HasDuplicates();
 
     private bool IsThereIntersects()
     {
