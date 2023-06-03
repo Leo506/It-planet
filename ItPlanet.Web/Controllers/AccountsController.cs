@@ -4,7 +4,6 @@ using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
-using ItPlanet.Web.Auth;
 using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Auth;
@@ -58,7 +57,7 @@ public class AccountsController : PublicControllerBase
     }
 
     [HttpDelete("{accountId:int}")]
-    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
+    [Authorize]
     public async Task<IActionResult> DeleteAccount([Range(1, int.MaxValue)] [Required] int accountId)
     {
         try
@@ -107,7 +106,7 @@ public class AccountsController : PublicControllerBase
     }
 
     [HttpPut("{accountId:int}")]
-    [Authorize(AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
+    [Authorize]
     public async Task<IActionResult> UpdateAccount([Required] int accountId, [FromBody] UpdateAccountDto updateAccountDto)
     {
         try
@@ -157,7 +156,7 @@ public class AccountsController : PublicControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = Role.Admin, AuthenticationSchemes = AuthSchemaConstants.HeaderSchema)]
+    [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> CreateAccount([FromBody] AddAccountDto accountDto)
     {
         try

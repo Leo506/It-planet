@@ -7,11 +7,11 @@ using Microsoft.Extensions.Options;
 
 namespace ItPlanet.Web.Auth;
 
-public class HeaderAuthenticationHandler : AuthenticationHandler<HeaderAuthenticationOptions>
+public class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions>
 {
     private readonly IHeaderAuthenticationService _authenticationService;
 
-    public HeaderAuthenticationHandler(IOptionsMonitor<HeaderAuthenticationOptions> options, ILoggerFactory logger,
+    public BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationOptions> options, ILoggerFactory logger,
         UrlEncoder encoder, ISystemClock clock, IHeaderAuthenticationService authenticationService) : base(options,
         logger, encoder, clock)
     {

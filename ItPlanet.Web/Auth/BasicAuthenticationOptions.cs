@@ -2,6 +2,6 @@
 
 namespace ItPlanet.Web.Auth;
 
-public class HeaderAuthenticationOptions : AuthenticationSchemeOptions
+public class BasicAuthenticationOptions : AuthenticationSchemeOptions
 {
 }

@@ -20,6 +20,7 @@ using ItPlanet.Web.Services.DatabaseFiller;
 using ItPlanet.Web.Services.LocationPoint;
 using ItPlanet.Web.Services.VisitedPoints;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,9 +51,38 @@ builder.Services
     .AddHostedService<AccountFiller>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication(AuthSchemaConstants.HeaderSchema)
-    .AddScheme<HeaderAuthenticationOptions, HeaderAuthenticationHandler>(AuthSchemaConstants.HeaderSchema, null);
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Title = "It planet Web API",
+        Version = "v2"
+    });
+    options.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Provide email and password",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Basic"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+builder.Services.AddAuthentication(options => options.DefaultScheme = "Basic")
+    .AddScheme<BasicAuthenticationOptions, BasicAuthenticationHandler>("Basic", null);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -61,11 +91,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("v2/swagger.json", "It planet"));
 }
 
 app.UseRequestLogging();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
