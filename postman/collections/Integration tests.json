@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "957997c1-c27f-4950-9113-5e55a0d77638",
+		"name": "Integration tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "22094367-957997c1-c27f-4950-9113-5e55a0d77638"
+	},
+	"item": [
+		{
+			"name": "Create account with same email returns 409",
+			"item": [
+				{
+					"name": "Create account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "feb5de34-fab1-4d09-bc10-e33c9ba8e8dd",
+								"exec": [
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"accountId\", json.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "6dc08504-fda4-49c8-8e9f-fda6bcf3654a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create account with same email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "411d9939-150a-4f70-8d9e-3c49a0c8872d",
+								"exec": [
+									"pm.test(\"Ensure response status code is 409 (Conflict)\", function() {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "c931df50-ade1-4aab-bd38-00639303da04",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete account",
+					"id": "d9e2e5b6-9356-4017-86d4-2a8f13eb543d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "b690c3d5-af9b-4c4c-bb73-82cd73373120",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{adminPassword}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{adminEmail}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d0cb0df7-95fc-4af7-9b3d-99ce7b396966",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a023d345-8d50-4559-9d81-75c53c61eb38",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Get account with non existent id",
+			"item": [
+				{
+					"name": "Get account with non-existent id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e32de5b2-b94c-467a-bad7-ee55d100dea9",
+								"exec": [
+									"pm.test(\"Ensure response status code is 404 (Not Found)\", function() {\r",
+									"    pm.response.to.be.notFound;\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "4467b4db-f6a3-43a7-a366-09aee4ae23e0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts/9999999999999",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts",
+								"9999999999999"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "fcda938d-4314-462e-8a0c-83ee27e123d0",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{adminPassword}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{adminEmail}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d792659d-a824-4c64-969b-75140fbc4807",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "67175c2f-cb7d-4b5a-ac0b-a73d229d3064",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
