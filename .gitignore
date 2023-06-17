@@ -399,4 +399,4 @@ FodyWeavers.xsd
 .idea/
 
 # Postman
-api*
+.postman/*
