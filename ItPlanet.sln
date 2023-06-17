@@ -12,23 +12,32 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		InMemory|Any CPU = InMemory|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.InMemory|Any CPU.ActiveCfg = InMemory|Any CPU
+		{0FE56077-39B9-4F34-94FD-59CB0DD4CD24}.InMemory|Any CPU.Build.0 = InMemory|Any CPU
 		{EC7FD03A-0522-449A-A904-43B863058338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC7FD03A-0522-449A-A904-43B863058338}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC7FD03A-0522-449A-A904-43B863058338}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC7FD03A-0522-449A-A904-43B863058338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7FD03A-0522-449A-A904-43B863058338}.InMemory|Any CPU.ActiveCfg = InMemory|Any CPU
+		{EC7FD03A-0522-449A-A904-43B863058338}.InMemory|Any CPU.Build.0 = InMemory|Any CPU
 		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.InMemory|Any CPU.ActiveCfg = InMemory|Any CPU
+		{CA052AE9-88A1-402B-9201-F4C7EC8C8902}.InMemory|Any CPU.Build.0 = InMemory|Any CPU
 		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.InMemory|Any CPU.ActiveCfg = InMemory|Any CPU
+		{7E62ACFC-E4B7-40DC-8471-34223D672E6C}.InMemory|Any CPU.Build.0 = InMemory|Any CPU
 	EndGlobalSection
 EndGlobal

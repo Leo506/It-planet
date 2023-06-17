@@ -30,9 +30,15 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
     });
+
+#if INMEMORY
+builder.Services.AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("API"));
+#else
 var connectionString = builder.Configuration.GetConnectionString("postgres");
+builder.Services.AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
+#endif
+
 builder.Services
-    .AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString))
     .AddTransient<IAccountService, AccountService>()
     .AddTransient<IAnimalService, AnimalService>()
     .AddTransient<IAnimalTypeService, AnimalTypeService>()
