@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "9f196d43-2f83-4be3-b613-d79319b9d3a5",
+		"name": "Specification",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "22094367-9f196d43-2f83-4be3-b613-d79319b9d3a5"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Create account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "44d8ff5c-0171-4cd7-92a0-05c001b049c4",
+								"exec": [
+									"pm.test(\"Ensure the 201 (Created) response status code\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"    pm.response.to.be.json;\r",
+									"\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const id = responseJson.id;\r",
+									"    \r",
+									"\r",
+									"    const adminEmail = pm.globals.get(\"adminEmail\");\r",
+									"    const adminPassword = pm.globals.get(\"adminPassword\");\r",
+									"\r",
+									"    const deleteRequest = {\r",
+									"        url: `http://localhost:5218/accounts/${id}`,\r",
+									"        method: 'DELETE',\r",
+									"        header: {\r",
+									"            'Authorization': 'Basic' + btoa(`${adminEmail}:${adminPassword}`),\r",
+									"            'Content-Type': 'application/json'\r",
+									"        }\r",
+									"    };\r",
+									"\r",
+									"    pm.sendRequest(deleteRequest, (error, response) => {});\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "58c7134b-871b-44f1-be7e-f48c49658b6e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "af43b2f1-2e39-40a0-8ee4-f942c28186b5",
+							"name": "Create account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5218/accounts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5218",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"name": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n  \"id\": 5,\r\n  \"firstName\": \"user\",\r\n  \"lastName\": \"user\",\r\n  \"email\": \"user2@example.com\",\r\n  \"role\": \"USER\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Get account",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "16d146d7-117a-4644-b47b-f2c5f5d5a2a0",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b4d51326-411d-4c56-890b-ccbd481a6ee4",
+								"exec": [
+									"pm.test(\"Ensure response status code is 200 (OK)\", function() {\r",
+									"    pm.response.to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Ensure response body schema is valid\", function() {\r",
+									"    const schema = {\r",
+									"        required: ['id', 'firstName', 'lastName', 'email', 'role']\r",
+									"    };\r",
+									"\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "c62c4d96-fe18-4ae4-b401-7fd4d5e447b4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/accounts/1",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"accounts",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "9cedf7c2-ad79-4acb-abf6-7209a1131c90",
+							"name": "Get account",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/1",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"name": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"firstName\": \"adminFirstName\",\n    \"lastName\": \"adminLastName\",\n    \"email\": \"admin@simbirsoft.com\",\n    \"role\": \"ADMIN\"\n}"
+						}
+					]
+				}
+			],
+			"id": "b254e23e-343e-4e7c-ac8a-9a46edfd52c3",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{adminPassword}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{adminEmail}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "96a58a4c-b75c-4462-bfd8-160bf2d0c899",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f22fe812-56e9-4e95-8e44-86f92437d37f",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
