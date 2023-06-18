@@ -1,0 +1,1055 @@
+{
+	"info": {
+		"_postman_id": "957997c1-c27f-4950-9113-5e55a0d77638",
+		"name": "Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "22094367-957997c1-c27f-4950-9113-5e55a0d77638"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Create account with same email",
+					"item": [
+						{
+							"name": "Create account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "feb5de34-fab1-4d09-bc10-e33c9ba8e8dd",
+										"exec": [
+											"pm.test(\"Status code is 201\", function() {\r",
+											"    pm.response.to.have.status(201);\r",
+											"\r",
+											"    const json = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", json.id);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "6dc08504-fda4-49c8-8e9f-fda6bcf3654a",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create account with same email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "411d9939-150a-4f70-8d9e-3c49a0c8872d",
+										"exec": [
+											"pm.test(\"Ensure response status code is 409 (Conflict)\", function() {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "c931df50-ade1-4aab-bd38-00639303da04",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cb42f431-4c8f-461b-8e57-79d654d42c28",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "d9e2e5b6-9356-4017-86d4-2a8f13eb543d",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "b690c3d5-af9b-4c4c-bb73-82cd73373120",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{adminPassword}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{adminEmail}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d0cb0df7-95fc-4af7-9b3d-99ce7b396966",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a023d345-8d50-4559-9d81-75c53c61eb38",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Create account successful",
+					"item": [
+						{
+							"name": "Create account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c835d828-242b-4128-bd6a-71ebd42e1e73",
+										"exec": [
+											"pm.test(\"Status code is 201\", function() {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response schema is valid\", function() {\r",
+											"    const schema = {\r",
+											"        required: ['id', 'firstName', 'lastName', 'email', 'role']\r",
+											"    };\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.environment.set('accountId', jsonData.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "e1029101-eb40-4e95-b61c-e07a150f8917",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"user\",\r\n    \"lastName\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"role\": \"USER\",\r\n    \"password\": \"qwerty123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "dca9d67d-cc97-4f37-9672-ee85982b9d48",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "52e8b038-b1e0-4da2-9e97-216b8294e2f3",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "1a690aad-eaa0-4053-b57e-20c263bc9aac",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{adminPassword}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{adminEmail}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1cbc26e7-0925-4e1b-9188-64b40522109b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1226622c-55a0-4c57-8139-c9528071479b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get account with non existent id",
+					"item": [
+						{
+							"name": "Get account with non-existent id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e32de5b2-b94c-467a-bad7-ee55d100dea9",
+										"exec": [
+											"pm.test(\"Ensure response status code is 404 (Not Found)\", function() {\r",
+											"    pm.response.to.be.notFound;\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "4467b4db-f6a3-43a7-a366-09aee4ae23e0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/9999999999999",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"9999999999999"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "fcda938d-4314-462e-8a0c-83ee27e123d0",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{adminPassword}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{adminEmail}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d792659d-a824-4c64-969b-75140fbc4807",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "67175c2f-cb7d-4b5a-ac0b-a73d229d3064",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get account successful",
+					"item": [
+						{
+							"name": "Get account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f2ede9ea-6da3-4b24-b8c4-7c382701e4a6",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response schema is valid\", function() {\r",
+											"    const schema = {\r",
+											"        required: ['id', 'firstName', 'lastName', 'email', 'role']\r",
+											"    };\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "a4fd5300-43fc-493b-8c27-0eed23b0cea8",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/1",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "7c8817b8-a85c-4e79-9cd6-070448993fee"
+				},
+				{
+					"name": "Get account without by unauthorized user",
+					"item": [
+						{
+							"name": "Get account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4214fdb9-f845-4791-862d-959b7500898b",
+										"exec": [
+											"pm.test(\"Status code is 401\", function() {\r",
+											"    pm.response.to.be.unauthorized;\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "c8afbd9f-4cc9-48aa-ad5d-555d53ddfee0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/1",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "7eb07fb4-ead0-4909-a061-287acb8016ad",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "password",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "unexisten-user",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fe4b75e9-5d29-4b12-9042-21b7e20f4ea9",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "139012af-f8a9-4b9d-833a-67fb44924346",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get account by incorrect id",
+					"item": [
+						{
+							"name": "Get account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "93d71382-eb61-4ffc-9925-e3da1cb6c338",
+										"exec": [
+											"pm.test(\"Status code is 400\", function() {\r",
+											"    pm.response.to.be.badRequest;\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "48b716da-95b7-41ef-898c-19cd16fd7a54",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/-1",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"-1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "83b5cddb-afb2-4531-b6cb-a673f3b3a65d"
+				},
+				{
+					"name": "Update account successful",
+					"item": [
+						{
+							"name": "Create account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9d03ff53-8064-452a-b855-b93122bbb16a",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.environment.set('accountId', jsonData.id);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8fade930-2259-4ad2-987f-d01151de4aa6",
+										"exec": [
+											"const firstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+											"const lastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+											"const email = pm.variables.replaceIn('{{$randomEmail}}');\r",
+											"\r",
+											"pm.request.header = {\r",
+											"    'Content-Type': 'application/json'\r",
+											"};\r",
+											"pm.request.body =  {\r",
+											"    mode: 'raw',\r",
+											"    raw: JSON.stringify({\r",
+											"        \"firstName\": firstName,\r",
+											"        \"lastName\": lastName,\r",
+											"        \"email\": email,\r",
+											"        \"role\": \"USER\",\r",
+											"        \"password\": \"qwerty123\"\r",
+											"    })\r",
+											"};"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "2065a386-3bc2-40e5-aa76-b133e9c19bf2",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update account",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "40f8bcff-ab81-4795-b269-3bb83f0a1002",
+										"exec": [
+											"const firstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+											"const lastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+											"const email = pm.variables.replaceIn('{{$randomEmail}}');\r",
+											"\r",
+											"pm.request.header = {\r",
+											"    'Content-Type': 'application/json'\r",
+											"};\r",
+											"pm.request.body =  {\r",
+											"    mode: 'raw',\r",
+											"    raw: JSON.stringify({\r",
+											"        \"firstName\": firstName,\r",
+											"        \"lastName\": lastName,\r",
+											"        \"email\": email,\r",
+											"        \"role\": \"USER\",\r",
+											"        \"password\": \"qwerty123\"\r",
+											"    })\r",
+											"};"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "8270a3ad-c5fe-4e23-9b94-4a3e4ec88725",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Account updated\", function() {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    const jsonRequest = JSON.parse(pm.request.body.raw);\r",
+											"    \r",
+											"    pm.expect(jsonRequest.firstName).to.eql(jsonResponse.firstName);\r",
+											"    pm.expect(jsonRequest.lastName).to.eql(jsonResponse.lastName);\r",
+											"    pm.expect(jsonRequest.email).to.eql(jsonResponse.email);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "8d356158-439f-4554-a223-5ba052f4bd17",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d21aa4d3-6aea-4ebf-93eb-53ecfae6153f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "3533bf49-2f1f-42fb-9c80-1a603b8e675a",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "abf6d79c-a6ee-4e27-95fe-e8a6d3f05488",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{adminPassword}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{adminEmail}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dea8db0d-afcd-4e37-97e4-06ad2e3510fb",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3b8d331f-9572-4c63-b840-27cd64eba9f8",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Update account with unexistent role",
+					"item": [
+						{
+							"name": "Create account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9d03ff53-8064-452a-b855-b93122bbb16a",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.environment.set('accountId', jsonData.id);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8fade930-2259-4ad2-987f-d01151de4aa6",
+										"exec": [
+											"const firstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+											"const lastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+											"const email = pm.variables.replaceIn('{{$randomEmail}}');\r",
+											"\r",
+											"pm.request.header = {\r",
+											"    'Content-Type': 'application/json'\r",
+											"};\r",
+											"pm.request.body =  {\r",
+											"    mode: 'raw',\r",
+											"    raw: JSON.stringify({\r",
+											"        \"firstName\": firstName,\r",
+											"        \"lastName\": lastName,\r",
+											"        \"email\": email,\r",
+											"        \"role\": \"USER\",\r",
+											"        \"password\": \"qwerty123\"\r",
+											"    })\r",
+											"};"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "252a85ef-e1ed-4825-8011-da30ec948aa2",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update account Copy",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "40f8bcff-ab81-4795-b269-3bb83f0a1002",
+										"exec": [
+											"const firstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+											"const lastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+											"const email = pm.variables.replaceIn('{{$randomEmail}}');\r",
+											"\r",
+											"pm.request.header = {\r",
+											"    'Content-Type': 'application/json'\r",
+											"};\r",
+											"pm.request.body =  {\r",
+											"    mode: 'raw',\r",
+											"    raw: JSON.stringify({\r",
+											"        \"firstName\": firstName,\r",
+											"        \"lastName\": lastName,\r",
+											"        \"email\": email,\r",
+											"        \"role\": \"UnExistentRole\",\r",
+											"        \"password\": \"qwerty123\"\r",
+											"    })\r",
+											"};"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "8270a3ad-c5fe-4e23-9b94-4a3e4ec88725",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.be.badRequest;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "4cb3abac-e7b5-4d62-9d1e-2f23e8e57c46",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete account Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d21aa4d3-6aea-4ebf-93eb-53ecfae6153f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "35f2d703-d0c4-46dc-8885-4a0f8bf62137",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/accounts/{{accountId}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"accounts",
+										"{{accountId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "d988e195-215a-4756-a3e7-6d692fb4b663",
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{adminPassword}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{adminEmail}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "52a9ee79-9090-43da-8ced-bd7a8c7ec070",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f980be8b-7054-4e59-b082-bc749ac854b4",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"id": "5d10944d-520f-4e99-8b4f-a7b5371896b2"
+		}
+	]
+}

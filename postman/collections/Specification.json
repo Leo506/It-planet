@@ -17,28 +17,7 @@
 							"script": {
 								"id": "44d8ff5c-0171-4cd7-92a0-05c001b049c4",
 								"exec": [
-									"pm.test(\"Ensure the 201 (Created) response status code\", function() {\r",
-									"    pm.response.to.have.status(201);\r",
-									"    pm.response.to.be.json;\r",
-									"\r",
-									"    const responseJson = pm.response.json();\r",
-									"    const id = responseJson.id;\r",
-									"    \r",
-									"\r",
-									"    const adminEmail = pm.globals.get(\"adminEmail\");\r",
-									"    const adminPassword = pm.globals.get(\"adminPassword\");\r",
-									"\r",
-									"    const deleteRequest = {\r",
-									"        url: `http://localhost:5218/accounts/${id}`,\r",
-									"        method: 'DELETE',\r",
-									"        header: {\r",
-									"            'Authorization': 'Basic' + btoa(`${adminEmail}:${adminPassword}`),\r",
-									"            'Content-Type': 'application/json'\r",
-									"        }\r",
-									"    };\r",
-									"\r",
-									"    pm.sendRequest(deleteRequest, (error, response) => {});\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -135,17 +114,7 @@
 							"script": {
 								"id": "b4d51326-411d-4c56-890b-ccbd481a6ee4",
 								"exec": [
-									"pm.test(\"Ensure response status code is 200 (OK)\", function() {\r",
-									"    pm.response.to.be.ok;\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Ensure response body schema is valid\", function() {\r",
-									"    const schema = {\r",
-									"        required: ['id', 'firstName', 'lastName', 'email', 'role']\r",
-									"    };\r",
-									"\r",
-									"    pm.response.to.have.jsonSchema(schema);\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
