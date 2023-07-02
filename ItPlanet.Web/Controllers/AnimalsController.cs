@@ -43,7 +43,7 @@ public class AnimalsController : PublicControllerBase
             var animal = await _animalService.GetAnimalAsync(id);
             return Ok(animal);
         }
-        catch (AnimalNotFoundException e)
+        catch (AnimalNotFoundException)
         {
             _logger.LogWarning("Animal with {Id} not found", id);
             return NotFound();
@@ -72,7 +72,7 @@ public class AnimalsController : PublicControllerBase
             var type = await _animalTypeService.GetAnimalTypeAsync(id);
             return Ok(type);
         }
-        catch (AnimalTypeNotFoundException e)
+        catch (AnimalTypeNotFoundException)
         {
             _logger.LogWarning("Animal type with id {Id} not found", id);
             return NotFound();
@@ -107,7 +107,7 @@ public class AnimalsController : PublicControllerBase
             var newType = await _animalTypeService.CreateTypeAsync(dto);
             return CreatedAtAction(nameof(CreateAnimalType), newType);
         }
-        catch (DuplicateAnimalTypeException e)
+        catch (DuplicateAnimalTypeException)
         {
             return Conflict();
         }
@@ -123,11 +123,11 @@ public class AnimalsController : PublicControllerBase
             var updatedType = await _animalTypeService.UpdateType(typeId, typeDto);
             return Ok(updatedType);
         }
-        catch (AnimalTypeNotFoundException e)
+        catch (AnimalTypeNotFoundException)
         {
             return NotFound();
         }
-        catch (DuplicateAnimalTypeException e)
+        catch (DuplicateAnimalTypeException)
         {
             return Conflict();
         }
@@ -148,7 +148,7 @@ public class AnimalsController : PublicControllerBase
         {
             return NotFound();
         }
-        catch (DuplicateAnimalTypeException e)
+        catch (DuplicateAnimalTypeException)
         {
             return Conflict();
         }
@@ -170,7 +170,7 @@ public class AnimalsController : PublicControllerBase
         {
             return NotFound();
         }
-        catch (DuplicateAnimalTypeException e)
+        catch (DuplicateAnimalTypeException)
         {
             return Conflict();
         }
@@ -191,7 +191,7 @@ public class AnimalsController : PublicControllerBase
         {
             return NotFound();
         }
-        catch (UnableDeleteAnimalTypeException e)
+        catch (UnableDeleteAnimalTypeException)
         {
             return BadRequest();
         }
@@ -206,11 +206,11 @@ public class AnimalsController : PublicControllerBase
             await _animalTypeService.DeleteTypeAsync(typeId);
             return Ok();
         }
-        catch (AnimalTypeDeletionException e)
+        catch (AnimalTypeDeletionException)
         {
             return BadRequest();
         }
-        catch (AnimalTypeNotFoundException e)
+        catch (AnimalTypeNotFoundException)
         {
             return NotFound();
         }
@@ -232,7 +232,7 @@ public class AnimalsController : PublicControllerBase
         {
             return NotFound();
         }
-        catch (DuplicateAnimalTypeException e)
+        catch (DuplicateAnimalTypeException)
         {
             return Conflict();
         }
@@ -249,7 +249,7 @@ public class AnimalsController : PublicControllerBase
 
             return CreatedAtAction(nameof(AddVisitedPoint), visitedPoint);
         }
-        catch (UnableAddPointException e)
+        catch (UnableAddPointException)
         {
             return BadRequest();
         }
@@ -268,11 +268,11 @@ public class AnimalsController : PublicControllerBase
             await _animalService.DeleteAnimalAsync(animalId);
             return Ok();
         }
-        catch (UnableDeleteAnimalException e)
+        catch (UnableDeleteAnimalException)
         {
             return BadRequest();
         }
-        catch (AnimalNotFoundException e)
+        catch (AnimalNotFoundException)
         {
             return NotFound();
         }
@@ -296,7 +296,7 @@ public class AnimalsController : PublicControllerBase
         {
             return NotFound();
         }
-        catch (UnableUpdateAnimalException e)
+        catch (UnableUpdateAnimalException)
         {
             return BadRequest();
         }

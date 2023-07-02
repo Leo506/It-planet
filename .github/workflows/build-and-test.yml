@@ -35,6 +35,11 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
 
+    - name: Qodana scan
+      uses: JetBrains/qodana-action@v2023.1.0
+      with:
+        args: --baseline, qodana.sarif.json
+
     - name: Send telegram notifcation
       if: success()
       uses: appleboy/telegram-action@master

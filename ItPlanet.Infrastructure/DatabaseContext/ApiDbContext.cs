@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ItPlanet.Infrastructure.DatabaseContext;
 
-public partial class ApiDbContext : DbContext
+public sealed class ApiDbContext : DbContext
 {
     public ApiDbContext()
     {
@@ -16,21 +16,21 @@ public partial class ApiDbContext : DbContext
         Database.EnsureCreated();
     }
 
-    public virtual DbSet<Account> Accounts { get; set; }
+    public DbSet<Account> Accounts { get; }
 
-    public virtual DbSet<Animal> Animals { get; set; }
+    public DbSet<Animal> Animals { get; }
 
-    public virtual DbSet<AnimalType> AnimalTypes { get; set; }
+    public DbSet<AnimalType> AnimalTypes { get; }
 
-    public virtual DbSet<Area> Areas { get; set; }
+    public DbSet<Area> Areas { get; }
 
-    public virtual DbSet<AreaPoint> AreaPoints { get; set; }
+    public DbSet<AreaPoint> AreaPoints { get; }
 
-    public virtual DbSet<LocationPoint> LocationPoints { get; set; }
+    public DbSet<LocationPoint> LocationPoints { get; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public DbSet<Role> Roles { get; }
 
-    public virtual DbSet<VisitedPoint> VisitedPoints { get; set; }
+    public DbSet<VisitedPoint> VisitedPoints { get; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -150,9 +150,5 @@ public partial class ApiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("VisitedPoints_LocationPoints_null_fk");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
