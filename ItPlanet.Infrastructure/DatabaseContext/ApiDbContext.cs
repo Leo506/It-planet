@@ -16,21 +16,21 @@ public sealed class ApiDbContext : DbContext
         Database.EnsureCreated();
     }
 
-    public DbSet<Account> Accounts { get; }
+    public DbSet<Account> Accounts { get; set; }
 
-    public DbSet<Animal> Animals { get; }
+    public DbSet<Animal> Animals { get; set; }
 
-    public DbSet<AnimalType> AnimalTypes { get; }
+    public DbSet<AnimalType> AnimalTypes { get; set; }
 
-    public DbSet<Area> Areas { get; }
+    public DbSet<Area> Areas { get; set; }
 
-    public DbSet<AreaPoint> AreaPoints { get; }
+    public DbSet<AreaPoint> AreaPoints { get; set; }
 
-    public DbSet<LocationPoint> LocationPoints { get; }
+    public DbSet<LocationPoint> LocationPoints { get; set; }
 
-    public DbSet<Role> Roles { get; }
+    public DbSet<Role> Roles { get; set; }
 
-    public DbSet<VisitedPoint> VisitedPoints { get; }
+    public DbSet<VisitedPoint> VisitedPoints { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
