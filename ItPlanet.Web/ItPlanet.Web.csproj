@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ItPlanet.Infrastructure\ItPlanet.Infrastructure.csproj" />
+        <ProjectReference Include="..\ItPlanet.Tracing\ItPlanet.Tracing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using ItPlanet.Domain.Dto;
 using ItPlanet.Domain.Exceptions;
 using ItPlanet.Domain.Models;
 using ItPlanet.Exceptions;
+using ItPlanet.Tracing;
 using ItPlanet.Web.Extensions;
 using ItPlanet.Web.Services.Account;
 using ItPlanet.Web.Services.Auth;
@@ -29,6 +30,7 @@ public class AccountsController : PublicControllerBase
     [HttpGet("{accountId:int}")]
     public async Task<IActionResult> GetAccount([Required] [Range(1, int.MaxValue)] int accountId)
     {
+        Trace.TraceAction();
         if (await AllowedToHandleRequest() is false)
             return Unauthorized();
 
