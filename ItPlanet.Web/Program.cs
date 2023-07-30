@@ -1,4 +1,6 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using ItPlanet.Domain.Models;
 using ItPlanet.Infrastructure.DatabaseContext;
 using ItPlanet.Infrastructure.Repositories.Account;
 using ItPlanet.Infrastructure.Repositories.Animal;
@@ -21,8 +23,15 @@ using ItPlanet.Web.Services.LocationPoint;
 using ItPlanet.Web.Services.VisitedPoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Destructure.ByTransforming<Account>(account => JsonSerializer.Serialize(account))
+    .WriteTo.Console()
+    .WriteTo.Seq(serverUrl:"http://localhost:5341")
+    .CreateLogger();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -39,6 +48,7 @@ builder.Services.AddDbContext<ApiDbContext>(optionsBuilder => optionsBuilder.Use
 #endif
 
 builder.Services
+    .AddLogging(loggingBuilder => loggingBuilder.AddSerilog())
     .AddTransient<IAccountService, AccountService>()
     .AddTransient<IAnimalService, AnimalService>()
     .AddTransient<IAnimalTypeService, AnimalTypeService>()

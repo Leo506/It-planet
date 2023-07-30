@@ -35,7 +35,7 @@ public class AccountsController : PublicControllerBase
         try
         {
             var account = await _accountService.GetAccountAsync(accountId);
-            _logger.LogInformation("Account with id {AccountId} successfully found", accountId);
+            _logger.LogInformation("Account with id {AccountId} successfully found. {@Account}", accountId, account);
             return Ok(account);
         }
         catch (AccountNotFoundException e)
